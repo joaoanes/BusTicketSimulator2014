@@ -173,7 +173,8 @@
             <DatePicker
                 android:id="@+id/datepicker_register_card_validity"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:calendarViewShown="false" />
         </LinearLayout>
 
         <Button
