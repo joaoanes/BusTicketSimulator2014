@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +29,8 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 
 		populateCardTypeSpinner();
+		Intent intent = new Intent(getApplicationContext(), BuyActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
