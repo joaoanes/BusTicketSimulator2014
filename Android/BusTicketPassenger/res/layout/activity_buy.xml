@@ -1,0 +1,88 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".BuyActivity" >
+
+    <TableRow 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/label_buy_tickets"
+            android:textSize="24sp" 
+            android:gravity="center_horizontal"/>
+    </TableRow>
+    
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:text="@string/label_type"
+            android:textStyle="bold" />
+        
+        <TextView
+            android:text="@string/label_quantity"
+            android:textStyle="bold" />
+    </TableRow>
+    	
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:text="@string/label_t1"
+            android:textStyle="bold"/>
+        
+        <TextView android:id="@+id/t1_quantity"
+            android:text="0"
+            android:gravity="right"/>
+        
+        <Button android:id="@+id/button_change_t1"
+            android:text="@string/button_change"
+            android:onClick="changeQuantity"/>
+    </TableRow>
+    
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:text="@string/label_t2"
+            android:textStyle="bold"/>
+        
+        <TextView android:id="@+id/t2_quantity"
+            android:text="0"
+            android:gravity="right"/>
+        
+        <Button android:id="@+id/button_change_t2"
+            android:text="@string/button_change"
+            android:onClick="changeQuantity"/>
+    </TableRow>
+    
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:text="@string/label_t3"
+            android:textStyle="bold"/>
+        
+        <TextView android:id="@+id/t3_quantity"
+            android:text="0"
+            android:gravity="right"/>
+        
+        <Button android:id="@+id/button_change_t3"
+            android:text="@string/button_change"
+            android:onClick="changeQuantity"/>
+    </TableRow>
+    
+    <Button android:id="@+id/button_buy"
+            android:text="@string/buy"/>   
+
+</TableLayout>

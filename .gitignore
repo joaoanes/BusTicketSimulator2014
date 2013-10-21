@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #################
 ## Eclipse
 #################
@@ -213,3 +214,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+=======
+Android/BusTicketPassenger/bin/
+>>>>>>> d1e0205c258b59f0740c47d9965e1a98c8f6f487
