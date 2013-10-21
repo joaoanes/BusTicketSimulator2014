@@ -1,8 +1,9 @@
 function route(handle, pathname, response, request)
 {
-	
+
 	if ((typeof handle[pathname]) === 'function')
 	{
+		debugger;
 		console.log("Routing to " + pathname);
 		handle[pathname](response, request);
 	}

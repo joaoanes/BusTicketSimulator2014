@@ -1,5 +1,6 @@
 var redis = require('./redis.js'),
 qs = require('querystring');
+var url = require("url");
 
 function login(response, req)
 {
@@ -76,6 +77,11 @@ function register(response, req)
 	
 }
 
+function getTicketsByUser(response, req)
+{
+	redis.getTicketsById(url.parse(req.url).query, response);
+}
+
 function split(data){
     var splits = data.split('&');
     var hash = [];
@@ -90,3 +96,4 @@ function split(data){
 
 exports.login = login;
 exports.register = register;
+exports.getTickets = getTicketsByUser;

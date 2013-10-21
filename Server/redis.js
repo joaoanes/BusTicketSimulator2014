@@ -52,6 +52,27 @@ card_validity:date
     }
 
 
+
+/*
+	GET
+	uid:string
+*/
+function getTicketsById(uid, response)
+{
+	if (uid == null)
+	{
+		handleReply(buildResponse(500, null, "User id not present"), response);
+	}
+	client.smembers("user_id:" + uid + ":tickets", function(err, reply)
+		{
+			debugger;
+			if (err)
+				console.log(err);
+			handleReply(buildResponse(200, JSON.stringify(reply), err ? "Oops!" : null), response);
+		});
+}
+
+
 /*
 	POST
 	username:string
@@ -80,6 +101,8 @@ card_validity:date
     			{
     				debugger;
     				handleReply(buildResponse(401, null, "Password doesn't match records"), response);
+    				console.log("Pw: " + reply);
+    				console.log("Actual pw: " + user.password);
     			}
     			var auth = Math.random().toString(36).slice(2);
     			client.hset("user_id:" + id, "api_key", auth);
@@ -132,11 +155,6 @@ card_validity:date
     	return results;
     }
 
-
-  
-    /*
-    console.log(registerUser(uzer));
-    console.log(loginUser(uzer));
-	*/
     exports.loginUser = loginUser;
     exports.registerUser = registerUser;
+    exports.getTicketsById = getTicketsById;
