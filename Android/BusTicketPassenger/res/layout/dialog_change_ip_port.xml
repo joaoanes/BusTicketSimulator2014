@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:stretchColumns="1" >
+    
+    <TableRow >
+        <TextView android:text="IP"/>
+        
+        <EditText android:id="@+id/edittext_ip"/>
+    </TableRow>
+    
+    <TableRow >
+        <TextView android:text="Port"/>
+        
+        <EditText android:id="@+id/edittext_port"
+            android:inputType="number"/>
+    </TableRow>
+    
+
+</TableLayout>

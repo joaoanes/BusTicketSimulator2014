@@ -83,6 +83,7 @@
     </TableRow>
     
     <Button android:id="@+id/button_buy"
-            android:text="@string/buy"/>   
+            android:text="@string/buy"
+            android:onClick="buyTickets"/>   
 
 </TableLayout>

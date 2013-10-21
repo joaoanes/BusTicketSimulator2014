@@ -29,7 +29,8 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 
 		populateCardTypeSpinner();
-		Intent intent = new Intent(getApplicationContext(), BuyActivity.class);
+		Intent intent = new Intent(getApplicationContext(), ViewTicketsActivity.class);
+		//Intent intent = new Intent(getApplicationContext(), BuyActivity.class);
 		startActivity(intent);
 	}
 

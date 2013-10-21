@@ -27,14 +27,16 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f090010;
+        public static final int action_settings=0x7f090015;
         public static final int button_buy=0x7f090006;
         public static final int button_change_t1=0x7f090001;
         public static final int button_change_t2=0x7f090003;
         public static final int button_change_t3=0x7f090005;
         public static final int datepicker_register_card_validity=0x7f09000e;
+        public static final int edittext_ip=0x7f09000f;
         public static final int edittext_login_password=0x7f090008;
         public static final int edittext_login_username=0x7f090007;
+        public static final int edittext_port=0x7f090010;
         public static final int edittext_register_card_number=0x7f09000d;
         public static final int edittext_register_name=0x7f09000b;
         public static final int edittext_register_password=0x7f09000a;
@@ -43,18 +45,25 @@ public final class R {
         public static final int t1_quantity=0x7f090000;
         public static final int t2_quantity=0x7f090002;
         public static final int t3_quantity=0x7f090004;
-        public static final int ticket_quantiy_id=0x7f09000f;
+        public static final int textview_ticket_duration=0x7f090013;
+        public static final int textview_ticket_id=0x7f090012;
+        public static final int textview_ticket_price=0x7f090014;
+        public static final int ticket_quantiy_id=0x7f090011;
+        public static final int ticket_validate=0x7f090016;
     }
     public static final class layout {
         public static final int activity_buy=0x7f030000;
         public static final int activity_login=0x7f030001;
         public static final int activity_view_tickets=0x7f030002;
-        public static final int dialog_ticket_quantity=0x7f030003;
+        public static final int dialog_change_ip_port=0x7f030003;
+        public static final int dialog_ticket_quantity=0x7f030004;
+        public static final int row_ticket=0x7f030005;
     }
     public static final class menu {
         public static final int buy=0x7f080000;
         public static final int login=0x7f080001;
-        public static final int view_tickets=0x7f080002;
+        public static final int ticket=0x7f080002;
+        public static final int view_tickets=0x7f080003;
     }
     public static final class string {
         public static final int action_settings=0x7f040001;

@@ -11,9 +11,18 @@ import android.util.SparseArray;
 
 public class BusTicketPassenger extends Application {
 	SparseArray<Ticket> bought_tickets = new SparseArray<Ticket>();
-	ArrayList<T1> t1_tickets = new ArrayList<T1>();
-	ArrayList<T2> t2_tickets = new ArrayList<T2>();
-	ArrayList<T3> t3_tickets = new ArrayList<T3>();
+	ArrayList<Ticket> t1_tickets = new ArrayList<Ticket>();
+	ArrayList<Ticket> t2_tickets = new ArrayList<Ticket>();
+	ArrayList<Ticket> t3_tickets = new ArrayList<Ticket>();
 	SparseArray<Ticket> validated_tickets = new SparseArray<Ticket>();
 	Ticket last_validated = null;
+	
+	String bus_ip = "127.0.0.1";
+	int bus_port = 3000;
+	
+	String server_ip = "127.0.0.1";
+	int server_port = 3000;
+	
+	String inspector_ip = "127.0.0.1";
+	int inspector_port = 3000;
 }
