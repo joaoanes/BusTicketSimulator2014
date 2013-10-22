@@ -56,6 +56,7 @@ card_validity:date
 /*
 	GET
 	uid:string
+	
 */
 function getTicketsById(uid, response)
 {
@@ -99,12 +100,13 @@ function getTicketsById(uid, response)
     		client.hget("user_id:" + id, "password", function(err, reply){
     			if (user.password != reply)
     			{
-    				debugger;
     				handleReply(buildResponse(401, null, "Password doesn't match records"), response);
     				console.log("Pw: " + reply);
     				console.log("Actual pw: " + user.password);
     			}
     			var auth = Math.random().toString(36).slice(2);
+    			debugger;
+    			client.set("auth:" + auth, id, function(err){ if (err) console.log(err); });
     			client.hset("user_id:" + id, "api_key", auth);
     			client.hset("user_id:" + id, "api_date", new Date());
     			handleReply(buildResponse(200, {"auth" : auth}, null), response);
@@ -135,6 +137,7 @@ function getTicketsById(uid, response)
     }
 
 
+
     function handleReply(reply, response)
     {
     	response.writeHead(reply.status, {"Content-Type": "text/plain"}); 
@@ -154,6 +157,7 @@ function getTicketsById(uid, response)
 
     	return results;
     }
+
 
     exports.loginUser = loginUser;
     exports.registerUser = registerUser;
