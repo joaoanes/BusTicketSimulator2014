@@ -76,7 +76,6 @@ public class MainActivity extends Activity {
 	}
 
 	public void openServer(View view) {
-
 		if(server == null) {
 			((TextView) findViewById(R.id.status_id)).setText("Server open");
 
@@ -103,7 +102,6 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 	}
 

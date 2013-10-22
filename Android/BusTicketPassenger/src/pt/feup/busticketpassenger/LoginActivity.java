@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,11 @@ import android.widget.Toast;
 public class LoginActivity extends Activity {
 	String username;
 	String password;
+	String name;
+	String card_type;
+	String card_validity;
+	String card_number;
+	
 	BusTicketPassenger app;
 	DatePicker datepicker;
 
@@ -45,10 +51,9 @@ public class LoginActivity extends Activity {
 		removeDayFromDatePicker();
 
 		populateCardTypeSpinner();
-		//Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
-		//Intent intent = new Intent(getApplicationContext(), ViewTicketsActivity.class);
+		Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
 		//Intent intent = new Intent(getApplicationContext(), BuyActivity.class);
-		//startActivity(intent);
+		startActivity(intent);
 	}
 
 	@Override
@@ -99,7 +104,23 @@ public class LoginActivity extends Activity {
 
 		LoginTask task = new LoginTask();
 		task.execute(new Void[]{});		
+	}
+	
+	public void onRegisterClick(View view) {
+		username = ((EditText) findViewById(R.id.edittext_register_username)).getText().toString();
+		password = ((EditText) findViewById(R.id.edittext_register_password)).getText().toString();
+		name = ((EditText) findViewById(R.id.edittext_register_name)).getText().toString();
+		card_number = ((EditText) findViewById(R.id.edittext_register_card_number)).getText().toString();
+		card_type = ((Spinner) findViewById(R.id.spinner_register_card_type)).getSelectedItem().toString();
+		card_validity = (datepicker.getMonth() + 1)+ "/" + datepicker.getYear();
+		
+		if(username.equals("") || password.equals("") || name.equals("") || card_number.equals("")) {
+			Toast.makeText(this, "Fill All Fields", Toast.LENGTH_SHORT).show();
+			return;
+		}
 
+		RegisterTask task = new RegisterTask();
+		task.execute(new Void[]{});	
 	}
 
 	private class LoginTask extends AsyncTask<Void, Void, String> {
@@ -124,11 +145,60 @@ public class LoginActivity extends Activity {
 					out.close();
 					String responseString = out.toString();
 					return responseString;
-					//Toast.makeText(getApplicationContext(), responseString, Toast.LENGTH_SHORT).show();
 				} else{
 					//Closes the connection.
 					response.getEntity().getContent().close();
-					//Toast.makeText(getApplicationContext(), "falhou", Toast.LENGTH_SHORT).show();
+					throw new IOException(statusLine.getReasonPhrase());
+				}
+
+			}catch(Exception e) {
+				Log.i("thread", "falhou e lançou excepçoões");
+				e.printStackTrace();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getApplicationContext(), "falhou", Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(LoginActivity.this, result, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	private class RegisterTask extends AsyncTask<Void, Void, String> {
+
+		@Override
+		protected String doInBackground(Void... v) {
+			try {
+				HttpClient httpclient = new DefaultHttpClient();
+				URL url =  new URL("http", app.server_ip, app.server_port, "/register");
+				HttpPost post = new HttpPost(url.toURI());
+
+				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
+				nameValuePairs.add(new BasicNameValuePair("username", username));
+				nameValuePairs.add(new BasicNameValuePair("password", password));
+				nameValuePairs.add(new BasicNameValuePair("name", name));
+				nameValuePairs.add(new BasicNameValuePair("card_type", card_type));
+				nameValuePairs.add(new BasicNameValuePair("card_validity", card_validity));
+				nameValuePairs.add(new BasicNameValuePair("card_number", card_number));
+				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+				HttpResponse response = httpclient.execute(post);
+				StatusLine statusLine = response.getStatusLine();
+				if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					String responseString = out.toString();
+					return responseString;
+				} else{
+					//Closes the connection.
+					response.getEntity().getContent().close();
 					throw new IOException(statusLine.getReasonPhrase());
 				}
 
