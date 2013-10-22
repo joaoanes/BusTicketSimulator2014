@@ -79,8 +79,11 @@ function register(response, req)
 
 function getTicketsByUser(response, req)
 {
+
 	redis.getTicketsById(url.parse(req.url).query, response);
 }
+
+getTicketsByUser.auth = true;
 
 function split(data){
     var splits = data.split('&');
