@@ -39,13 +39,7 @@
             android:text="@string/label_t1"
             android:textStyle="bold"/>
         
-        <TextView android:id="@+id/t1_quantity"
-            android:text="0"
-            android:gravity="right"/>
-        
-        <Button android:id="@+id/button_change_t1"
-            android:text="@string/button_change"
-            android:onClick="changeQuantity"/>
+        <Spinner android:id="@+id/t1_quantity" />
     </TableRow>
     
     <TableRow
@@ -55,14 +49,8 @@
         <TextView
             android:text="@string/label_t2"
             android:textStyle="bold"/>
-        
-        <TextView android:id="@+id/t2_quantity"
-            android:text="0"
-            android:gravity="right"/>
-        
-        <Button android:id="@+id/button_change_t2"
-            android:text="@string/button_change"
-            android:onClick="changeQuantity"/>
+
+        <Spinner android:id="@+id/t2_quantity" />
     </TableRow>
     
     <TableRow
@@ -72,14 +60,8 @@
         <TextView
             android:text="@string/label_t3"
             android:textStyle="bold"/>
-        
-        <TextView android:id="@+id/t3_quantity"
-            android:text="0"
-            android:gravity="right"/>
-        
-        <Button android:id="@+id/button_change_t3"
-            android:text="@string/button_change"
-            android:onClick="changeQuantity"/>
+
+        <Spinner android:id="@+id/t3_quantity" />
     </TableRow>
     
     <Button android:id="@+id/button_buy"

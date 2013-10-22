@@ -7,33 +7,50 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import pt.feup.busticketpassenger.TicketQuantityDialogFragment.TicketQuantityDialogListener;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BuyActivity extends Activity implements TicketQuantityDialogListener{
+public class BuyActivity extends Activity {
 	public static final String QUANTITY_ID = "QUANTITY_ID";
 
 	TextView t1_textview;
 	TextView t2_textview;
 	TextView t3_textview;
+	
+	Spinner t1_spinner;
+	Spinner t2_spinner;
+	Spinner t3_spinner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_buy);
+		
+		t1_spinner = (Spinner) findViewById(R.id.t1_quantity);
+		t2_spinner = (Spinner) findViewById(R.id.t2_quantity);
+		t3_spinner = (Spinner) findViewById(R.id.t3_quantity);
+		
+		Integer[] items = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		
+		ArrayAdapter<CharSequence> t1_adapter = ArrayAdapter.createFromResource(this, R.array.tickets_quantity, android.R.layout.simple_spinner_item);
+		t1_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		t1_spinner.setAdapter(t1_adapter);
+		
+		ArrayAdapter<CharSequence> t2_adapter = ArrayAdapter.createFromResource(this, R.array.tickets_quantity, android.R.layout.simple_spinner_item);
+		t2_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		t2_spinner.setAdapter(t2_adapter);
 
-		t1_textview = (TextView) findViewById(R.id.t1_quantity);
-		t2_textview = (TextView) findViewById(R.id.t2_quantity);
-		t3_textview = (TextView) findViewById(R.id.t3_quantity);
-
+		ArrayAdapter<CharSequence> t3_adapter = ArrayAdapter.createFromResource(this, R.array.tickets_quantity, android.R.layout.simple_spinner_item);
+		t3_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		t3_spinner.setAdapter(t3_adapter);
 	}
 
 	@Override
@@ -41,38 +58,6 @@ public class BuyActivity extends Activity implements TicketQuantityDialogListene
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.buy, menu);
 		return true;
-	}
-
-	public void changeQuantity(View view) {
-
-		TicketQuantityDialogFragment dialog = new TicketQuantityDialogFragment();
-
-		int id = view.getId();
-
-		Bundle args = new Bundle();
-		args.putInt(QUANTITY_ID, id);
-		dialog.setArguments(args);
-
-		dialog.show(getFragmentManager(), "ticket quantity");
-	}
-
-	@Override
-	public void onPositiveClick(DialogFragment dialog, int quantity, int button_id) {
-		String qnt = String.valueOf(quantity);
-
-		switch (button_id) {
-		case R.id.button_change_t1:
-			t1_textview.setText(qnt);
-			break;
-		case R.id.button_change_t2:
-			t2_textview.setText(qnt);
-			break;
-		case R.id.button_change_t3:
-			t3_textview.setText(qnt);
-			break;
-		default:
-			return;
-		}		
 	}
 
 	public void buyTickets(View view) {

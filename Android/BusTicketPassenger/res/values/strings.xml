@@ -5,6 +5,20 @@
         <item>Visa</item>
         <item>MasterCard</item>
     </string-array>
+    
+    <string-array name="tickets_quantity">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
 
     <string name="app_name">BusTicketPassenger</string>
     <string name="action_settings">Settings</string>
@@ -37,5 +51,6 @@
     <string name="label_t3">T3</string>
     <string name="buy">Buy</string>
     <string name="title_activity_view_tickets">ViewTicketsActivity</string>
+    <string name="title_activity_tickets">TicketsActivity</string>
 
 </resources>

@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".TicketsActivity" >
+
+    <LinearLayout android:id="@+id/tickets_bought"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bought Tickets" 
+            android:textSize="20sp"/>
+
+        <LinearLayout
+            android:id="@+id/tickets_t1"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:onClick="validateTicket"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T1" />
+
+            <TextView
+                android:id="@+id/tickets_t1_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="0 tickets" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tickets_t2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:onClick="validateTicket"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T2" />
+
+            <TextView
+                android:id="@+id/tickets_t2_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="0 tickets" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tickets_t3"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:onClick="validateTicket"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T3" />
+
+            <TextView
+                android:id="@+id/tickets_t3_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="0 tickets" />
+        </LinearLayout>
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Buy" />
+        
+    </LinearLayout>
+    
+    <TextView android:id="@+id/text_view_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Validated Tickets"
+        android:textSize="20sp"
+        android:layout_below="@id/tickets_bought"/>
+    
+    <ListView
+        android:id="@+id/tickets_validated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_1"
+        android:layout_alignParentBottom="true" >
+        
+    </ListView>
+
+</RelativeLayout>
