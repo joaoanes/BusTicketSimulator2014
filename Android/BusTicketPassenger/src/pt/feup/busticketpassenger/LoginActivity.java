@@ -1,26 +1,18 @@
 package pt.feup.busticketpassenger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import pt.feup.busticket.tickets.BusTicketUtils;
+import pt.feup.busticket.tickets.HttpHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -39,7 +31,15 @@ public class LoginActivity extends Activity {
 	String card_number;
 	
 	BusTicketPassenger app;
-	DatePicker datepicker;
+	
+	EditText login_username;
+	EditText login_password;
+	EditText register_username;
+	EditText register_password;
+	EditText register_name;
+	EditText register_card_number;
+	Spinner register_card_type;
+	DatePicker register_card_validity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +48,12 @@ public class LoginActivity extends Activity {
 
 		app = (BusTicketPassenger) getApplication(); 
 
-		removeDayFromDatePicker();
-
+		instantiateForms();
 		populateCardTypeSpinner();
-		Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
+		
+		//Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
 		//Intent intent = new Intent(getApplicationContext(), BuyActivity.class);
-		startActivity(intent);
+		//startActivity(intent);
 	}
 
 	@Override
@@ -62,27 +62,40 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 	
-	private void removeDayFromDatePicker() {
-		datepicker = (DatePicker) findViewById(R.id.datepicker_register_card_validity);
+	private void instantiateForms() {
+		login_username = (EditText) findViewById(R.id.edittext_login_username);
+		login_password = (EditText) findViewById(R.id.edittext_login_password);
+		
+		register_username = (EditText) findViewById(R.id.edittext_register_username);
+		register_password = (EditText) findViewById(R.id.edittext_register_password);
+		register_name = (EditText) findViewById(R.id.edittext_register_name);
+		register_card_number = (EditText) findViewById(R.id.edittext_register_card_number);
+		register_card_type = (Spinner) findViewById(R.id.spinner_register_card_type);
+		
+		instantiateDatePicker();
+	}
+	
+	private void instantiateDatePicker() {
+		register_card_validity = (DatePicker) findViewById(R.id.datepicker_register_card_validity);
 		try {
-			Field f[] = datepicker.getClass().getDeclaredFields();
+			Field f[] = register_card_validity.getClass().getDeclaredFields();
 			for (Field field : f) {
 
 				if (field.getName().equals("mDaySpinner")
 						|| field.getName().equals("mDayPicker")) {
 					field.setAccessible(true);
 					Object dayPicker = new Object();
-					dayPicker = field.get(datepicker);
+					dayPicker = field.get(register_card_validity);
 					((View) dayPicker).setVisibility(View.GONE);
 				}
 			}
-		} catch (SecurityException e) {
-			Log.d("ERROR", e.getMessage());
-		} catch (IllegalArgumentException e) {
-			Log.d("ERROR", e.getMessage());
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			Log.d("ERROR", e.getMessage());
 		}
+		
+		Time now = new Time();
+		now.setToNow();
+		register_card_validity.setMinDate(now.toMillis(false));
 	}
 
 	private void populateCardTypeSpinner() {
@@ -112,7 +125,7 @@ public class LoginActivity extends Activity {
 		name = ((EditText) findViewById(R.id.edittext_register_name)).getText().toString();
 		card_number = ((EditText) findViewById(R.id.edittext_register_card_number)).getText().toString();
 		card_type = ((Spinner) findViewById(R.id.spinner_register_card_type)).getSelectedItem().toString();
-		card_validity = (datepicker.getMonth() + 1)+ "/" + datepicker.getYear();
+		card_validity = (register_card_validity.getMonth() + 1)+ "/" + register_card_validity.getYear();
 		
 		if(username.equals("") || password.equals("") || name.equals("") || card_number.equals("")) {
 			Toast.makeText(this, "Fill All Fields", Toast.LENGTH_SHORT).show();
@@ -123,102 +136,45 @@ public class LoginActivity extends Activity {
 		task.execute(new Void[]{});	
 	}
 
-	private class LoginTask extends AsyncTask<Void, Void, String> {
+	private class LoginTask extends AsyncTask<Void, Void, HttpHelper.HttpResult> {
 
 		@Override
-		protected String doInBackground(Void... v) {
-			try {
-				HttpClient httpclient = new DefaultHttpClient();
-				URL url =  new URL("http", app.server_ip, app.server_port, "/login");
-				HttpPost post = new HttpPost(url.toURI());
-
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-				nameValuePairs.add(new BasicNameValuePair("username", username));
-				nameValuePairs.add(new BasicNameValuePair("password", password));
-				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-				HttpResponse response = httpclient.execute(post);
-				StatusLine statusLine = response.getStatusLine();
-				if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					response.getEntity().writeTo(out);
-					out.close();
-					String responseString = out.toString();
-					return responseString;
-				} else{
-					//Closes the connection.
-					response.getEntity().getContent().close();
-					throw new IOException(statusLine.getReasonPhrase());
-				}
-
-			}catch(Exception e) {
-				Log.i("thread", "falhou e lançou excepçoões");
-				e.printStackTrace();
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getApplicationContext(), "falhou", Toast.LENGTH_SHORT).show();
-					}
-				});
-			}
-			return null;
+		protected HttpHelper.HttpResult doInBackground(Void... v) {
+			HttpHelper helper = new HttpHelper();
+			return helper.login(username, password);
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			Toast.makeText(LoginActivity.this, result, Toast.LENGTH_SHORT).show();
+		protected void onPostExecute(HttpHelper.HttpResult result) {
+			switch(result.getCode()) {
+				case HttpStatus.SC_OK:
+					try {
+						JSONObject json = new JSONObject(result.getResult());
+						app.token = json.getString("auth");
+						Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
+						startActivity(intent);
+					} catch (JSONException e) {
+						BusTicketUtils.createAlertDialog(LoginActivity.this, "Login", "Didn't get token");
+					}
+					return;
+				default:
+					BusTicketUtils.createAlertDialog(LoginActivity.this, "Login", result.toString());
+					return;
+			}
 		}
 	}
-	
-	private class RegisterTask extends AsyncTask<Void, Void, String> {
+		
+	private class RegisterTask extends AsyncTask<Void, Void, HttpHelper.HttpResult> {
 
 		@Override
-		protected String doInBackground(Void... v) {
-			try {
-				HttpClient httpclient = new DefaultHttpClient();
-				URL url =  new URL("http", app.server_ip, app.server_port, "/register");
-				HttpPost post = new HttpPost(url.toURI());
-
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
-				nameValuePairs.add(new BasicNameValuePair("username", username));
-				nameValuePairs.add(new BasicNameValuePair("password", password));
-				nameValuePairs.add(new BasicNameValuePair("name", name));
-				nameValuePairs.add(new BasicNameValuePair("card_type", card_type));
-				nameValuePairs.add(new BasicNameValuePair("card_validity", card_validity));
-				nameValuePairs.add(new BasicNameValuePair("card_number", card_number));
-				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-				HttpResponse response = httpclient.execute(post);
-				StatusLine statusLine = response.getStatusLine();
-				if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					response.getEntity().writeTo(out);
-					out.close();
-					String responseString = out.toString();
-					return responseString;
-				} else{
-					//Closes the connection.
-					response.getEntity().getContent().close();
-					throw new IOException(statusLine.getReasonPhrase());
-				}
-
-			}catch(Exception e) {
-				Log.i("thread", "falhou e lançou excepçoões");
-				e.printStackTrace();
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getApplicationContext(), "falhou", Toast.LENGTH_SHORT).show();
-					}
-				});
-			}
-
-			return null;
+		protected HttpHelper.HttpResult doInBackground(Void... v) {
+			HttpHelper helper = new HttpHelper();
+			return helper.register(username, password, name, card_type, card_validity, card_number);
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			Toast.makeText(LoginActivity.this, result, Toast.LENGTH_SHORT).show();
+		protected void onPostExecute(HttpHelper.HttpResult result) {
+			BusTicketUtils.createAlertDialog(LoginActivity.this, "Register", result.toString());
 		}
 
 	}

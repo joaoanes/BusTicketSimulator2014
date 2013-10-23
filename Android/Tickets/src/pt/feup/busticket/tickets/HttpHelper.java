@@ -1,0 +1,111 @@
+package pt.feup.busticket.tickets;
+
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+public class HttpHelper {
+	HttpClient client;
+	String ip = "joaoanes.no-ip.biz";
+	int port = 8080;
+	
+	public class HttpResult {
+		public int code;
+		public String result;
+		
+		public HttpResult(int code) {
+			this.code = code;
+		}
+		
+		public HttpResult(int code, String result) {
+			this(code);
+			this.result = result;
+		}
+		
+		public int getCode() {
+			return code;
+		}
+		
+		public String getResult() {
+			return result;
+		}
+		
+		public String toString() {
+			return "Code: " + code + "\nresult:" + result;
+		} 
+	}
+	
+	public HttpHelper() {
+		client = new DefaultHttpClient();
+	}
+	
+	public HttpHelper(String ip) {
+		this();
+		this.ip = ip;
+	}
+	
+	public HttpHelper(String ip, int port) {
+		this(ip);
+		this.port = port;
+	}
+	
+	public HttpResult executePost(String file, List<NameValuePair> args) {
+		try {
+			URL url = new URL("http", ip, port, file);
+			HttpPost post = new HttpPost(url.toURI());
+			post.setEntity(new UrlEncodedFormEntity(args));
+			
+			HttpResponse response = client.execute(post);
+			StatusLine statusLine = response.getStatusLine();
+			int status_code = statusLine.getStatusCode();
+			
+			switch(status_code) {
+				case HttpStatus.SC_OK:
+				case HttpStatus.SC_UNAUTHORIZED:
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					String responseString = out.toString();
+					
+					return new HttpResult(status_code, responseString);
+				default:
+					return new HttpResult(status_code);
+			
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new HttpResult(-1);
+		}
+		
+	}
+	
+	public HttpResult login(String username, String password) {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		nameValuePairs.add(new BasicNameValuePair("username", username));
+		nameValuePairs.add(new BasicNameValuePair("password", password));
+		return executePost("/login", nameValuePairs);
+	}
+	
+	public HttpResult register(String username, String password, String name, String card_type, String card_validity, String card_number) {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
+		nameValuePairs.add(new BasicNameValuePair("username", username));
+		nameValuePairs.add(new BasicNameValuePair("password", password));
+		nameValuePairs.add(new BasicNameValuePair("name", name));
+		nameValuePairs.add(new BasicNameValuePair("card_type", card_type));
+		nameValuePairs.add(new BasicNameValuePair("card_validity", card_validity));
+		nameValuePairs.add(new BasicNameValuePair("card_number", card_number));
+		return executePost("/register", nameValuePairs);
+	}
+}

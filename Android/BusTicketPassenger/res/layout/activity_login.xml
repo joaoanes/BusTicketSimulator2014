@@ -15,51 +15,37 @@
             android:text="@string/label_login"
             android:textSize="12pt" />
 
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_login_username" />
+
+        <EditText
+            android:id="@+id/edittext_login_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:hint="@string/hint_login_username"
+            android:lines="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_login_username" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_login_password" />
 
-            <EditText
-                android:id="@+id/edittext_login_username"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_login_username"
-                android:lines="1" />
-        </LinearLayout>
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/edittext_login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_login_password" />
-
-            <EditText
-                android:id="@+id/edittext_login_password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_login_password"
-                android:inputType="textPassword"
-                android:lines="1" />
-        </LinearLayout>
+            android:hint="@string/hint_login_password"
+            android:inputType="textPassword"
+            android:lines="1" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/buttontext_login"
-            android:onClick="onLoginClick" />
+            android:onClick="onLoginClick"
+            android:text="@string/buttontext_login" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -67,122 +53,83 @@
             android:text="@string/label_register"
             android:textSize="12pt" />
 
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_register_username" />
+
+        <EditText
+            android:id="@+id/edittext_register_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:hint="@string/hint_register_username"
+            android:lines="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_register_username" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_register_password" />
 
-            <EditText
-                android:id="@+id/edittext_register_username"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_register_username"
-                android:lines="1" />
-        </LinearLayout>
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/edittext_register_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:hint="@string/hint_register_password"
+            android:inputType="textPassword"
+            android:lines="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_register_password" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_register_name" />
 
-            <EditText
-                android:id="@+id/edittext_register_password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_register_password"
-                android:inputType="textPassword"
-                android:lines="1" />
-        </LinearLayout>
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/edittext_register_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:hint="@string/hint_register_name"
+            android:lines="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_register_name" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_register_card_type" />
 
-            <EditText
-                android:id="@+id/edittext_register_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_register_name"
-                android:lines="1" />
-        </LinearLayout>
+        <Spinner
+            android:id="@+id/spinner_register_card_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_register_card_number" />
+
+        <EditText
+            android:id="@+id/edittext_register_card_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:hint="@string/hint_register_card_number"
+            android:inputType="number"
+            android:lines="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_register_card_type" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_register_card_validity" />
 
-            <Spinner
-                android:id="@+id/spinner_register_card_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
+        <DatePicker
+            android:id="@+id/datepicker_register_card_validity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_register_card_number" />
-
-            <EditText
-                android:id="@+id/edittext_register_card_number"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_register_card_number"
-                android:lines="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_register_card_validity" />
-
-            <DatePicker
-                android:id="@+id/datepicker_register_card_validity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:calendarViewShown="false" />
-        </LinearLayout>
+            android:calendarViewShown="false" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/buttontext_register"
-            android:onClick="onRegisterClick"/>
+            android:onClick="onRegisterClick"
+            android:text="@string/buttontext_register" />
     </LinearLayout>
 
 </ScrollView>
