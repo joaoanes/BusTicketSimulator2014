@@ -1,5 +1,6 @@
 var redis = require("redis"),
-	client = redis.createClient();
+	client = redis.createClient(),
+	crypto = require("crypto");
 
 	client.on("error", function (err) {
         console.log("Error " + err);
@@ -17,7 +18,6 @@ card_validity:date
 */
     function registerUser(user, response)
     {
-    	debugger;
     	client.get("global:user_id", function(err, uid) {
 		    if (uid == null)
 		    {
@@ -34,7 +34,6 @@ card_validity:date
 	    		{
 	    			console.log(err);
 	    		}
-	    		debugger;
 	    		if (reply == 1)
 	    		{
 	    			console.log("Ooops, username " + user.username + " taken");
@@ -66,13 +65,55 @@ function getTicketsById(uid, response)
 	}
 	client.smembers("user_id:" + uid + ":tickets", function(err, reply)
 		{
-			debugger;
 			if (err)
 				console.log(err);
-			handleReply(buildResponse(200, JSON.stringify(reply), err ? "Oops!" : null), response);
+
+			handleReply(buildResponse(200, reply, err ? "Oops! " + err : null), response);
 		});
 }
 
+
+	function buyTickets(uid, ticket_n, ticket_type, response)
+	{
+		client.get("global:ticket_id", function(err, tid) {
+		    if (tid == null)
+		    {
+			    client.set("global:ticket_id", 1, redis.print);
+			    console.log("No global ticket id? Already set to 1");
+			    tid = "1";
+	    	}
+	    	if (err)
+	    	{
+	    		console.log(err);
+	    		return handleReply(buildResponse(500, null, err), response);
+	    	}
+	    	var tickets = new Array();
+	    	var allTickets = parseInt(tid) + parseInt(ticket_n);
+
+			var shasum;
+
+	    	for (; tid < allTickets; ++tid)
+	    	{
+	    		shasum = crypto.createHash('sha1');
+	    		shasum.update("" + tid, 'ascii');
+	    		tickets.push(shasum.digest('hex'));
+	    	}
+	    	var multi = client.multi();
+	    	var ticket = {};
+	    	for (var i = 0; i < tickets.length; ++i)
+	    	{
+	    		multi.sadd("user_id:" + uid + ":tickets", tickets[i], redis.print);
+	    		ticket = {};
+	    		ticket["type"] = ticket_type;
+	    		ticket["uid"] = uid;
+	    		multi.hmset("ticket_id:" + tickets[i], ticket, redis.print);
+	    		debugger;
+	    	}
+	    	multi.exec(redis.print);
+	    	client.incrby("global:ticket_id", ticket_n, redis.print);
+	    	return handleReply(buildResponse(200, tickets, null), response);
+	    });
+	}
 
 /*
 	POST
@@ -105,7 +146,6 @@ function getTicketsById(uid, response)
     				console.log("Actual pw: " + user.password);
     			}
     			var auth = Math.random().toString(36).slice(2);
-    			debugger;
     			client.set("auth:" + auth, id, function(err){ if (err) console.log(err); });
     			client.hset("user_id:" + id, "api_key", auth);
     			client.hset("user_id:" + id, "api_date", new Date());
@@ -117,6 +157,7 @@ function getTicketsById(uid, response)
 
     function registerUserCallback(user, userId, response)
     {
+    	var auth = Math.random().toString(36).slice(2);
 	    client.hmset("user_id:" + userId, {
 	    	"username" : user.username,
 	    	"password" : user.password, //TODO hash hash hash
@@ -124,7 +165,7 @@ function getTicketsById(uid, response)
 	    	"card_type" : user.card_type,
 	    	"card_number" : user.card_number,
 	    	"card_validity" : user.card_validity,
-	    	"api_key" : Math.random().toString(36).slice(2),
+	    	"api_key" : auth,
 	    	"api_date" : new Date()
 	    }, redis.print);
 
@@ -133,7 +174,9 @@ function getTicketsById(uid, response)
 	    console.log("Added user " + "user_id:" + userId);
 	    console.log("Username " + user.username);	
 	    client.incr("global:user_id");
-	    handleReply(buildResponse(200, null, null), response);
+	    client.set("auth:" + auth, userId, redis.print);
+	    var arr = {"auth" : auth};
+	    handleReply(buildResponse(200, arr, null), response);
     }
 
 
@@ -141,7 +184,7 @@ function getTicketsById(uid, response)
     function handleReply(reply, response)
     {
     	response.writeHead(reply.status, {"Content-Type": "text/plain"}); 
-    	debugger;
+    	
 
 		response.write(JSON.stringify(reply.content)); 
 		response.end();
@@ -162,3 +205,6 @@ function getTicketsById(uid, response)
     exports.loginUser = loginUser;
     exports.registerUser = registerUser;
     exports.getTicketsById = getTicketsById;
+    exports.buyTickets = buyTickets;
+
+  

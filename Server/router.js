@@ -9,8 +9,8 @@ function route(handle, pathname, response, request)
 {
 
 	if ((typeof handle[pathname]) === 'function')
-	{
-		console.log("Routing to " + pathname);
+	{	
+
 		if (handle[pathname].auth)
 			resolveAuthIssues(handle, pathname, response, request);
 		else
@@ -30,7 +30,7 @@ function defaultFun(response){
 	console.log("No nothin!");
 
 		response.writeHead(404, {"Content-Type": "text/plain"}); 
-		response.write("fiel not fond!"); 
+		response.write("404!"); 
 		response.end();
 
 }
@@ -80,13 +80,11 @@ function resolveAuthIssues(handle, pathname, response, request)
 				}
 				else
 				{
+					request._authorized = reply; //_authorized now has the uid of the original user. Useful!
 					handle[pathname](response, request);
 				}
 
 			}
-
-
-			debugger;
 		});
 	});		
 	
