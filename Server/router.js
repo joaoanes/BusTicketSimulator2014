@@ -10,7 +10,7 @@ function route(handle, pathname, response, request)
 
 	if ((typeof handle[pathname]) === 'function')
 	{	
-
+		console.log(" ///  ROUTING " + pathname + " \\\\\\");
 		if (handle[pathname].auth)
 			resolveAuthIssues(handle, pathname, response, request);
 		else
@@ -37,7 +37,7 @@ function defaultFun(response){
 
 function resolveAuthIssues(handle, pathname, response, request)
 {
-	console.log("Authenticating!");
+	
 	var url = require("url");
 	var auth_code = url.parse(request.url, true).query["auth"];
 	if (!auth_code)
@@ -65,12 +65,11 @@ function resolveAuthIssues(handle, pathname, response, request)
 				console.log(err2);
 				return rejectAuth(response);
 			}
-
-			//var finalDate = new Date(Date.parse(results[1]).getTime() + 30*60000);
-			if (/*new Date() > finalDate*/ false)
+			debugger;
+			var finalDate = Date.parse(results[1]) + 86400000; //24 hours
+			if (new Date().getTime() > finalDate)
 			{
-				rejectAuth(response);
-				return client.set("auth:" + auth_code, null);
+				return rejectAuth(response, ": auth key expired");
 			}
 			else
 			{
@@ -81,6 +80,7 @@ function resolveAuthIssues(handle, pathname, response, request)
 				else
 				{
 					request._authorized = reply; //_authorized now has the uid of the original user. Useful!
+					console.log("Authenticated as " + reply +"!");
 					handle[pathname](response, request);
 				}
 
@@ -90,10 +90,11 @@ function resolveAuthIssues(handle, pathname, response, request)
 	
 }
 
-function rejectAuth(response)
+function rejectAuth(response, err)
 {
-		response.writeHead(401, {"Content-Type": "text/plain"}); 
-		response.write("{\"error\": Authentication failed }"); 
+		response.writeHead(401, {"Content-Type": "text/plain"});
+
+		response.write(JSON.stringify({"error" : "Authentication failed" + (err ? " " + err : "")})); 
 		response.end();
 }
 

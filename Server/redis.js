@@ -67,8 +67,24 @@ function getTicketsById(uid, response)
 		{
 			if (err)
 				console.log(err);
+			var multi = client.multi();
+			for (var i = 0; i < reply.length; ++i)
+			{
+				multi.hgetall("ticket_id:" + reply[i]);
+			}
+			multi.exec(function(err, replies){
+				for (var i = 0; i < replies.length; ++i)
+				{
+					replies[i]["id"] = reply[i];
+					if (replies[i]["validated"] == null)
+						replies[i]["validated"] = "null";
+					if (replies[i]["bus"] == null)
+						replies[i]["bus"] = "null";
+				}
+				handleReply(buildResponse(200, {"tickets" : replies}, err ? "Oops! " + err : null), response);
+			});
 
-			handleReply(buildResponse(200, reply, err ? "Oops! " + err : null), response);
+			
 		});
 }
 
@@ -99,7 +115,8 @@ function getTicketsById(uid, response)
 	    		tickets.push(shasum.digest('hex'));
 	    	}
 	    	var multi = client.multi();
-	    	var ticket = {};
+	    	var ticket;
+	    	var ticket_arr = new Array();
 	    	for (var i = 0; i < tickets.length; ++i)
 	    	{
 	    		multi.sadd("user_id:" + uid + ":tickets", tickets[i], redis.print);
@@ -107,11 +124,14 @@ function getTicketsById(uid, response)
 	    		ticket["type"] = ticket_type;
 	    		ticket["uid"] = uid;
 	    		multi.hmset("ticket_id:" + tickets[i], ticket, redis.print);
-	    		debugger;
+	    		ticket["validated"] = "null";
+	    		ticket["bus"] = "null";
+	    		ticket["id"] = tickets[i];
+	    		ticket_arr.push({"uid" : uid, "type" : ticket_type, "id" : tickets[i], "bus" : "null", "validated" : "null"});
 	    	}
 	    	multi.exec(redis.print);
 	    	client.incrby("global:ticket_id", ticket_n, redis.print);
-	    	return handleReply(buildResponse(200, tickets, null), response);
+	    	return handleReply(buildResponse(200, {"tickets" : ticket_arr}, null), response);
 	    });
 	}
 
@@ -183,7 +203,7 @@ function getTicketsById(uid, response)
 
     function handleReply(reply, response)
     {
-    	response.writeHead(reply.status, {"Content-Type": "text/plain"}); 
+    	response.writeHead(reply.status, {"Content-Type": "application/json"}); 
     	
 
 		response.write(JSON.stringify(reply.content)); 

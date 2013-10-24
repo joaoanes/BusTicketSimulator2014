@@ -5,8 +5,6 @@ function start(port, route, handle)
 {
 	function onRequest(request, response) {
 		var pathname = url.parse(request.url).pathname; 
-		console.log("Request: " + pathname);
-		console.log("Pathname: " + pathname);
 		route(handle, pathname, response, request);
 	}
 
