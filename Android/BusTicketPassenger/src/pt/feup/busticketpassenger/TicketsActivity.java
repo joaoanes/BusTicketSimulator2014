@@ -237,7 +237,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 
 	}
 
-	private boolean processJSONTickets(String json){
+	private boolean processJSONTickets(String json) {
 		ArrayList<Ticket> tickets = Ticket.getTicketsFromJSON(json);
 		if(tickets == null) {
 			return false;
