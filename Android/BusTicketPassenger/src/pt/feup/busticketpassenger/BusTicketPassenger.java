@@ -1,13 +1,14 @@
 package pt.feup.busticketpassenger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import pt.feup.busticket.tickets.Ticket;
 import android.app.Application;
 import android.util.SparseArray;
 
 public class BusTicketPassenger extends Application {
-	SparseArray<Ticket> bought_tickets = new SparseArray<Ticket>();
+	HashMap<String, Ticket> bought_tickets = new HashMap<String, Ticket>();
 	ArrayList<Ticket> t1_tickets = new ArrayList<Ticket>();
 	ArrayList<Ticket> t2_tickets = new ArrayList<Ticket>();
 	ArrayList<Ticket> t3_tickets = new ArrayList<Ticket>();
@@ -24,6 +25,16 @@ public class BusTicketPassenger extends Application {
 	
 	String inspector_ip = "10.0.2.2";
 	int inspector_port = 3000;
+	
+	void reset() {
+		bought_tickets = new HashMap<String, Ticket>();
+		t1_tickets = new ArrayList<Ticket>();
+		t2_tickets = new ArrayList<Ticket>();
+		t3_tickets = new ArrayList<Ticket>();
+		validated_tickets = new ArrayList<Ticket>();
+		selected_ticket = null;
+		selected_validated_ticket = null;
+	}
 	
 	int getT1Size() {
 		return t1_tickets.size();

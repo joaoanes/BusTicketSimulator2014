@@ -22,9 +22,8 @@
         <LinearLayout
             android:id="@+id/tickets_t1"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:onClick="validateTicket"
             android:orientation="horizontal" >
 
             <TextView
@@ -39,14 +38,19 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="0 tickets" />
+            
+            <Button android:id="@+id/button_validate_t1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Validate"
+				android:onClick="validateTicket"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/tickets_t2"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:onClick="validateTicket"
             android:orientation="horizontal" >
 
             <TextView
@@ -61,14 +65,19 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="0 tickets" />
+            
+            <Button android:id="@+id/button_validate_t2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Validate"
+				android:onClick="validateTicket"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/tickets_t3"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:onClick="validateTicket"
             android:orientation="horizontal" >
 
             <TextView
@@ -83,13 +92,20 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="0 tickets" />
+            
+            <Button android:id="@+id/button_validate_t3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Validate"
+                android:onClick="validateTicket"/>
         </LinearLayout>
         
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Buy" />
+            android:text="Buy"
+            android:onClick="buyTickets" />
         
     </LinearLayout>
     

@@ -27,11 +27,8 @@
         </activity>
         <activity
             android:name="pt.feup.busticketpassenger.BuyActivity"
-            android:label="@string/title_activity_buy" >
-        </activity>
-        <activity
-            android:name="pt.feup.busticketpassenger.ViewTicketsActivity"
-            android:label="@string/title_activity_view_tickets" >
+            android:label="@string/title_activity_buy"
+            android:parentActivityName="pt.feup.busticketpassenger.TicketsActivity" >
         </activity>
         <activity
             android:name="pt.feup.busticketpassenger.TicketsActivity"

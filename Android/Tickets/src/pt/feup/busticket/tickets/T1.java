@@ -2,7 +2,7 @@ package pt.feup.busticket.tickets;
 
 public class T1 extends Ticket {
 
-	public T1(int id) {
+	public T1(String id) {
 		super(id);
 	}
 

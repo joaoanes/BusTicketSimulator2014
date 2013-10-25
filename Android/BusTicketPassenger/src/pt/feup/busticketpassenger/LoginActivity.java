@@ -150,6 +150,9 @@ public class LoginActivity extends Activity {
 				case HttpStatus.SC_OK:
 					try {
 						JSONObject json = new JSONObject(result.getResult());
+						if(app.token != null) {
+							app.reset();
+						}
 						app.token = json.getString("auth");
 						Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
 						startActivity(intent);

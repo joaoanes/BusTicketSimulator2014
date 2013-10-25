@@ -1,6 +1,8 @@
 package pt.feup.busticket.tickets;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,11 @@ import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -60,29 +66,48 @@ public class HttpHelper {
 		this.port = port;
 	}
 	
-	public HttpResult executePost(String file, List<NameValuePair> args) {
+	public HttpResult execute(HttpUriRequest request) throws IOException {
+		HttpResponse response = client.execute(request);
+		StatusLine statusLine = response.getStatusLine();
+		int status_code = statusLine.getStatusCode();
+		
+		switch(status_code) {
+			case HttpStatus.SC_OK:
+			case HttpStatus.SC_UNAUTHORIZED:
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				response.getEntity().writeTo(out);
+				out.close();
+				String responseString = out.toString();
+				
+				return new HttpResult(status_code, responseString);
+			default:
+				return new HttpResult(status_code);
+		
+		}
+	}
+	
+	public HttpResult executeGet(String path, List<NameValuePair> args) {
 		try {
-			URL url = new URL("http", ip, port, file);
+			String query = URLEncodedUtils.format(args, "utf-8");
+			URI uri = URIUtils.createURI("http", ip, port, path, query, "");
+			HttpGet get = new HttpGet(uri);
+			
+			return execute(get);
+			
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return new HttpResult(-1);
+		}
+	}
+	
+	public HttpResult executePost(String path, List<NameValuePair> args) {
+		try {
+			URL url = new URL("http", ip, port, path);
 			HttpPost post = new HttpPost(url.toURI());
 			post.setEntity(new UrlEncodedFormEntity(args));
 			
-			HttpResponse response = client.execute(post);
-			StatusLine statusLine = response.getStatusLine();
-			int status_code = statusLine.getStatusCode();
-			
-			switch(status_code) {
-				case HttpStatus.SC_OK:
-				case HttpStatus.SC_UNAUTHORIZED:
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					response.getEntity().writeTo(out);
-					out.close();
-					String responseString = out.toString();
-					
-					return new HttpResult(status_code, responseString);
-				default:
-					return new HttpResult(status_code);
-			
-			}
+			return execute(post);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,5 +132,11 @@ public class HttpHelper {
 		nameValuePairs.add(new BasicNameValuePair("card_validity", card_validity));
 		nameValuePairs.add(new BasicNameValuePair("card_number", card_number));
 		return executePost("/register", nameValuePairs);
+	}
+	
+	public HttpResult getTickets(String token) {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+		nameValuePairs.add(new BasicNameValuePair("auth", token));
+		return executeGet("/tickets/user", nameValuePairs);
 	}
 }
