@@ -34,7 +34,7 @@ public class ClientSocket {
 		return in.readLine();
 	}
 
-	public String sendAndWait(String ip, int port, String data) {
+	public static String sendAndWait(String ip, int port, String data) {
 		ClientSocket socket = new ClientSocket(ip, port);
 		String result = null;
 		

@@ -1,15 +1,11 @@
 package pt.feup.busticketpassenger;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 
 import org.apache.http.HttpStatus;
 
 import pt.feup.busticket.tickets.BusTicketUtils;
+import pt.feup.busticket.tickets.ClientSocket;
 import pt.feup.busticket.tickets.HttpHelper;
 import pt.feup.busticket.tickets.T1;
 import pt.feup.busticket.tickets.T2;
@@ -265,29 +261,11 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	}
 
 	private class SendTicketToBusTask extends AsyncTask<Void, Void, String> {
-		InetAddress busAddr;
-		Socket socket;
-		PrintWriter out;
-		BufferedReader in;
+		
 		@Override
 		protected String doInBackground(Void... v) {
-			try {
-				busAddr = InetAddress.getByName(app.bus_ip);
-				socket = new Socket(busAddr, app.bus_port);
-				out = new PrintWriter(socket.getOutputStream(),true);
-				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-				out.println("world hello");
-
-				String line;
-				while((line = in.readLine()) != null) {
-					return line;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return null;
+			
+			return ClientSocket.sendAndWait(app.bus_ip, app.bus_port, "world hello");
 		}
 
 		@Override

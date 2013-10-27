@@ -1,6 +1,7 @@
 package pt.feup.busticket.tickets;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -20,5 +21,14 @@ public class BusTicketUtils {
 			}
 		})
 	    .show();
+	}
+	
+	public static ProgressDialog createProgressDialog(Context context, String message, DialogInterface.OnCancelListener onCancelListener) {
+		ProgressDialog dialog = new ProgressDialog(context);
+		dialog.setIndeterminate(true);
+		dialog.setMessage(message);
+		dialog.setCanceledOnTouchOutside(true);
+		dialog.setOnCancelListener(onCancelListener);
+		return dialog;
 	}
 }
