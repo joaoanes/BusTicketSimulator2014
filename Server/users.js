@@ -93,7 +93,8 @@ function buyTickets(response, req)
         req.on('end', function () {
         	
             var POST = qs.parse(body);
-            redis.buyTickets(req._authorized, POST["t_num"], POST["t_type"], response);
+            //(uid, ticket_n_1, ticket_n_2, ticket_n_3, ticket_type, confirm, response)
+            redis.buyTickets(req._authorized, POST["t_num_1"], POST["t_num_2"], POST["t_num_3"], POST["confirm"], response);
             
 
         });
@@ -106,8 +107,10 @@ function buyTickets(response, req)
 		  '<html><head><title>Really basic ticket buy form</title></head>' +
 		  '<body>' +
 		  '<form name="FORM" method="post">' +
-		  'Ticket number: <input name="t_num"><br>' +
-		  'Ticket type: <input name="t_type"><br>' +
+		  'Ticket number 1: <input name="t_num_1"><br>' +
+		  'Ticket number 2: <input name="t_num_2"><br>' +
+		  'Ticket number 3: <input name="t_num_3"><br>' +
+		  '<input type="checkbox" name="confirm">' +
 		  '<input type="submit">' +
 		  '</form>' +
 		  '</body></html>';
