@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import pt.feup.busticket.tickets.Ticket;
 import android.app.Application;
-import android.util.SparseArray;
 
 public class BusTicketPassenger extends Application {
 	HashMap<String, Ticket> bought_tickets = new HashMap<String, Ticket>();
@@ -20,7 +19,8 @@ public class BusTicketPassenger extends Application {
 	String bus_ip = "10.0.2.2";
 	int bus_port = 5000;
 	
-	String server_ip = "joaoanes.no-ip.biz";
+	//String server_ip = "joaoanes.no-ip.biz";
+	String server_ip = "10.0.2.2";
 	int server_port = 8080;
 	
 	String inspector_ip = "10.0.2.2";
@@ -58,5 +58,32 @@ public class BusTicketPassenger extends Application {
 	
 	Ticket getT3Ticket() {
 		return t3_tickets.get(0);
+	}
+	
+	public boolean processJSONTickets(String json) {
+		ArrayList<Ticket> tickets = Ticket.getTicketsFromJSON(json);
+		if(tickets == null) {
+			return false;
+		}
+
+		for(Ticket ticket : tickets) {
+			if(!ticket.isValidated()) {
+				bought_tickets.put(ticket.getId(), ticket);
+
+				if(ticket.getType().equals("T1")) {
+					t1_tickets.add(ticket);
+				}
+				else if(ticket.getType().equals("T2")) {
+					t2_tickets.add(ticket);
+				}
+				else if(ticket.getType().equals("T3")) {
+					t3_tickets.add(ticket);
+				}
+			}
+			else {
+				//TODO
+			}
+		}
+		return true;
 	}
 }

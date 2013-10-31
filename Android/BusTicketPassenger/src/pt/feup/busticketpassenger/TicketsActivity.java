@@ -1,7 +1,5 @@
 package pt.feup.busticketpassenger;
 
-import java.util.ArrayList;
-
 import org.apache.http.HttpStatus;
 
 import pt.feup.busticket.tickets.BusTicketUtils;
@@ -10,7 +8,6 @@ import pt.feup.busticket.tickets.HttpHelper;
 import pt.feup.busticket.tickets.T1;
 import pt.feup.busticket.tickets.T2;
 import pt.feup.busticket.tickets.T3;
-import pt.feup.busticket.tickets.Ticket;
 import pt.feup.busticketpassenger.ChangeIPAndPortDialogFragment.ChangeIPAndPortDialogListener;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -50,6 +47,12 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 
 		GetTicketsTask task = new GetTicketsTask();
 		task.execute(new Void[]{});
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		updateTicketsQuantityViews();
 	}
 
 	void instantiateTicketsQuantityViews() {
@@ -217,7 +220,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 		protected void onPostExecute(HttpHelper.HttpResult result) {
 			switch(result.getCode()) {
 			case HttpStatus.SC_OK:
-				boolean success = processJSONTickets(result.getResult());
+				boolean success = app.processJSONTickets(result.getResult());
 				if(!success) {
 					BusTicketUtils.createAlertDialog(TicketsActivity.this, "Get Tickets", result.toString());
 				}
@@ -231,33 +234,6 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 			}
 		}
 
-	}
-
-	private boolean processJSONTickets(String json) {
-		ArrayList<Ticket> tickets = Ticket.getTicketsFromJSON(json);
-		if(tickets == null) {
-			return false;
-		}
-
-		for(Ticket ticket : tickets) {
-			if(!ticket.isValidated()) {
-				app.bought_tickets.put(ticket.getId(), ticket);
-
-				if(ticket.getType().equals("T1")) {
-					app.t1_tickets.add(ticket);
-				}
-				else if(ticket.getType().equals("T2")) {
-					app.t2_tickets.add(ticket);
-				}
-				else if(ticket.getType().equals("T3")) {
-					app.t3_tickets.add(ticket);
-				}
-			}
-			else {
-				//TODO
-			}
-		}
-		return true;
 	}
 
 	private class SendTicketToBusTask extends AsyncTask<Void, Void, String> {

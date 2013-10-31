@@ -1,111 +1,181 @@
 package pt.feup.busticketpassenger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.apache.http.HttpStatus;
 
+import pt.feup.busticket.tickets.BusTicketUtils;
+import pt.feup.busticket.tickets.HttpHelper;
+import pt.feup.busticket.tickets.HttpHelper.HttpResult;
+import pt.feup.busticket.tickets.Ticket;
+import pt.feup.busticketpassenger.ConfirmBuyDialogFragment.ConfirmBuyDialogListener;
 import android.app.Activity;
-import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class BuyActivity extends Activity {
+public class BuyActivity extends Activity implements OnItemSelectedListener, ConfirmBuyDialogListener {
 	public static final String QUANTITY_ID = "QUANTITY_ID";
 
 	TextView t1_textview;
 	TextView t2_textview;
 	TextView t3_textview;
-	
+
 	Spinner t1_spinner;
 	Spinner t2_spinner;
 	Spinner t3_spinner;
+
+	int t1_qt = 0;
+	int t2_qt = 0;
+	int t3_qt = 0;
+
+	BusTicketPassenger app;
+	ProgressDialog progress_dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_buy);
-		
-		t1_spinner = (Spinner) findViewById(R.id.t1_quantity);
-		t2_spinner = (Spinner) findViewById(R.id.t2_quantity);
-		t3_spinner = (Spinner) findViewById(R.id.t3_quantity);
-		
-		Integer[] items = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-		
-		ArrayAdapter<CharSequence> t1_adapter = ArrayAdapter.createFromResource(this, R.array.tickets_quantity, android.R.layout.simple_spinner_item);
-		t1_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		t1_spinner.setAdapter(t1_adapter);
-		
-		ArrayAdapter<CharSequence> t2_adapter = ArrayAdapter.createFromResource(this, R.array.tickets_quantity, android.R.layout.simple_spinner_item);
-		t2_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		t2_spinner.setAdapter(t2_adapter);
 
-		ArrayAdapter<CharSequence> t3_adapter = ArrayAdapter.createFromResource(this, R.array.tickets_quantity, android.R.layout.simple_spinner_item);
-		t3_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		t3_spinner.setAdapter(t3_adapter);
+		app = (BusTicketPassenger) getApplication();
+
+		instantiateSpinners();
+		
+		progress_dialog = BusTicketUtils.createProgressDialog(this, "Connecting with the server");
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.buy, menu);
-		return true;
+	public void onItemSelected(AdapterView<?> parent_view, View selected_view, int position, long id) {
+		int value = (Integer) parent_view.getItemAtPosition(position);
+		t1_spinner.getId();
+
+		switch (parent_view.getId()) {
+		case R.id.t1_quantity:
+			t1_qt = value;
+			break;
+		case R.id.t2_quantity:
+			t2_qt = value;
+			break;
+		case R.id.t3_quantity:
+			t3_qt = value;
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+
+	}
+
+	public void instantiateSpinners() {
+		t1_spinner = (Spinner) findViewById(R.id.t1_quantity);
+		t2_spinner = (Spinner) findViewById(R.id.t2_quantity);
+		t3_spinner = (Spinner) findViewById(R.id.t3_quantity);
+
+		int max = 10 - app.getT1Size();
+		max = max < 0 ? 0 : max;
+		instantiateSpinner(t1_spinner, max);
+
+		max = 10 - app.getT2Size();
+		max = max < 0 ? 0 : max;
+		instantiateSpinner(t2_spinner, max);
+
+		max = 10 - app.getT3Size();
+		max = max < 0 ? 0 : max;
+		instantiateSpinner(t3_spinner, max);
+	}
+
+	public void instantiateSpinner(Spinner spinner, int max) {
+		Integer[] items = new Integer[max+1];
+		for(int i = 0; i <= max; ++i ) {
+			items[i] = i;
+		}
+
+		ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, items);
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(this);
 	}
 
 	public void buyTickets(View view) {
-		BuyTicketsTask task = new BuyTicketsTask();
-		task.execute(new Void[]{});
+		if(t1_qt > 0 || t2_qt > 0 || t3_qt > 0) {
+			progress_dialog.show();
+			
+			BuyTicketsTask task = new BuyTicketsTask();
+			task.execute(new Void[]{});
+		}
+		else {
+			BusTicketUtils.createAlertDialog(this, "Buy", "Buy 1 or more tickets");
+		}
 
 	}
 
-	private class BuyTicketsTask extends AsyncTask<Void, Void, String> {
+	private class BuyTicketsTask extends AsyncTask<Void, Void, HttpResult> {
 
 		@Override
-		protected String doInBackground(Void... params) {
-			try {
-				URL url = new URL("http://ip.jsontest.com/?callback=showMyIP");
-				HttpURLConnection con = (HttpURLConnection) url.openConnection();
-				InputStream in = con.getInputStream();
-				BufferedReader reader = null;
-				try {
-					reader = new BufferedReader(new InputStreamReader(in));
-					String line;
-					String ret = "receiver:";
-					while ((line = reader.readLine()) != null) {
-						ret += line;
-					}
-					return ret;
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-				finally {
-					if (reader != null) {
-						try {
-							reader.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return "error";
+		protected HttpResult doInBackground(Void... params) {
+			HttpHelper helper = new HttpHelper();
+			return helper.buyTickets(app.token, t1_qt, t2_qt, t3_qt, false);
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			Toast.makeText(BuyActivity.this, result, Toast.LENGTH_SHORT).show();
+		protected void onPostExecute(HttpResult result) {
+			progress_dialog.dismiss();
+			switch(result.getCode()) {
+				case HttpStatus.SC_OK:
+					Bundle confirm = Ticket.getBuyResults(result.result);
+					
+					ConfirmBuyDialogFragment dialog = new ConfirmBuyDialogFragment();
+					dialog.setArguments(confirm);
+					dialog.show(getFragmentManager(), "confirm buy");
+					return;
+				default:
+					BusTicketUtils.createAlertDialog(BuyActivity.this, "buy", result.toString());
+					return;
+			}
+		}
+
+	}
+
+	@Override
+	public void confirmBuy() {
+		progress_dialog.show();
+		ConfirmBuyTicketsTask task = new ConfirmBuyTicketsTask();
+		task.execute(new Void[]{});
+
+	}
+	
+	private class ConfirmBuyTicketsTask extends AsyncTask<Void, Void, HttpResult> {
+
+		@Override
+		protected HttpResult doInBackground(Void... params) {
+			HttpHelper helper = new HttpHelper();
+			return helper.buyTickets(app.token, t1_qt, t2_qt, t3_qt, true);
+		}
+
+		@Override
+		protected void onPostExecute(HttpResult result) {
+			progress_dialog.dismiss();
+			switch(result.getCode()) {
+				case HttpStatus.SC_OK:
+					boolean success = app.processJSONTickets(result.getResult());
+					if(!success) {
+						BusTicketUtils.createAlertDialog(BuyActivity.this, "Confirm Buy", result.toString());
+					}
+					else {
+						finish();
+					}
+					return;
+				default:
+					BusTicketUtils.createAlertDialog(BuyActivity.this, "buy", result.toString());
+					return;
+			}
 		}
 
 	}

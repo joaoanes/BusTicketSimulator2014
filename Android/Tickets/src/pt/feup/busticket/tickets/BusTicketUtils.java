@@ -23,12 +23,21 @@ public class BusTicketUtils {
 	    .show();
 	}
 	
+	//can be cancelled
 	public static ProgressDialog createProgressDialog(Context context, String message, DialogInterface.OnCancelListener onCancelListener) {
 		ProgressDialog dialog = new ProgressDialog(context);
 		dialog.setIndeterminate(true);
 		dialog.setMessage(message);
 		dialog.setCanceledOnTouchOutside(true);
 		dialog.setOnCancelListener(onCancelListener);
+		return dialog;
+	}
+	
+	//can't be cancelled
+	public static ProgressDialog createProgressDialog(Context context, String message) {
+		ProgressDialog dialog = new ProgressDialog(context);
+		dialog.setIndeterminate(true);
+		dialog.setMessage(message);
 		return dialog;
 	}
 }

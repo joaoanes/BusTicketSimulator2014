@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -23,7 +24,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class HttpHelper {
 	HttpClient client;
-	String ip = "joaoanes.no-ip.biz";
+	String ip = "10.0.2.2";
 	int port = 8080;
 	
 	public class HttpResult {
@@ -138,5 +139,17 @@ public class HttpHelper {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 		nameValuePairs.add(new BasicNameValuePair("auth", token));
 		return executeGet("/tickets/user", nameValuePairs);
+	}
+	
+	public HttpResult buyTickets(String token, int t1_qt, int t2_qt, int t3_qt, boolean confirm) {
+		String path = "/tickets/buy?auth=" + token;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("t_num_1", String.valueOf(t1_qt)));
+		params.add(new BasicNameValuePair("t_num_2", String.valueOf(t2_qt)));
+		params.add(new BasicNameValuePair("t_num_3", String.valueOf(t3_qt)));
+		if(confirm) {
+			params.add(new BasicNameValuePair("confirm", "on"));
+		}
+		return executePost(path, params);
 	}
 }

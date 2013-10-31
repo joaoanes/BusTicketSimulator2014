@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import pt.feup.busticket.tickets.BusTicketUtils;
 import pt.feup.busticket.tickets.HttpHelper;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class LoginActivity extends Activity {
 	EditText register_card_number;
 	Spinner register_card_type;
 	DatePicker register_card_validity;
+	
+	ProgressDialog progress_dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +53,6 @@ public class LoginActivity extends Activity {
 
 		instantiateForms();
 		populateCardTypeSpinner();
-		
-		//Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
-		//Intent intent = new Intent(getApplicationContext(), BuyActivity.class);
-		//startActivity(intent);
 	}
 
 	@Override
@@ -115,6 +114,8 @@ public class LoginActivity extends Activity {
 			return;
 		}
 
+		progress_dialog = BusTicketUtils.createProgressDialog(LoginActivity.this, "Signing In");
+		progress_dialog.show();
 		LoginTask task = new LoginTask();
 		task.execute(new Void[]{});		
 	}
@@ -131,7 +132,9 @@ public class LoginActivity extends Activity {
 			Toast.makeText(this, "Fill All Fields", Toast.LENGTH_SHORT).show();
 			return;
 		}
-
+		
+		progress_dialog = BusTicketUtils.createProgressDialog(LoginActivity.this, "Registering");
+		progress_dialog.show();
 		RegisterTask task = new RegisterTask();
 		task.execute(new Void[]{});	
 	}
@@ -146,6 +149,8 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(HttpHelper.HttpResult result) {
+			progress_dialog.dismiss();
+			
 			switch(result.getCode()) {
 				case HttpStatus.SC_OK:
 					try {
@@ -177,6 +182,7 @@ public class LoginActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(HttpHelper.HttpResult result) {
+			progress_dialog.dismiss();
 			BusTicketUtils.createAlertDialog(LoginActivity.this, "Register", result.toString());
 		}
 

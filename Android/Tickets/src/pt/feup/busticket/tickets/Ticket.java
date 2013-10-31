@@ -2,10 +2,13 @@ package pt.feup.busticket.tickets;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.os.Bundle;
 
 public abstract class Ticket {
 	String id;
@@ -20,7 +23,7 @@ public abstract class Ticket {
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_VALIDATED = "validated";
 	public static final String FIELD_BUS = "bus";
-	public static final String FIELD_ID = "id";		
+	public static final String FIELD_ID = "uid";		
 	
 	public Ticket(String id) {
 		this.id = id;
@@ -60,15 +63,15 @@ public abstract class Ticket {
 	
 	
 	public static Ticket getTicketFromJSON(JSONObject json_ticket) {
-		int type = json_ticket.optInt(FIELD_TYPE, -1);
+		String type = json_ticket.optString(FIELD_TYPE);
 		String id = json_ticket.optString(FIELD_ID);
-		if((type < 1 || type > 3) && id.equals("")) {
+		if(/*(type < 1 || type > 3) && */id.equals("")) {
 			return null;
 		}
 		
 		Ticket ticket = null;
 		
-		switch (type) {
+		/*switch (type) {
 			case 1:
 				ticket = new T1(id);
 				break;
@@ -80,6 +83,18 @@ public abstract class Ticket {
 				break;
 			default:
 				return null;
+		}*/
+		if(type.equals("T1")) {
+			ticket = new T1(id);
+		}
+		else if(type.equals("T2")) {
+			ticket = new T2(id);
+		}
+		else if(type.equals("T3")) {
+			ticket = new T3(id);
+		}
+		else {
+			return null;
 		}
 		
 		String date = json_ticket.optString(FIELD_VALIDATED);
@@ -122,5 +137,25 @@ public abstract class Ticket {
 		
 		return tickets;
 	}
+	
+	public static Bundle getBuyResults(String json_string) {
+		Bundle result = new Bundle();
+		try {
+			JSONObject json = new JSONObject(json_string);
+			result.putInt("PRICE", json.optInt("price"));
+			result.putInt("T1", json.optInt("T1"));
+			result.putInt("T2", json.optInt("T2"));
+			result.putInt("T3", json.optInt("T3"));
+			
+			String extra = json.optString("extra");
+			if(!extra.equals("")) {
+				result.putString("EXTRA", extra);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	} 
 	
 }
