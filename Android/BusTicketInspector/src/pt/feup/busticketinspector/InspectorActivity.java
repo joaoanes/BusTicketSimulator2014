@@ -79,8 +79,8 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		}
 		if(app.bus_id > -1) {
 			Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
-			//showBusTicketsLayout();
-			this.loadingTicketsDialog.show();
+			showBusTicketsLayout();
+			//this.loadingTicketsDialog.show();
 		}
 		else {
 			Toast.makeText(this, String.valueOf(app.bus_id), Toast.LENGTH_SHORT).show();

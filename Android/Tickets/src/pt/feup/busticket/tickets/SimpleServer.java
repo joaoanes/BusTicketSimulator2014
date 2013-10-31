@@ -41,7 +41,8 @@ public class SimpleServer {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			closeConnection(true);
+			//closeConnection(true);
+			return;
 		}
 		
 		closeConnection();
