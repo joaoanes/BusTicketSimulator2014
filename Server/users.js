@@ -11,8 +11,7 @@ function login(response, req)
             body += data;
         });
         req.on('end', function () {
-        	debugger;
-		
+        
             var POST = qs.parse(body);
             redis.loginUser(POST, response);
 
@@ -37,9 +36,9 @@ function login(response, req)
 	}
 }
 
-function register(response, req)
+function validate(response, req)
 {
-      	if (req.method=="POST")
+	if (req.method=="POST")
 	{	
 		var body = '';
         req.on('data', function (data) {
@@ -48,7 +47,40 @@ function register(response, req)
         req.on('end', function () {
         	
             var POST = qs.parse(body);
-            debugger;
+            redis.validateTicket(POST["userid"], POST["ticket_id"], POST["bus_id"], response);
+        });
+	    
+	}
+	else
+	{
+
+    	var postHTML =
+		  '<html><head><title>Really basic validate form</title></head>' +
+		  '<body>' +
+		  '<form name="FORM" method="post">' +
+		  'User id: <input name="userid"><br>' +
+		  'Ticket id: <input name="ticket_id"><br>' +
+		  'Bus: <input name="bus_id"><br>' +
+		  '<input type="submit">' +
+		  '</form>' +
+		  '</body></html>';
+		response.writeHead(200); 
+    	response.write(postHTML); 
+		response.end();
+	}
+}
+
+function register(response, req)
+{
+	if (req.method=="POST")
+	{	
+		var body = '';
+        req.on('data', function (data) {
+            body += data;
+        });
+        req.on('end', function () {
+        	
+            var POST = qs.parse(body);
             redis.registerUser(POST, response);
 
         });
@@ -139,3 +171,4 @@ exports.login = login;
 exports.register = register;
 exports.getTickets = getTicketsByUser;
 exports.buyTickets = buyTickets;
+exports.validate = validate;

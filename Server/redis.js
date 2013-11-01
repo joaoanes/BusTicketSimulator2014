@@ -89,10 +89,9 @@ function registerUser(user, response)
 				multi.hgetall("ticket_id:" + allTickets[i]);
 			}
 			multi.exec(function(err, replies){
-				debugger;
 				for (var j = 0; j < replies.length; ++j)
 				{
-					replies[j]["id"] = allTickets[i]	;
+					replies[j]["id"] = allTickets[j];
 					if (replies[j]["validated"] == null)
 						replies[j]["validated"] = "null";
 					if (replies[j]["bus"] == null)
@@ -103,6 +102,35 @@ function registerUser(user, response)
 
 			
 		});
+	}
+
+	function validateTicket(uid, tid, busid, response)
+	{
+		var multi = client.multi();
+		multi.sismember("user_id:" + uid + ":tickets:1", tid);
+		multi.sismember("user_id:" + uid + ":tickets:2", tid);
+		multi.sismember("user_id:" + uid + ":tickets:3", tid);
+		multi.exec(function(err, replies){
+
+			var theTruth = false;
+			for (var i = 0; i < replies.length; ++i)
+				theTruth = theTruth || replies[i];
+
+			if (!theTruth)
+				return handleReply(buildResponse(403, null, "The ticket does not belong to the user"), response);
+			
+			client.hget("ticket_id:" + tid, "validated", function(err, reply){
+				if (reply != null)
+					return handleReply(buildResponse(403, null, "The ticket has expired"), response);
+				
+				client.hset("ticket_id:" + tid, "validated", true, redis.print);	
+				return handleReply(buildResponse(200, null, null), response0);
+			})
+
+
+			debugger;
+		});
+
 	}
 
 
@@ -330,4 +358,4 @@ function processTickets(multi, uid, tickets, ticket_type, ticket_arr)
 	exports.registerUser = registerUser;
 	exports.getTicketsById = getTicketsById;
 	exports.buyTickets = buyTickets;
-
+	exports.validateTicket = validateTicket;

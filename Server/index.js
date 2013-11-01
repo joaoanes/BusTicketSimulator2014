@@ -7,6 +7,6 @@ var router = require("./router");
 var users = require("./users");
 var redis = require("./redis");
 
-var handle = {'/login': users.login, '/register' : users.register, '/tickets/user': users.getTickets, '/tickets/buy': users.buyTickets}; 
+var handle = {'/login': users.login, '/register' : users.register, '/tickets/user': users.getTickets, '/tickets/buy': users.buyTickets, '/tickets/validate' : users.validate}; 
 
 server.start(port, router.route, handle);
