@@ -65,7 +65,6 @@ function resolveAuthIssues(handle, pathname, response, request)
 				console.log(err2);
 				return rejectAuth(response);
 			}
-			debugger;
 			var finalDate = Date.parse(results[1]) + 86400000; //24 hours
 			if (new Date().getTime() > finalDate)
 			{
