@@ -132,8 +132,7 @@ function registerUser(user, response)
 				var tickets1 = new Array();
 				var tickets2 = new Array();
 				var tickets3 = new Array();
-				var allTickets = parseInt(tid) + parseInt(ticket_n_1) + parseInt(ticket_n_2) + parseInt(ticket_n_3);
-
+			
 				var t3counter = parseInt(ticket_n_3);
 				var t2counter = parseInt(ticket_n_2);
 				var t1counter = parseInt(ticket_n_1);
@@ -156,6 +155,8 @@ function registerUser(user, response)
 				var t2counter_c = t2counter;
 				var t1counter_c = t1counter;
 				var shasum;
+
+				var allTickets = parseInt(tid) + parseInt(ticket_n_1) + parseInt(ticket_n_2) + parseInt(ticket_n_3) + (extra ? 1 : 0);
 
 
 				for (; tid < allTickets; ++tid)
