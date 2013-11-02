@@ -1,6 +1,7 @@
 package pt.feup.busticketpassenger;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import pt.feup.busticket.tickets.Ticket;
@@ -83,9 +84,27 @@ public class BusTicketPassenger extends Application {
 				}
 			}
 			else {
-				//TODO
+				validated_tickets.add(ticket);
 			}
 		}
 		return true;
+	}
+	
+	public void validateTicket(int bus_id) {
+		Ticket ticket = selected_ticket;
+		bought_tickets.remove(ticket.getId());
+		
+		if(ticket.getType().equals("T1")) {
+			t1_tickets.remove(ticket);
+		}
+		else if(ticket.getType().equals("T2")) {
+			t2_tickets.remove(ticket);
+		}
+		else if(ticket.getType().equals("T3")) {
+			t3_tickets.remove(ticket);
+		}
+		ticket.setBus(bus_id);
+		ticket.setValidated(new Date());
+		validated_tickets.add(ticket);
 	}
 }
