@@ -33,7 +33,7 @@ public class TicketAdapter extends ArrayAdapter<Ticket>{
 		
 		((TextView) row.findViewById(R.id.textview_ticket_type)).setText(ticket.getType());
 		((TextView) row.findViewById(R.id.textview_ticket_id)).setText(String.valueOf(ticket.getId()));
-		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(String.valueOf(ticket.getDuration()));
+		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(String.valueOf(ticket.getValidated().toString()));
 		((TextView) row.findViewById(R.id.textview_ticket_bus)).setText(String.valueOf(ticket.getBus()));
 
 		return row;

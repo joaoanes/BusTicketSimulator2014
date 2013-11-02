@@ -1,8 +1,13 @@
 package pt.feup.busticketbus;
 
+import org.apache.http.HttpStatus;
+
 import pt.feup.busticket.tickets.BusTicketUtils;
+import pt.feup.busticket.tickets.HttpHelper;
+import pt.feup.busticket.tickets.HttpHelper.HttpResult;
 import pt.feup.busticket.tickets.SimpleServer;
 import pt.feup.busticket.tickets.SimpleServer.SimpleServerListener;
+import pt.feup.busticket.tickets.Ticket;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -94,17 +99,33 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	
 	@Override
 	public String processInput(String input) {
-		final String test = input;
+		final Ticket ticket = Ticket.deserialize(input);
+		HttpHelper helper = new HttpHelper();
+		HttpResult result = helper.validateTicket(ticket.getId(), app.bus_id, ticket.getUserId());
+		String ret = "";
+		
+		switch(result.getCode()) {
+			case HttpStatus.SC_OK:
+				ret = "validated|" + app.bus_id;
+				break;
+			case HttpStatus.SC_FORBIDDEN:
+				ret = "invalid";
+				break;
+			default:
+				ret = "error";
+		}
+		
+		final String ret2 = new String(ret) + "\n" + result.getResult();
 		
 		runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				Toast.makeText(BusActivity.this, test, Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(BusActivity.this, ret2, Toast.LENGTH_SHORT).show();
+				Toast.makeText(BusActivity.this, ticket.toString(), Toast.LENGTH_SHORT).show();
 			}
 		});
-		return "hello world";
+		return ret;
 	}
 
 	@Override

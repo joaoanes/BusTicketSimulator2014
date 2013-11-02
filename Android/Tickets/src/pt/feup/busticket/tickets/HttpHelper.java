@@ -24,7 +24,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class HttpHelper {
 	HttpClient client;
-	String ip = "10.0.2.2";
+	String ip = "joaoanes.no-ip.biz";
+	//String ip = "172.30.83.241";
 	int port = 8080;
 	
 	public class HttpResult {
@@ -75,6 +76,7 @@ public class HttpHelper {
 		switch(status_code) {
 			case HttpStatus.SC_OK:
 			case HttpStatus.SC_UNAUTHORIZED:
+			case HttpStatus.SC_FORBIDDEN:
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				response.getEntity().writeTo(out);
 				out.close();
@@ -151,5 +153,19 @@ public class HttpHelper {
 			params.add(new BasicNameValuePair("confirm", "on"));
 		}
 		return executePost(path, params);
+	}
+	
+	public HttpResult validateTicket(String id, int bus_id ,int user_id) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("ticket_id", id));
+		params.add(new BasicNameValuePair("bus_id", String.valueOf(bus_id)));
+		params.add(new BasicNameValuePair("user_id", String.valueOf(user_id)));
+		return executePost("/tickets/validate", params);
+	}
+	
+	public HttpResult getBusTickets(int bus_id) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("bus_id", String.valueOf(bus_id)));
+		return executeGet("/tickets/bus", params);
 	}
 }

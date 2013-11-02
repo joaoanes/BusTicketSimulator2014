@@ -5,15 +5,14 @@ import org.apache.http.HttpStatus;
 import pt.feup.busticket.tickets.BusTicketUtils;
 import pt.feup.busticket.tickets.ClientSocket;
 import pt.feup.busticket.tickets.HttpHelper;
-import pt.feup.busticket.tickets.T1;
-import pt.feup.busticket.tickets.T2;
-import pt.feup.busticket.tickets.T3;
+import pt.feup.busticket.tickets.Ticket;
 import pt.feup.busticketpassenger.ChangeIPAndPortDialogFragment.ChangeIPAndPortDialogListener;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -115,20 +114,6 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	}
 
 	void setTicketAdapter() {
-		if(!app.cached) {
-			T1 t1 = new T1("5");
-			t1.setBus(36);
-			T2 t2 = new T2("9");
-			t2.setBus(67);
-			T3 t3 = new T3("13");
-			t3.setBus(34);
-			T3 t4 = new T3("87");
-			t4.setBus(45);
-			app.validated_tickets.add(t1);
-			app.validated_tickets.add(t2);
-			app.validated_tickets.add(t3);
-			app.validated_tickets.add(t4);
-		}
 		adapter = new TicketAdapter(this, R.layout.row_ticket, app.validated_tickets);
 		validated_tickets.setAdapter(adapter);
 	}
@@ -167,36 +152,36 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 
 	public void validateTicket(View view) {
 		switch (view.getId()) {
-		case R.id.button_validate_t1:
-			Toast.makeText(this, "T1", Toast.LENGTH_SHORT).show();
-			if(app.getT1Size() > 0) {
-				app.selected_ticket = app.getT1Ticket();
+			case R.id.button_validate_t1:
+				Toast.makeText(this, "T1", Toast.LENGTH_SHORT).show();
+				if(app.getT1Size() > 0) {
+					app.selected_ticket = app.getT1Ticket();
+				}
+				else {
+					app.selected_ticket = null;
+				}
+				break;
+			case R.id.button_validate_t2:
+				Toast.makeText(this, "T2", Toast.LENGTH_SHORT).show();
+				if(app.getT2Size() > 0) {
+					app.selected_ticket = app.getT2Ticket();
+				}
+				else {
+					app.selected_ticket = null;
+				}
+				break;
+			case R.id.button_validate_t3:
+				Toast.makeText(this, "T3", Toast.LENGTH_SHORT).show();
+				if(app.getT3Size() > 0) {
+					app.selected_ticket = app.getT3Ticket();
+				}
+				else {
+					app.selected_ticket = null;
+				}
+				break;
+			default:
+				return;
 			}
-			else {
-				app.selected_ticket = null;
-			}
-			break;
-		case R.id.button_validate_t2:
-			Toast.makeText(this, "T2", Toast.LENGTH_SHORT).show();
-			if(app.getT2Size() > 0) {
-				app.selected_ticket = app.getT2Ticket();
-			}
-			else {
-				app.selected_ticket = null;
-			}
-			break;
-		case R.id.button_validate_t3:
-			Toast.makeText(this, "T3", Toast.LENGTH_SHORT).show();
-			if(app.getT3Size() > 0) {
-				app.selected_ticket = app.getT3Ticket();
-			}
-			else {
-				app.selected_ticket = null;
-			}
-			break;
-		default:
-			return;
-		}
 
 		ChangeIPAndPortDialogFragment dialog = new ChangeIPAndPortDialogFragment();
 
@@ -242,16 +227,43 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	}
 
 	private class SendTicketToBusTask extends AsyncTask<Void, Void, String> {
+		String serialized_ticket;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			serialized_ticket = app.selected_ticket.serialize();
+		}
 		
 		@Override
 		protected String doInBackground(Void... v) {
-			
-			return ClientSocket.sendAndWait(app.bus_ip, app.bus_port, "world hello");
+			Log.i("send",serialized_ticket);
+			return ClientSocket.sendAndWait(app.bus_ip, app.bus_port, serialized_ticket);
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
-			Toast.makeText(TicketsActivity.this, result, Toast.LENGTH_SHORT).show();
+			if(result == null) {
+				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Validate Ticket", "An error occured");
+			}
+		
+			String result_arr[] = result.split("\\|");
+			
+			if(result_arr[0].equals("error")) {
+				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Validate Ticket", "An error occured");
+			}
+			else if(result_arr[0].equals("validated")) {
+				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Validate Ticket", "The ticket was validated");
+				
+				int bus_id = Integer.parseInt(result_arr[1]);
+				app.validateTicket(bus_id);
+				adapter.notifyDataSetChanged();
+				updateTicketsQuantityViews();
+				
+			}
+			else if(result_arr[0].equals("invalid")) {
+				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Validate Ticket", "The ticket was invalid");
+			}
 		}
 
 	}

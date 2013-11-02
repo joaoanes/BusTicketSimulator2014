@@ -1,6 +1,8 @@
 package pt.feup.busticketinspector;
 
 import pt.feup.busticket.tickets.BusTicketUtils;
+import pt.feup.busticket.tickets.HttpHelper;
+import pt.feup.busticket.tickets.HttpHelper.HttpResult;
 import pt.feup.busticket.tickets.SimpleServer;
 import pt.feup.busticket.tickets.SimpleServer.SimpleServerListener;
 import android.app.Activity;
@@ -9,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -39,7 +42,7 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		bus_title = (TextView) findViewById(R.id.title_bus);
 		app = (BusTicketInspector) getApplication();
 		
-		loadingTicketsDialog = BusTicketUtils.createProgressDialog(this, "Loading some tickets", this);
+		//loadingTicketsDialog = BusTicketUtils.createProgressDialog(this, "Loading some tickets", this);
 		
 		if(app.in_select_layout) {
 			showSelectBusLayout();
@@ -67,20 +70,21 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		bus_title.setText("Bus " + app.bus_id);
 		select_bus_layout.setVisibility(View.GONE);
 		bus_tickets_layout.setVisibility(View.VISIBLE);
+		
+		GetBusTicketsTask task = new GetBusTicketsTask();
+		task.execute(new Void[]{});
 	}
 	
 	public void getBusTicketsButton(View view) {
-		//TODO
 		try {
 			app.bus_id = Integer.parseInt(bus_edit_text.getText().toString());
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+		
 		if(app.bus_id > -1) {
-			Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
 			showBusTicketsLayout();
-			//this.loadingTicketsDialog.show();
 		}
 		else {
 			Toast.makeText(this, String.valueOf(app.bus_id), Toast.LENGTH_SHORT).show();
@@ -93,18 +97,17 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		
 	}
 	
-	private class getBusTicketsTask extends AsyncTask<Void, Void, String> {
+	private class GetBusTicketsTask extends AsyncTask<Void, Void, HttpResult> {
 
 		@Override
-		protected String doInBackground(Void... arg0) {
-			// TODO Auto-generated method stub
-			return null;
+		protected HttpResult doInBackground(Void... arg0) {
+			HttpHelper helper = new HttpHelper();
+			return helper.getBusTickets(app.bus_id);
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
+		protected void onPostExecute(HttpResult result) {
+			BusTicketUtils.createAlertDialog(InspectorActivity.this, "cenas", result.toString());
 		}
 		
 	}
