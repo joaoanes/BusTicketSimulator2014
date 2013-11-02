@@ -109,6 +109,11 @@ function register(response, req)
 	
 }
 
+function getTicketsByBus(response, req)
+{
+	redis.getTicketsByBus(url.parse(req.url, true).query["bus_id"], response);
+}
+
 function getTicketsByUser(response, req)
 {
 	redis.getTicketsById(req._authorized, response);
@@ -169,6 +174,7 @@ function split(data){
 
 exports.login = login;
 exports.register = register;
+exports.getTicketsByBus = getTicketsByBus;
 exports.getTickets = getTicketsByUser;
 exports.buyTickets = buyTickets;
 exports.validate = validate;

@@ -92,6 +92,7 @@ function registerUser(user, response)
 				for (var j = 0; j < replies.length; ++j)
 				{
 					replies[j]["id"] = allTickets[j];
+
 					if (replies[j]["validated"] == null)
 						replies[j]["validated"] = "null";
 					if (replies[j]["bus"] == null)
@@ -119,18 +120,76 @@ function registerUser(user, response)
 			if (!theTruth)
 				return handleReply(buildResponse(403, null, "The ticket does not belong to the user"), response);
 			
-			client.hget("ticket_id:" + tid, "validated", function(err, reply){
+			client.hgetall("ticket_id:" + tid, "validated", function(err, reply){
 				if (reply != null)
 					return handleReply(buildResponse(403, null, "The ticket has expired"), response);
 				
-				client.hset("ticket_id:" + tid, "validated", true, redis.print);	
-				return handleReply(buildResponse(200, null, null), response0);
-			})
-
-
-			debugger;
+				client.hset("ticket_id:" + tid, "validated", new Date(), redis.print);
+				client.hset("ticket_id:" + tid, "bus", busid, redis.print);	
+				client.sadd("bus_id:" + busid + ":tickets", tid);
+				handleReply(buildResponse(200, null, null), response);
+				client.hget("ticket_id:" + tid, "type", function(err, reply)
+				{
+					var delay = 0;
+					switch(reply)
+					{
+						case "T1":
+						delay = 15;
+						break;
+						case "T2":
+						delay = 30;
+						break;
+						case "T3":
+						delay = 45;
+						break;
+					}
+					setTimeout(removeTicket, 1000*60*delay, tid);
+				});
+			});
 		});
 
+
+	}
+
+	function removeTicket(tid)
+	{
+		client.hgetall("ticket_id:" + tid, function(err, reply)
+			{
+				if (err)
+					return console.log("Error removing ticket " + tid);
+				client.srem("user_id:" + reply["uid"] + ":tickets:" + reply["type"].slice(-1), tid, redis.print);
+				console.log("Removed ticket " + tid);
+			}); 
+	}
+
+	function getTicketsByBus(busid, response)
+	{
+		client.smembers("bus_id:" + busid + ":tickets", function(err, reply)
+			{
+				if (err)
+					return handleReply(buildResponse(500, null, err));
+				var multi = client.multi();
+                for (var i = 0; i < reply.length; ++i)
+                    multi.hgetall("ticket_id:" + reply[i]);        
+
+                multi.exec(function(err, replies)
+                {
+                    if (err)
+                        return handleReply(buildResponse(500, null, err));
+                    
+                    var tickets_arr = {};
+                    var now = new Date();
+                    var then = new Date(now - 5400000);
+
+                    for (var i = 0; i < replies.length; ++i)    
+                        for (var j = 0; j < replies[i].length; ++j)
+                            if (replies[i][j]["validated"] > then)
+                                tickets_arr.push(replies[i][j]);
+                    
+                    return handleReply(buildResponse(200, tickets_arr, null), response);
+
+                });
+		});
 	}
 
 
@@ -168,7 +227,7 @@ function registerUser(user, response)
 				var t2counter_c = t2counter;
 				var t1counter_c = t1counter;
 				var extraTicket = null;
-				var extra = (t1counter + t2counter + t3counter) > 10;
+				var extra = (t1counter + t2counter + t3counter) >= 10;
 				if (extra)
 				{
 					if (t1counter != 0)
@@ -240,7 +299,6 @@ function registerUser(user, response)
 					if (extra)
 						last["extra"] = extraTicket;
 					
-					debugger;
 					return handleReply(buildResponse(200, last, null), response);
 				}
 				
@@ -266,6 +324,7 @@ function processTickets(multi, uid, tickets, ticket_type, ticket_arr)
 		ticket_arr.push({"uid" : uid, "type" : ticket_type, "id" : tickets[i], "bus" : "null", "validated" : "null"});
 	}
 }
+
 
 /*
 	POST
@@ -337,7 +396,6 @@ function processTickets(multi, uid, tickets, ticket_type, ticket_arr)
 	{
 		response.writeHead(reply.status, {"Content-Type": "application/json"}); 
 
-		debugger;
 		response.write(JSON.stringify(reply.content)); 
 		response.end();
 	}
@@ -359,3 +417,4 @@ function processTickets(multi, uid, tickets, ticket_type, ticket_arr)
 	exports.getTicketsById = getTicketsById;
 	exports.buyTickets = buyTickets;
 	exports.validateTicket = validateTicket;
+    exports.getTicketsByBus = getTicketsByBus;
