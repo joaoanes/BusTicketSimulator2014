@@ -15,6 +15,7 @@ public class BusTicketPassenger extends Application {
 	Ticket selected_ticket = null;
 	Ticket selected_validated_ticket = null;
 	String token = null;
+	boolean cached = false;
 	
 	String bus_ip = "10.0.2.2";
 	int bus_port = 5000;
@@ -34,6 +35,7 @@ public class BusTicketPassenger extends Application {
 		validated_tickets = new ArrayList<Ticket>();
 		selected_ticket = null;
 		selected_validated_ticket = null;
+		cached = false;
 	}
 	
 	int getT1Size() {

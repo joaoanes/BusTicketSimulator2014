@@ -44,9 +44,12 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 		instantiateTicketsQuantityViews();
 		setListView();
 		registerForContextMenu(validated_tickets);
-
-		GetTicketsTask task = new GetTicketsTask();
-		task.execute(new Void[]{});
+		
+		if(!app.cached) {
+			GetTicketsTask task = new GetTicketsTask();
+			task.execute(new Void[]{});
+			app.cached = true;
+		}
 	}
 	
 	@Override
@@ -112,18 +115,20 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	}
 
 	void setTicketAdapter() {
-		T1 t1 = new T1("5");
-		t1.setBus(36);
-		T2 t2 = new T2("9");
-		t2.setBus(67);
-		T3 t3 = new T3("13");
-		t3.setBus(34);
-		T3 t4 = new T3("87");
-		t4.setBus(45);
-		app.validated_tickets.add(t1);
-		app.validated_tickets.add(t2);
-		app.validated_tickets.add(t3);
-		app.validated_tickets.add(t4);
+		if(!app.cached) {
+			T1 t1 = new T1("5");
+			t1.setBus(36);
+			T2 t2 = new T2("9");
+			t2.setBus(67);
+			T3 t3 = new T3("13");
+			t3.setBus(34);
+			T3 t4 = new T3("87");
+			t4.setBus(45);
+			app.validated_tickets.add(t1);
+			app.validated_tickets.add(t2);
+			app.validated_tickets.add(t3);
+			app.validated_tickets.add(t4);
+		}
 		adapter = new TicketAdapter(this, R.layout.row_ticket, app.validated_tickets);
 		validated_tickets.setAdapter(adapter);
 	}

@@ -23,7 +23,7 @@ public abstract class Ticket {
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_VALIDATED = "validated";
 	public static final String FIELD_BUS = "bus";
-	public static final String FIELD_ID = "uid";		
+	public static final String FIELD_ID = "id";
 	
 	public Ticket(String id) {
 		this.id = id;
