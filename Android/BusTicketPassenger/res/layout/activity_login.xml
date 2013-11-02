@@ -9,7 +9,14 @@
         android:orientation="vertical"
         android:padding="4dp" >
 
+	<LinearLayout
+	    android:id="@+id/login_wrapper"
+	    android:layout_width="match_parent"
+	    android:layout_height="32dp"
+	    android:orientation="vertical" >
+
         <TextView
+            android:id="@+id/login_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_login"
@@ -25,7 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_login_username"
-            android:lines="1" />
+            android:lines="1"
+            android:text="Username" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +46,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_login_password"
             android:inputType="textPassword"
-            android:lines="1" />
+            android:lines="1"
+            android:text="Password" />
 
         <Button
             android:layout_width="wrap_content"
@@ -46,8 +55,17 @@
             android:layout_gravity="center_horizontal"
             android:onClick="onLoginClick"
             android:text="@string/buttontext_login" />
+		</LinearLayout>
 
+		<LinearLayout
+		    android:id="@+id/register_wrapper"
+		    android:layout_width="match_parent"
+		    android:layout_height="32dp"
+		    android:orientation="vertical" >
+
+        >
         <TextView
+            android:id="@+id/register_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_register"
@@ -131,5 +149,6 @@
             android:onClick="onRegisterClick"
             android:text="@string/buttontext_register" />
     </LinearLayout>
-
+    </LinearLayout>
+	
 </ScrollView>

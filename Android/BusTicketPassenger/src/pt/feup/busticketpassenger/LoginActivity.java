@@ -17,10 +17,15 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
@@ -39,10 +44,17 @@ public class LoginActivity extends Activity {
 	EditText register_password;
 	EditText register_name;
 	EditText register_card_number;
+	TextView login_header;
+	TextView register_header;
 	Spinner register_card_type;
 	DatePicker register_card_validity;
 	
+	LinearLayout login_wrapper;
+	LinearLayout register_wrapper;
+	
 	ProgressDialog progress_dialog;
+	protected boolean signInFormExpanded = false;
+	protected boolean registerFormExpanded = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +65,56 @@ public class LoginActivity extends Activity {
 
 		instantiateForms();
 		populateCardTypeSpinner();
+		initializeOnClicks();
+	}
+
+	private void initializeOnClicks() {
+		login_header.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0)
+			{
+				Animation anim = new DropDownAnim(login_wrapper, 200, !signInFormExpanded );
+				Animation anim2 = new DropDownAnim(register_wrapper, 200, !registerFormExpanded );
+
+				anim.setDuration(1300);
+				anim2.setDuration(1300);
+				if (signInFormExpanded && (login_username.getText().toString() != "Username"))
+				{
+					
+				}
+				signInFormExpanded = !signInFormExpanded;
+				login_wrapper.startAnimation(anim);
+				if (registerFormExpanded)
+				{
+					register_wrapper.startAnimation(anim2);
+					registerFormExpanded = false;
+				}
+			}
+
+		});
+
+		register_header.setOnClickListener(new OnClickListener(){
+		
+			@Override
+			public void onClick(View arg0)
+			{
+				Animation anim = new DropDownAnim(login_wrapper, 200, !signInFormExpanded);
+				Animation anim2 = new DropDownAnim(register_wrapper, 200, !registerFormExpanded);
+				
+				anim.setDuration(1300);
+				anim2.setDuration(1300);
+				if (signInFormExpanded)
+				{
+					login_wrapper.startAnimation(anim);
+					signInFormExpanded = false;
+				}
+				register_wrapper.startAnimation(anim2);
+				registerFormExpanded = !registerFormExpanded;
+		
+			}
+		
+		});
 	}
 
 	@Override
@@ -70,7 +132,10 @@ public class LoginActivity extends Activity {
 		register_name = (EditText) findViewById(R.id.edittext_register_name);
 		register_card_number = (EditText) findViewById(R.id.edittext_register_card_number);
 		register_card_type = (Spinner) findViewById(R.id.spinner_register_card_type);
-		
+		login_wrapper = (LinearLayout) findViewById(R.id.login_wrapper);
+		register_wrapper = (LinearLayout) findViewById(R.id.register_wrapper);
+		login_header = (TextView) findViewById(R.id.login_header);
+		register_header = (TextView) findViewById(R.id.register_header);
 		instantiateDatePicker();
 	}
 	
@@ -186,6 +251,41 @@ public class LoginActivity extends Activity {
 			BusTicketUtils.createAlertDialog(LoginActivity.this, "Register", result.toString());
 		}
 
+	}
+	
+	public class DropDownAnim extends Animation {
+		int targetHeight;
+		View view;
+		boolean down;
+
+		public DropDownAnim(View view, int targetHeight, boolean down) {
+			this.view = view;
+			this.targetHeight = targetHeight;
+			this.down = down;
+		}
+
+		@Override
+		protected void applyTransformation(float interpolatedTime, Transformation t) {
+			int newHeight;
+			if (down) {
+				newHeight = (int) (targetHeight * interpolatedTime);
+			} else {
+				newHeight = (int) (targetHeight * (1 - interpolatedTime));
+			}
+			view.getLayoutParams().height = newHeight;
+			view.requestLayout();
+		}
+
+		@Override
+		public void initialize(int width, int height, int parentWidth,
+			int parentHeight) {
+			super.initialize(width, height, parentWidth, parentHeight);
+		}
+
+		@Override
+		public boolean willChangeBounds() {
+			return true;
+		}
 	}
 
 }
