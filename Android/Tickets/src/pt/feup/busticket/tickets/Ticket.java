@@ -81,17 +81,6 @@ public abstract class Ticket implements Serializable {
 	abstract public int getDuration();
 
 	public String serialize() {
-		/*try {
-			ByteArrayOutputStream bo = new ByteArrayOutputStream();
-			ObjectOutputStream so = new ObjectOutputStream(bo);
-			so.writeObject(ticket);
-			so.flush();
-			return bo.toString();
-			//return Base64.encodeToString(bo.toByteArray(), Base64.DEFAULT);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}*/
 		return id + "|" + getType() + "|" + (validated != null ? validated.getTime() : "-1" )+ "|" + bus + "|" + user_id;
 	}
 
@@ -124,25 +113,12 @@ public abstract class Ticket implements Serializable {
 	public static Ticket getTicketFromJSON(JSONObject json_ticket) {
 		String type = json_ticket.optString(FIELD_TYPE);
 		String id = json_ticket.optString(FIELD_ID);
-		if(/*(type < 1 || type > 3) && */id.equals("")) {
+		if(id.equals("")) {
 			return null;
 		}
 
 		Ticket ticket = null;
-
-		/*switch (type) {
-			case 1:
-				ticket = new T1(id);
-				break;
-			case 2:
-				ticket = new T2(id);
-				break;
-			case 3:
-				ticket = new T3(id);
-				break;
-			default:
-				return null;
-		}*/
+		
 		if(type.equals("T1")) {
 			ticket = new T1(id);
 		}
@@ -181,6 +157,30 @@ public abstract class Ticket implements Serializable {
 		try {
 			JSONObject json = new JSONObject(json_string);
 			JSONArray json_tickets = json.getJSONArray(FIELD_TICKETS);
+			tickets = new ArrayList<Ticket>();
+
+			for(int i = 0; i < json_tickets.length(); ++i) {
+				JSONObject json_ticket = json_tickets.getJSONObject(i);
+
+				Ticket ticket = getTicketFromJSON(json_ticket);
+
+				if(ticket != null) {
+					tickets.add(ticket);
+				}
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return tickets;
+	}
+	
+	public static ArrayList<Ticket> getBusTicketsFromJSON(String json_string) {
+		ArrayList<Ticket> tickets = null;
+
+		try {
+			JSONArray json_tickets = new JSONArray(json_string);
 			tickets = new ArrayList<Ticket>();
 
 			for(int i = 0; i < json_tickets.length(); ++i) {

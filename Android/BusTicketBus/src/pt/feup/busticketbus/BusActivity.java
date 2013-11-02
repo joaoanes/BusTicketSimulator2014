@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 public class BusActivity extends Activity implements SimpleServerListener, OnCancelListener {
 	int port = 6000;
-	//ServerSocket server;
-	//Socket client;
 	SimpleServer server;
 	
 	ProgressDialog dialog;
@@ -41,7 +39,7 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 		app = (BusTicketBus) getApplication();
 		
 		dialog = BusTicketUtils.createProgressDialog(this, "waiting for connection", this);
-		server = new SimpleServer(this);
+		server = new SimpleServer(this, port);
 		
 		main_layout = (LinearLayout) findViewById(R.id.bus_main_layout);
 		select_layout = (LinearLayout) findViewById(R.id.bus_select_layout);
@@ -82,6 +80,12 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 			Toast.makeText(this, String.valueOf(app.bus_id), Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	public void openServer(View view) {
+		((TextView) findViewById(R.id.status_id)).setText("Server open");
+		dialog.show();
+		(new Thread(new ValidateTicketThread())).start();
+	}
 
 	class ValidateTicketThread implements Runnable {
 
@@ -89,12 +93,6 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 		public void run() {
 			server.processRequest();
 		}
-	}
-
-	public void openServer(View view) {
-		((TextView) findViewById(R.id.status_id)).setText("Server open");
-		dialog.show();
-		(new Thread(new ValidateTicketThread())).start();
 	}
 	
 	@Override

@@ -22,7 +22,8 @@ public class ChangeIPAndPortDialogFragment extends DialogFragment {
 	
 	
 	public interface ChangeIPAndPortDialogListener {
-		public void onPositiveClick(DialogFragment dialog);
+		public void onBusPositiveClick();
+		public void onInspectorPositiveClick();
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class ChangeIPAndPortDialogFragment extends DialogFragment {
 			device = Device.INSPECTOR;
 			temp = "Input Inspector IP and Port";
 			ip = app.server_ip;
-			port = String.valueOf(app.bus_port);
+			port = String.valueOf(app.inspector_port);
 		}
 		else {
 			//TODO
@@ -71,13 +72,15 @@ public class ChangeIPAndPortDialogFragment extends DialogFragment {
 				
 		builder.setView(view);
 		
-		builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if(device == Device.BUS) {
 					app.bus_ip = ip_field.getText().toString();
 					app.bus_port = Integer.parseInt(port_field.getText().toString());
+					
+					listener.onBusPositiveClick();
 				}
 				else if(device == Device.SERVER) {
 					app.server_ip = ip_field.getText().toString();
@@ -86,10 +89,9 @@ public class ChangeIPAndPortDialogFragment extends DialogFragment {
 				else if(device == Device.INSPECTOR) {
 					app.inspector_ip = ip_field.getText().toString();
 					app.inspector_port = Integer.parseInt(port_field.getText().toString());
+					
+					listener.onInspectorPositiveClick();
 				}
-				
-				listener.onPositiveClick(ChangeIPAndPortDialogFragment.this);
-				
 			}
 		});
 		

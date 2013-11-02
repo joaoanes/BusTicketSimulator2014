@@ -26,7 +26,7 @@ public class BusTicketPassenger extends Application {
 	int server_port = 8080;
 	
 	String inspector_ip = "10.0.2.2";
-	int inspector_port = 3000;
+	int inspector_port = 6000;
 	
 	void reset() {
 		bought_tickets = new HashMap<String, Ticket>();

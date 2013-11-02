@@ -5,10 +5,12 @@ import org.apache.http.HttpStatus;
 import pt.feup.busticket.tickets.BusTicketUtils;
 import pt.feup.busticket.tickets.ClientSocket;
 import pt.feup.busticket.tickets.HttpHelper;
+import pt.feup.busticket.tickets.HttpHelper.HttpResult;
 import pt.feup.busticket.tickets.Ticket;
 import pt.feup.busticketpassenger.ChangeIPAndPortDialogFragment.ChangeIPAndPortDialogListener;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,6 +34,8 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	TextView t1_quantity_view;
 	TextView t2_quantity_view;
 	TextView t3_quantity_view;
+	
+	ProgressDialog progress_dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +142,13 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.ticket_show_inspector:
-			Toast.makeText(this,String.valueOf(app.selected_validated_ticket.getId()), Toast.LENGTH_SHORT).show();
+			ChangeIPAndPortDialogFragment dialog = new ChangeIPAndPortDialogFragment();
+
+			Bundle args = new Bundle();
+			args.putString(ChangeIPAndPortDialogFragment.DEVICE_ID, ChangeIPAndPortDialogFragment.Device.INSPECTOR.toString());
+			dialog.setArguments(args);
+
+			dialog.show(getFragmentManager(), "change inspector ip and port");
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -193,8 +203,14 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	}
 
 	@Override
-	public void onPositiveClick(DialogFragment dialog) {
+	public void onBusPositiveClick() {
 		SendTicketToBusTask task = new SendTicketToBusTask();
+		task.execute(new Void[]{});
+	}
+	
+	@Override
+	public void onInspectorPositiveClick() {
+		SendTicketToInspectorTask task = new SendTicketToInspectorTask();
 		task.execute(new Void[]{});
 	}
 
@@ -216,6 +232,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 				}
 				else {
 					updateTicketsQuantityViews();
+					adapter.notifyDataSetChanged();
 				}
 				break;
 			default:
@@ -223,7 +240,6 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 				break;
 			}
 		}
-
 	}
 
 	private class SendTicketToBusTask extends AsyncTask<Void, Void, String> {
@@ -231,13 +247,11 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 		
 		@Override
 		protected void onPreExecute() {
-			super.onPreExecute();
 			serialized_ticket = app.selected_ticket.serialize();
 		}
 		
 		@Override
 		protected String doInBackground(Void... v) {
-			Log.i("send",serialized_ticket);
 			return ClientSocket.sendAndWait(app.bus_ip, app.bus_port, serialized_ticket);
 		}
 
@@ -265,7 +279,41 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Validate Ticket", "The ticket was invalid");
 			}
 		}
+	}
+	
+	private class SendTicketToInspectorTask extends AsyncTask<Void, Void, String> {
+		String serialized_ticket;
+		@Override
+		protected void onPreExecute() {
+			serialized_ticket = app.selected_validated_ticket.serialize();
+			progress_dialog = BusTicketUtils.createProgressDialog(TicketsActivity.this, "Sending Ticket to Inspector");
+			progress_dialog.show();
+		}
+		
+		@Override
+		protected String doInBackground(Void... params) {
+			return ClientSocket.sendAndWait(app.inspector_ip, app.inspector_port, serialized_ticket);
+		}
 
+		@Override
+		protected void onPostExecute(String result) {
+			progress_dialog.dismiss();
+			if(result == null) {
+				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Verify Ticket", "An error occured");
+			}
+		
+			String result_arr[] = result.split("\\|");
+			String status = result_arr[0];
+			String message = result_arr[1];
+			
+			if(status.equals("invalid_ticket") || status.equals("invalid_date")) {
+				adapter.remove(app.selected_validated_ticket);
+				app.selected_ticket = null;
+			}
+			
+			BusTicketUtils.createAlertDialog(TicketsActivity.this, "Verify Ticket", message);
+		}
+		
 	}
 
 }

@@ -47,7 +47,8 @@
         
         <Button android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Receive Ticket"/>
+            android:text="Receive Ticket"
+            android:onClick="onReceiveTicketClick"/>
         
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
