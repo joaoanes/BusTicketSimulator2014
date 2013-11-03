@@ -12,6 +12,7 @@ public class BusTicketInspector extends Application {
 	int bus_id = -1;
 	HashMap<String, Ticket> bus_validated_tickets = new HashMap<String, Ticket>();
 	ArrayList<Ticket> tickets_array = new ArrayList<Ticket>();
+	Ticket selected_ticket;
 	
 	boolean processJSONBusTickets(String json) {
 		ArrayList<Ticket> tickets = Ticket.getBusTicketsFromJSON(json);

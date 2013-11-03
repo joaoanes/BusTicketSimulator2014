@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -24,8 +23,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class HttpHelper {
 	HttpClient client;
-	String ip = "joaoanes.no-ip.biz";
-	//String ip = "172.30.83.241";
+	//String ip = "joaoanes.no-ip.biz";
+	String ip = "10.0.2.2";
 	int port = 8080;
 	
 	public class HttpResult {

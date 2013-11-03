@@ -1,5 +1,7 @@
 package pt.feup.busticketinspector;
 
+import java.util.Date;
+
 import org.apache.http.HttpStatus;
 
 import pt.feup.busticket.tickets.BusTicketUtils;
@@ -14,8 +16,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -48,11 +55,10 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		bus_tickets_layout = (LinearLayout) findViewById(R.id.inspector_bus_tickets);
 		bus_edit_text = (EditText) findViewById(R.id.edittext_bus_id);
 		bus_title = (TextView) findViewById(R.id.title_bus);
-		validated_tickets_list = (ListView) findViewById(R.id.bus_validated_tickets);
 		
 		app = (BusTicketInspector) getApplication();
-		adapter = new BusTicketsAdapter(this, R.layout.row_ticket, app.tickets_array);
-		validated_tickets_list.setAdapter(adapter);
+		
+		setListView();
 		
 		server = new SimpleServer(this, port);
 		
@@ -69,6 +75,55 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.inspector, menu);
 		return true;
+	}
+	
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+
+		getMenuInflater().inflate(R.menu.ticket, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		long date_millis = app.selected_ticket.getValidated().getTime();
+		
+		switch (item.getItemId()) {
+			case R.id.remove_15_min:
+				app.selected_ticket.setValidated(new Date(date_millis - 15*60000));
+				break;
+			case R.id.remove_30_min:
+				app.selected_ticket.setValidated(new Date(date_millis - 30*60000));
+				break;
+			case R.id.remove_60_min:
+				app.selected_ticket.setValidated(new Date(date_millis - 60*60000));
+				break;
+			case R.id.remove_ticket:
+				app.bus_validated_tickets.remove(app.selected_ticket.getId());
+				adapter.remove(app.selected_ticket);
+				return true;
+			default:
+				return super.onContextItemSelected(item);
+		}
+		
+		adapter.notifyDataSetChanged();
+		return true;
+	}
+	
+	public void setListView() {
+		validated_tickets_list = (ListView) findViewById(R.id.bus_validated_tickets);
+		
+		validated_tickets_list.setOnItemClickListener(new OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				app.selected_ticket = app.tickets_array.get(position);
+				openContextMenu(view);
+			}
+		});
+		
+		adapter = new BusTicketsAdapter(this, R.layout.row_ticket, app.tickets_array);
+		validated_tickets_list.setAdapter(adapter);
+		registerForContextMenu(validated_tickets_list);
 	}
 	
 	void showSelectBusLayout() {
@@ -173,8 +228,9 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		}
 		else {
 			Ticket compare = app.bus_validated_tickets.get(ticket.getId());
+			long current_time = (new Date()).getTime();
 			
-			if(compare.getValidated().getTime() < ticket.getValidated().getTime()) {
+			if(compare.getValidated().getTime() < current_time) {
 				status = "invalid_date";
 				message = "The ticket has expired";
 			}

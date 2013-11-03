@@ -1,6 +1,5 @@
 package pt.feup.busticket.tickets;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,7 +9,7 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 
-public abstract class Ticket implements Serializable {
+public abstract class Ticket {
 	String id;
 	Date validated;
 	int bus = -1;

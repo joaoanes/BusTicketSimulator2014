@@ -29,6 +29,10 @@ public final class R {
         public static final int edittext_bus_id=0x7f080001;
         public static final int inspector_bus_tickets=0x7f080002;
         public static final int inspector_select_bus=0x7f080000;
+        public static final int remove_15_min=0x7f08000a;
+        public static final int remove_30_min=0x7f08000b;
+        public static final int remove_60_min=0x7f08000c;
+        public static final int remove_ticket=0x7f08000d;
         public static final int textview_ticket_bus=0x7f080008;
         public static final int textview_ticket_duration=0x7f080007;
         public static final int textview_ticket_id=0x7f080006;
@@ -41,6 +45,7 @@ public final class R {
     }
     public static final class menu {
         public static final int inspector=0x7f070000;
+        public static final int ticket=0x7f070001;
     }
     public static final class string {
         public static final int action_settings=0x7f040001;

@@ -31,6 +31,8 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	
 	BusTicketBus app;
 	
+	String status, message;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,7 +75,6 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 			e.printStackTrace();
 		}
 		if(app.bus_id > -1) {
-			Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
 			showMainLayout();
 		}
 		else {
@@ -100,30 +101,38 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 		final Ticket ticket = Ticket.deserialize(input);
 		HttpHelper helper = new HttpHelper();
 		HttpResult result = helper.validateTicket(ticket.getId(), app.bus_id, ticket.getUserId());
-		String ret = "";
 		
 		switch(result.getCode()) {
 			case HttpStatus.SC_OK:
-				ret = "validated|" + app.bus_id;
+				status = "validated";
+				message = String.valueOf(app.bus_id);
 				break;
 			case HttpStatus.SC_FORBIDDEN:
-				ret = "invalid";
+				status = "invalid";
+				message = "";
 				break;
 			default:
-				ret = "error";
+				status = "error";
+				message = "";
 		}
 		
-		final String ret2 = new String(ret) + "\n" + result.getResult();
 		
 		runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				Toast.makeText(BusActivity.this, ret2, Toast.LENGTH_SHORT).show();
-				Toast.makeText(BusActivity.this, ticket.toString(), Toast.LENGTH_SHORT).show();
+				if(status.equals("validated")) {
+					BusTicketUtils.createAlertDialog(BusActivity.this, "Validate Ticket", "The ticket was validated");
+				}
+				else if(status.equals("invalid")) {
+					BusTicketUtils.createAlertDialog(BusActivity.this, "Validate Ticket", "The ticket was validated");
+				}
+				else if(status.equals("error")) {
+					BusTicketUtils.createAlertDialog(BusActivity.this, "Validate Ticket", "An error occured");
+				}
 			}
 		});
-		return ret;
+		return status + "|" + message;
 	}
 
 	@Override

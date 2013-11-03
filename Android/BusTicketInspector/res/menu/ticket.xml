@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/remove_15_min"
+        android:title="Remove 15 minutes"/>
+    
+    <item android:id="@+id/remove_30_min"
+        android:title="Remove 30 minutes"/>
+    
+    <item android:id="@+id/remove_60_min"
+        android:title="Remove 60 minutes"/>
+    
+    <item android:id="@+id/remove_ticket"
+        android:title="Remove ticket"/>
+
+</menu>

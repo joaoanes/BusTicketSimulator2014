@@ -5,16 +5,12 @@ import org.apache.http.HttpStatus;
 import pt.feup.busticket.tickets.BusTicketUtils;
 import pt.feup.busticket.tickets.ClientSocket;
 import pt.feup.busticket.tickets.HttpHelper;
-import pt.feup.busticket.tickets.HttpHelper.HttpResult;
-import pt.feup.busticket.tickets.Ticket;
 import pt.feup.busticketpassenger.ChangeIPAndPortDialogFragment.ChangeIPAndPortDialogListener;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -141,17 +137,17 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.ticket_show_inspector:
-			ChangeIPAndPortDialogFragment dialog = new ChangeIPAndPortDialogFragment();
-
-			Bundle args = new Bundle();
-			args.putString(ChangeIPAndPortDialogFragment.DEVICE_ID, ChangeIPAndPortDialogFragment.Device.INSPECTOR.toString());
-			dialog.setArguments(args);
-
-			dialog.show(getFragmentManager(), "change inspector ip and port");
-			return true;
-		default:
-			return super.onContextItemSelected(item);
+			case R.id.ticket_show_inspector:
+				ChangeIPAndPortDialogFragment dialog = new ChangeIPAndPortDialogFragment();
+	
+				Bundle args = new Bundle();
+				args.putString(ChangeIPAndPortDialogFragment.DEVICE_ID, ChangeIPAndPortDialogFragment.Device.INSPECTOR.toString());
+				dialog.setArguments(args);
+	
+				dialog.show(getFragmentManager(), "change inspector ip and port");
+				return true;
+			default:
+				return super.onContextItemSelected(item);
 		}
 	}
 
@@ -163,30 +159,30 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	public void validateTicket(View view) {
 		switch (view.getId()) {
 			case R.id.button_validate_t1:
-				Toast.makeText(this, "T1", Toast.LENGTH_SHORT).show();
 				if(app.getT1Size() > 0) {
 					app.selected_ticket = app.getT1Ticket();
 				}
 				else {
 					app.selected_ticket = null;
+					return;
 				}
 				break;
 			case R.id.button_validate_t2:
-				Toast.makeText(this, "T2", Toast.LENGTH_SHORT).show();
 				if(app.getT2Size() > 0) {
 					app.selected_ticket = app.getT2Ticket();
 				}
 				else {
 					app.selected_ticket = null;
+					return;
 				}
 				break;
 			case R.id.button_validate_t3:
-				Toast.makeText(this, "T3", Toast.LENGTH_SHORT).show();
 				if(app.getT3Size() > 0) {
 					app.selected_ticket = app.getT3Ticket();
 				}
 				else {
 					app.selected_ticket = null;
+					return;
 				}
 				break;
 			default:
@@ -259,6 +255,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 		protected void onPostExecute(String result) {
 			if(result == null) {
 				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Validate Ticket", "An error occured");
+				return;
 			}
 		
 			String result_arr[] = result.split("\\|");
@@ -300,6 +297,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 			progress_dialog.dismiss();
 			if(result == null) {
 				BusTicketUtils.createAlertDialog(TicketsActivity.this, "Verify Ticket", "An error occured");
+				return;
 			}
 		
 			String result_arr[] = result.split("\\|");

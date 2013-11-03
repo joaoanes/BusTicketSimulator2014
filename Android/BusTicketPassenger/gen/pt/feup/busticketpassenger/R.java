@@ -65,8 +65,7 @@ public final class R {
         public static final int textview_ticket_duration=0x7f09002a;
         public static final int textview_ticket_id=0x7f090029;
         public static final int textview_ticket_type=0x7f090028;
-        public static final int ticket_show_inspector=0x7f09002e;
-        public static final int ticket_validate=0x7f09002d;
+        public static final int ticket_show_inspector=0x7f09002d;
         public static final int tickets_bought=0x7f090010;
         public static final int tickets_t1=0x7f090011;
         public static final int tickets_t1_quantity=0x7f090012;
@@ -87,10 +86,9 @@ public final class R {
     public static final class menu {
         public static final int buy=0x7f080000;
         public static final int login=0x7f080001;
-        public static final int ticket=0x7f080002;
-        public static final int tickets=0x7f080003;
-        public static final int validated_ticket=0x7f080004;
-        public static final int view_tickets=0x7f080005;
+        public static final int tickets=0x7f080002;
+        public static final int validated_ticket=0x7f080003;
+        public static final int view_tickets=0x7f080004;
     }
     public static final class string {
         public static final int action_settings=0x7f040001;

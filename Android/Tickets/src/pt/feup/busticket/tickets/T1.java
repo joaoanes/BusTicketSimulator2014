@@ -8,7 +8,7 @@ public class T1 extends Ticket {
 
 	@Override
 	public double getPrice() {
-		return 0.50;
+		return 0.25;
 	}
 
 	@Override
