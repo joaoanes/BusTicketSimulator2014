@@ -136,7 +136,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+		switch (item.getItemId()) { 
 			case R.id.ticket_show_inspector:
 				ChangeIPAndPortDialogFragment dialog = new ChangeIPAndPortDialogFragment();
 	
