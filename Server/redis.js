@@ -109,6 +109,7 @@ function registerUser(user, response)
 
     function validateTicket(uid, tid, busid, response)
     {
+
       var multi = client.multi();
       multi.sismember("user_id:" + uid + ":tickets:1", tid);
       multi.sismember("user_id:" + uid + ":tickets:2", tid);
@@ -130,6 +131,8 @@ function registerUser(user, response)
      client.hset("ticket_id:" + tid, "bus", busid, redis.print);	
      client.sadd("bus_id:" + busid + ":tickets", tid);
      handleReply(buildResponse(200, null, null), response);
+
+     //Now to remove the ticket!
      client.hget("ticket_id:" + tid, "type", function(err, reply)
      {
          var delay = 0;
@@ -142,7 +145,7 @@ function registerUser(user, response)
           delay = 30;
           break;
           case "T3":
-          delay = 45;
+          delay = 60;
           break;
       }
       setTimeout(removeTicket, 1000*60*delay, tid);

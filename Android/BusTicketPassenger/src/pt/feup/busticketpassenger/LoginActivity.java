@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ArrayAdapter;
@@ -53,14 +54,16 @@ public class LoginActivity extends Activity {
 	LinearLayout register_wrapper;
 	
 	ProgressDialog progress_dialog;
-	protected boolean signInFormExpanded = false;
+	protected boolean signInFormExpanded = true;
 	protected boolean registerFormExpanded = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
 
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_login);
+		BusTicketUtils.setMetrics(getResources().getDisplayMetrics());
 		app = (BusTicketPassenger) getApplication(); 
 
 		instantiateForms();
@@ -74,17 +77,22 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View arg0)
 			{
-				Animation anim = new DropDownAnim(login_wrapper, 200, !signInFormExpanded );
-				Animation anim2 = new DropDownAnim(register_wrapper, 200, !registerFormExpanded );
+			Animation anim = new DropDownAnim(login_wrapper, BusTicketUtils.dp2px(100), !signInFormExpanded );
+				Animation anim2 = new DropDownAnim(register_wrapper, BusTicketUtils.dp2px(320), !registerFormExpanded );
 
 				anim.setDuration(1300);
 				anim2.setDuration(1300);
-				if (signInFormExpanded && (login_username.getText().toString() != "Username"))
+				if (signInFormExpanded && (!login_username.getText().toString().equals("")))
 				{
-					
+					onLoginClick(null);
+					return ;
 				}
 				signInFormExpanded = !signInFormExpanded;
+				LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) login_wrapper.getLayoutParams();
+				p.height = signInFormExpanded ? 1 : BusTicketUtils.dp2px(99);
+				login_wrapper.setLayoutParams(p);
 				login_wrapper.startAnimation(anim);
+				
 				if (registerFormExpanded)
 				{
 					register_wrapper.startAnimation(anim2);
@@ -99,11 +107,20 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View arg0)
 			{
-				Animation anim = new DropDownAnim(login_wrapper, 200, !signInFormExpanded);
-				Animation anim2 = new DropDownAnim(register_wrapper, 200, !registerFormExpanded);
+				Animation anim = new DropDownAnim(login_wrapper, BusTicketUtils.dp2px(100), !signInFormExpanded);
+				Animation anim2 = new DropDownAnim(register_wrapper, BusTicketUtils.dp2px(320), !registerFormExpanded);
 				
 				anim.setDuration(1300);
 				anim2.setDuration(1300);
+				
+				if (registerFormExpanded && (!register_username.getText().toString().equals("")))
+				{
+					onRegisterClick(null);
+					return ;
+				}
+				LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) register_wrapper.getLayoutParams();
+				p.height = registerFormExpanded ? 1 : BusTicketUtils.dp2px(319);
+				register_wrapper.setLayoutParams(p);
 				if (signInFormExpanded)
 				{
 					login_wrapper.startAnimation(anim);
