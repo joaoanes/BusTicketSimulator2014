@@ -6,66 +6,107 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".BuyActivity" >
+    tools:context=".BuyActivity" xmlns:app="http://schemas.android.com/apk/res/pt.feup.busticketpassenger">
 
-    <TableRow 
+    <TableRow
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#aeaeae" >
 
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
             android:text="@string/label_buy_tickets"
-            android:textSize="24sp" 
-            android:gravity="center_horizontal"/>
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            app:customFont="assets/Roboto-Thin.ttf" />
+
     </TableRow>
     
     <TableRow
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#aeaeae"
+        android:padding="5dp" >
         
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_gravity="center"
             android:text="@string/label_type"
-            android:textStyle="bold" />
+            android:textColor="#ffffff"
+            app:customFont="assets/Roboto-Thin.ttf" />
         
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_gravity="center_horizontal"
             android:text="@string/label_quantity"
-            android:textStyle="bold" />
+            android:textColor="#ffffff"
+            app:customFont="assets/Roboto-Thin.ttf" />
+
     </TableRow>
     	
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         
-        <TextView
-            android:text="@string/label_t1"
-            android:textStyle="bold"/>
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="T1"
+            android:textColor="#A4BAA2"
+            android:textSize="30sp"
+            app:customFont="fonts/Roboto-Black.ttf" />
         
-        <Spinner android:id="@+id/t1_quantity" />
+        <Spinner
+            android:id="@+id/t1_quantity"
+            android:layout_gravity="center_horizontal|center_vertical" />
+
     </TableRow>
     
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         
-        <TextView
-            android:text="@string/label_t2"
-            android:textStyle="bold"/>
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="T2"
+            android:textColor="#569492"
+            android:textSize="30sp"
+            app:customFont="fonts/Roboto-Black.ttf" />
 
-        <Spinner android:id="@+id/t2_quantity" />
+        <Spinner
+            android:id="@+id/t2_quantity"
+            android:layout_gravity="center_horizontal|center_vertical" />
+
     </TableRow>
     
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         
-        <TextView
-            android:text="@string/label_t3"
-            android:textStyle="bold"/>
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="T3"
+            android:textColor="#41505E"
+            android:textSize="30sp"
+            app:customFont="fonts/Roboto-Black.ttf" />
 
-        <Spinner android:id="@+id/t3_quantity" />
+        <Spinner
+            android:id="@+id/t3_quantity"
+            android:layout_gravity="center_horizontal|center_vertical" />
+
     </TableRow>
     
-    <Button android:id="@+id/button_buy"
-            android:text="@string/buy"
-            android:onClick="buyTickets"/>   
+    <Button
+        android:id="@+id/button_buy"
+        android:layout_height="40dp"
+        android:onClick="buyTickets"
+        android:text="@string/buy" />
 
 </TableLayout>

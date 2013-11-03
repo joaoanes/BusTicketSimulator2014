@@ -33,11 +33,12 @@
         
     </LinearLayout>
     
-    <LinearLayout android:id="@+id/inspector_bus_tickets"
+    <LinearLayout
+        android:id="@+id/inspector_bus_tickets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone" >
         
         <TextView android:id="@+id/title_bus"
             android:layout_width="wrap_content"

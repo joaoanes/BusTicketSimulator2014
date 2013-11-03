@@ -3,13 +3,18 @@ package pt.feup.busticketpassenger;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.feup.busticket.tickets.T1;
+import pt.feup.busticket.tickets.T2;
+import pt.feup.busticket.tickets.T3;
 import pt.feup.busticket.tickets.Ticket;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class TicketAdapter extends ArrayAdapter<Ticket>{
@@ -31,10 +36,26 @@ public class TicketAdapter extends ArrayAdapter<Ticket>{
 		}
 		Ticket ticket = tickets.get(position);
 		
+	
 		((TextView) row.findViewById(R.id.textview_ticket_type)).setText(ticket.getType());
-		((TextView) row.findViewById(R.id.textview_ticket_id)).setText(String.valueOf(ticket.getId()));
-		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(String.valueOf(ticket.getValidated().toString()));
-		((TextView) row.findViewById(R.id.textview_ticket_bus)).setText(String.valueOf(ticket.getBus()));
+		
+		String color = "#ff0000";
+		if (ticket instanceof T1)
+		{
+			color = "#A4BAA2";
+		}
+		else if (ticket instanceof T2)
+		{
+			color = "#569492";
+		}
+		else if (ticket instanceof T3)
+		{
+			color = "#41505E";
+		}
+		((RelativeLayout) row.findViewById(R.id.square)).setBackgroundColor(Color.parseColor(color));
+		
+		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(ticket.getValidated().getHours() + ":" + ticket.getValidated().getMinutes());
+		((TextView) row.findViewById(R.id.textview_ticket_bus)).setText("On bus " + String.valueOf(ticket.getBus()));
 
 		return row;
 	}

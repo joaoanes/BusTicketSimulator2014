@@ -40,13 +40,13 @@
             android:id="@+id/status_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+            android:text="Waiting for input" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="openServer"
-            android:text="OpenServer" />
+            android:text="Accept Connection" />
     </LinearLayout>
 
 </RelativeLayout>

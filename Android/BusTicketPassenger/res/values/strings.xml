@@ -20,7 +20,7 @@
         <item>10</item>
     </string-array>
 
-    <string name="app_name">BusTicketPassenger</string>
+    <string name="app_name">Ticke+</string>
     <string name="action_settings">Settings</string>
     <string name="label_login_username">Username</string>
     <string name="hint_login_username">Username</string>

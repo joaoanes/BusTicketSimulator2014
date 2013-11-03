@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -45,6 +46,7 @@ public class LoginActivity extends Activity {
 	EditText register_password;
 	EditText register_name;
 	EditText register_card_number;
+	TextView app_name;
 	TextView login_header;
 	TextView register_header;
 	Spinner register_card_type;
@@ -82,17 +84,18 @@ public class LoginActivity extends Activity {
 
 				anim.setDuration(1300);
 				anim2.setDuration(1300);
+				
 				if (signInFormExpanded && (!login_username.getText().toString().equals("")))
 				{
 					onLoginClick(null);
 					return ;
 				}
-				signInFormExpanded = !signInFormExpanded;
 				LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) login_wrapper.getLayoutParams();
-				p.height = signInFormExpanded ? 1 : BusTicketUtils.dp2px(99);
+				p.height = !signInFormExpanded ? 1 : BusTicketUtils.dp2px(99);
 				login_wrapper.setLayoutParams(p);
 				login_wrapper.startAnimation(anim);
-				
+
+				signInFormExpanded = !signInFormExpanded;
 				if (registerFormExpanded)
 				{
 					register_wrapper.startAnimation(anim2);
@@ -119,7 +122,7 @@ public class LoginActivity extends Activity {
 					return ;
 				}
 				LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) register_wrapper.getLayoutParams();
-				p.height = registerFormExpanded ? 1 : BusTicketUtils.dp2px(319);
+				p.height = !registerFormExpanded ? 1 : BusTicketUtils.dp2px(319);
 				register_wrapper.setLayoutParams(p);
 				if (signInFormExpanded)
 				{
@@ -127,8 +130,17 @@ public class LoginActivity extends Activity {
 					signInFormExpanded = false;
 				}
 				register_wrapper.startAnimation(anim2);
+
+				Animation anim3 = AnimationUtils.loadAnimation(getBaseContext(), registerFormExpanded? R.anim.fade_in : R.anim.fade_out);
+				anim3.setDuration(1300);
+				anim3.setRepeatCount(0);
+				anim3.setFillAfter(true);
+				app_name.startAnimation(anim3);
+				
+					
+				
 				registerFormExpanded = !registerFormExpanded;
-		
+				
 			}
 		
 		});
@@ -153,6 +165,7 @@ public class LoginActivity extends Activity {
 		register_wrapper = (LinearLayout) findViewById(R.id.register_wrapper);
 		login_header = (TextView) findViewById(R.id.login_header);
 		register_header = (TextView) findViewById(R.id.register_header);
+		app_name = (TextView) findViewById(R.id.app_name);
 		instantiateDatePicker();
 	}
 	

@@ -1,10 +1,15 @@
 package pt.feup.busticketpassenger;
 
+import java.util.Date;
+
 import org.apache.http.HttpStatus;
 
 import pt.feup.busticket.tickets.BusTicketUtils;
 import pt.feup.busticket.tickets.ClientSocket;
 import pt.feup.busticket.tickets.HttpHelper;
+import pt.feup.busticket.tickets.T1;
+import pt.feup.busticket.tickets.T2;
+import pt.feup.busticket.tickets.T3;
 import pt.feup.busticketpassenger.ChangeIPAndPortDialogFragment.ChangeIPAndPortDialogListener;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -16,11 +21,11 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TicketsActivity extends Activity implements ChangeIPAndPortDialogListener {
 	BusTicketPassenger app;
@@ -35,7 +40,10 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		setContentView(R.layout.activity_tickets);
 
 		app = (BusTicketPassenger) getApplication();
@@ -114,6 +122,25 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 	}
 
 	void setTicketAdapter() {
+		Date hello = new Date();
+		T1 a = new T1("lolid");
+		
+		T2 b = new T2("lolid");
+		T3 c = new T3("lolid");
+		T1 d = new T1("lolid");
+		
+		a.setValidated(hello);
+		b.setValidated(hello);
+		c.setValidated(hello);
+		d.setValidated(hello);
+		
+		app.validated_tickets.add(a);
+		app.validated_tickets.add(b);
+		app.validated_tickets.add(c);
+		app.validated_tickets.add(d);
+		
+
+		
 		adapter = new TicketAdapter(this, R.layout.row_ticket, app.validated_tickets);
 		validated_tickets.setAdapter(adapter);
 	}

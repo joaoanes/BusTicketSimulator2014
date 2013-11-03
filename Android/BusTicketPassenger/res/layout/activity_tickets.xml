@@ -2,34 +2,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#efefef"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".TicketsActivity" >
+    tools:context=".TicketsActivity" xmlns:app="http://schemas.android.com/apk/res/pt.feup.busticketpassenger">
 
-    <LinearLayout android:id="@+id/tickets_bought"
+    <LinearLayout
+        android:id="@+id/tickets_bought"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="#ffffff"
+        android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="wrap_content"
+        <pt.feup.busticket.tickets.TextViewFont
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Bought Tickets" 
-            android:textSize="20sp"/>
+            android:background="#aeaeae"
+            android:padding="3dp"
+            android:text="Bought Tickets"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            app:customFont="fonts/Roboto-Light.ttf" />
 
         <LinearLayout
             android:id="@+id/tickets_t1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:padding="10dp" >
 
-            <TextView
+            <pt.feup.busticket.tickets.TextViewFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="T1" />
+                android:text="T1"
+                android:textColor="#A4BAA2"
+                android:textSize="30sp"
+                app:customFont="fonts/Roboto-Black.ttf" />
 
             <TextView
                 android:id="@+id/tickets_t1_quantity"
@@ -39,24 +50,36 @@
                 android:gravity="right"
                 android:text="0 tickets" />
             
-            <Button android:id="@+id/button_validate_t1"
+            <Button
+                android:id="@+id/button_validate_t1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:onClick="validateTicket"
                 android:text="Validate"
-				android:onClick="validateTicket"/>
+                android:textSize="12sp" />
+
         </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#aeaeae" />
 
         <LinearLayout
             android:id="@+id/tickets_t2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:padding="10dp" >
 
-            <TextView
+            <pt.feup.busticket.tickets.TextViewFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="T2" />
+                android:text="T2"
+                android:textColor="#569492"
+                android:textSize="30sp"
+                app:customFont="fonts/Roboto-Black.ttf" />
 
             <TextView
                 android:id="@+id/tickets_t2_quantity"
@@ -66,24 +89,37 @@
                 android:gravity="right"
                 android:text="0 tickets" />
             
-            <Button android:id="@+id/button_validate_t2"
+            <Button
+                android:id="@+id/button_validate_t2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:onClick="validateTicket"
                 android:text="Validate"
-				android:onClick="validateTicket"/>
+                android:textSize="12sp" />
+
         </LinearLayout>
 
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#aeaeae" />
+        
         <LinearLayout
             android:id="@+id/tickets_t3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:padding="10dp" >
 
-            <TextView
+            <pt.feup.busticket.tickets.TextViewFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="T3" />
+                android:text="T3"
+                android:textColor="#41505E"
+                android:textSize="30sp"
+                app:customFont="fonts/Roboto-Black.ttf" />
 
             <TextView
                 android:id="@+id/tickets_t3_quantity"
@@ -93,35 +129,46 @@
                 android:gravity="right"
                 android:text="0 tickets" />
             
-            <Button android:id="@+id/button_validate_t3"
+            <Button
+                android:id="@+id/button_validate_t3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:onClick="validateTicket"
                 android:text="Validate"
-                android:onClick="validateTicket"/>
+                android:textSize="12sp" />
+
         </LinearLayout>
         
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_gravity="center_horizontal"
-            android:text="Buy"
-            android:onClick="buyTickets" />
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:onClick="buyTickets"
+            android:text="Buy Tickets" />
         
     </LinearLayout>
     
-    <TextView android:id="@+id/text_view_1"
+    <pt.feup.busticket.tickets.TextViewFont
+        android:id="@+id/text_view_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tickets_bought"
+        android:background="#aeaeae"
+        android:padding="3dp"
         android:text="Validated Tickets"
+        android:textColor="#ffffff"
         android:textSize="20sp"
-        android:layout_below="@id/tickets_bought"/>
+        app:customFont="fonts/Roboto-Light.ttf" />
     
     <ListView
         android:id="@+id/tickets_validated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_below="@id/text_view_1"
-        android:layout_alignParentBottom="true" >
+        android:background="#ffffff" >
         
     </ListView>
 

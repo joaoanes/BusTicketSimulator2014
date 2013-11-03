@@ -2,7 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefef" >
+    android:background="#efefef" xmlns:app="http://schemas.android.com/apk/res/pt.feup.busticketpassenger">
+
+    <pt.feup.busticket.tickets.TextViewFont
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="20dp"
+        android:text="@string/app_name"
+        android:textSize="70sp"
+        app:customFont="fonts/Roboto-Bold.ttf" />
 
     <LinearLayout
         android:layout_width="230dp"
@@ -11,7 +22,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="4dp" >
-
+        
 	<LinearLayout
 	    android:id="@+id/login_wrapper"
 	    android:layout_width="200dp"
@@ -23,6 +34,7 @@
             android:id="@+id/edittext_login_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:hint="@string/hint_login_username"
             android:lines="1" />
 
@@ -30,11 +42,10 @@
             android:id="@+id/edittext_login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:hint="@string/hint_login_password"
             android:inputType="textPassword"
-            android:lines="1"
-            android:text="Password" />
-
+            android:lines="1" />
        
 		</LinearLayout>
 		
@@ -44,7 +55,7 @@
 		    android:layout_marginBottom="10dp"
 		    android:background="#aeaeae" >
 
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
             android:id="@+id/login_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +65,8 @@
             android:text="@string/label_login"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
-            android:textSize="12pt" />
+            android:textSize="12pt"
+            app:customFont="fonts/Roboto-Light.ttf" />
 
         </RelativeLayout>
 		
@@ -104,7 +116,7 @@
             android:inputType="number"
             android:lines="1" />
 
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_register_card_validity" />
@@ -122,7 +134,7 @@
 		    android:layout_marginTop="10dp"
 		    android:background="#aeaeae" >
 	
-		<TextView
+		<pt.feup.busticket.tickets.TextViewFont
             android:id="@+id/register_header"
              android:layout_width="wrap_content"
             android:layout_height="wrap_content"
