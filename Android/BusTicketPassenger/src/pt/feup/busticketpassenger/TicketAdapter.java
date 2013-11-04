@@ -54,7 +54,9 @@ public class TicketAdapter extends ArrayAdapter<Ticket>{
 		}
 		((RelativeLayout) row.findViewById(R.id.square)).setBackgroundColor(Color.parseColor(color));
 		
-		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(ticket.getValidated().getHours() + ":" + ticket.getValidated().getMinutes());
+		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(ticket.getValidated().getHours() + ":" + 
+				(ticket.getValidated().getMinutes() < 10 ? 
+						("0" + ticket.getValidated().getMinutes()) : ticket.getValidated().getMinutes()));
 		((TextView) row.findViewById(R.id.textview_ticket_bus)).setText("On bus " + String.valueOf(ticket.getBus()));
 
 		return row;

@@ -58,12 +58,13 @@
 
     <pt.feup.busticket.tickets.TextViewFont
         android:id="@+id/textview_ticket_id"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/square"
         android:layout_alignLeft="@+id/textview_ticket_duration"
+        android:layout_marginLeft="10dp"
         android:paddingLeft="5dp"
-        android:text="aaaaaaaaaaaaaaaaaaa"
+        android:text="be461a0cd1fda052a69c3fd94f8cf5f6f86afa34"
         android:textSize="10sp" />
 
 </RelativeLayout>

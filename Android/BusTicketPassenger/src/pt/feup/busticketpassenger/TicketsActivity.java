@@ -121,26 +121,7 @@ public class TicketsActivity extends Activity implements ChangeIPAndPortDialogLi
 		setTicketAdapter();		
 	}
 
-	void setTicketAdapter() {
-		Date hello = new Date();
-		T1 a = new T1("lolid");
-		
-		T2 b = new T2("lolid");
-		T3 c = new T3("lolid");
-		T1 d = new T1("lolid");
-		
-		a.setValidated(hello);
-		b.setValidated(hello);
-		c.setValidated(hello);
-		d.setValidated(hello);
-		
-		app.validated_tickets.add(a);
-		app.validated_tickets.add(b);
-		app.validated_tickets.add(c);
-		app.validated_tickets.add(d);
-		
-
-		
+	void setTicketAdapter() {	
 		adapter = new TicketAdapter(this, R.layout.row_ticket, app.validated_tickets);
 		validated_tickets.setAdapter(adapter);
 	}

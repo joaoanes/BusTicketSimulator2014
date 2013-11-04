@@ -1,15 +1,21 @@
 package pt.feup.busticketinspector;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import pt.feup.busticket.tickets.T1;
+import pt.feup.busticket.tickets.T2;
+import pt.feup.busticket.tickets.T3;
 import pt.feup.busticket.tickets.Ticket;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class BusTicketsAdapter extends ArrayAdapter<Ticket>{
@@ -22,19 +28,42 @@ public class BusTicketsAdapter extends ArrayAdapter<Ticket>{
 		this.tickets = (ArrayList<Ticket>) objects;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		if (row == null) {
 			LayoutInflater inflater =  ((Activity) getContext()).getLayoutInflater();
-			row = inflater.inflate(layout_id, null);
+			row = inflater.inflate(layout_id, null); // get our custom layout
 		}
 		Ticket ticket = tickets.get(position);
 		
+	
 		((TextView) row.findViewById(R.id.textview_ticket_type)).setText(ticket.getType());
-		((TextView) row.findViewById(R.id.textview_ticket_id)).setText(String.valueOf(ticket.getId()));
-		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(String.valueOf(ticket.getValidated().toString()));
-		((TextView) row.findViewById(R.id.textview_ticket_bus)).setText(String.valueOf(ticket.getBus()));
+		
+		String color = "#ff0000";
+		int delay = 0;
+		if (ticket instanceof T1)
+		{
+			color = "#A4BAA2";
+			delay = 60000 * 15;
+		}
+		else if (ticket instanceof T2)
+		{
+			color = "#569492";
+			delay = 60000 * 30;
+		}
+		else if (ticket instanceof T3)
+		{
+			color = "#41505E";
+			delay = 60000 * 60;
+		}
+		((RelativeLayout) row.findViewById(R.id.square)).setBackgroundColor(Color.parseColor(color));
+		Date when = new Date(ticket.getValidated().getTime() + delay);
+		((TextView) row.findViewById(R.id.textview_ticket_duration)).setText(when.getHours() + ":" + 
+				(when.getMinutes() < 10 ? 
+						("0" + when.getMinutes()) : when.getMinutes()));
+		((TextView) row.findViewById(R.id.textview_ticket_bus)).setText("On bus " + String.valueOf(ticket.getBus()));
 
 		return row;
 	}
