@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import pt.feup.busticket.tickets.Ticket;
 import android.app.Application;
+import android.util.Log;
 
 public class BusTicketInspector extends Application {
 	boolean in_select_layout = true;
