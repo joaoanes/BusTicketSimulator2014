@@ -123,6 +123,7 @@ public class InspectorActivity extends Activity implements SimpleServerListener,
 		
 		adapter = new BusTicketsAdapter(this, R.layout.row_ticket, app.tickets_array);
 		validated_tickets_list.setAdapter(adapter);
+		validated_tickets_list.setEmptyView(findViewById(R.id.tickets_validated_empty));
 		registerForContextMenu(validated_tickets_list);
 	}
 	

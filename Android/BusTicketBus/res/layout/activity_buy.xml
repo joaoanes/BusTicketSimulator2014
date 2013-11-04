@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
+            android:textSize="25sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Bus" />
@@ -36,17 +37,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/status_id"
+        <pt.feup.busticket.tickets.TextViewFont
+            android:textSize="25sp"
+            android:id="@+id/textview_bus_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Waiting for input" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="openServer"
-            android:text="Accept Connection" />
+            android:text="Receive Ticket" />
     </LinearLayout>
 
 </RelativeLayout>

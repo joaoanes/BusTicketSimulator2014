@@ -171,5 +171,15 @@
         android:background="#ffffff" >
         
     </ListView>
+    <pt.feup.busticket.tickets.TextViewFont
+        android:id="@+id/tickets_validated_empty"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" 
+	    android:text="You Have No Validated Tickets"
+	    android:textSize="20sp"
+	    android:padding="3dp"
+	    android:visibility="gone"
+	    android:layout_below="@id/text_view_1"
+        android:background="#ffffff" />
 
 </RelativeLayout>

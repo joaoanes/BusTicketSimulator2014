@@ -234,6 +234,28 @@ public class LoginActivity extends Activity {
 		task.execute(new Void[]{});	
 	}
 
+	public void login(String json_string) throws JSONException {
+		JSONObject json = new JSONObject(json_string);
+		if(app.token != null) {
+			app.reset();
+		}
+		app.token = json.getString("auth");
+		Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
+	}
+	
+	public void showError(String context, String json_string) {
+		JSONObject json;
+		try {
+			json = new JSONObject(json_string);
+			String error = json.getString("error");
+			BusTicketUtils.createAlertDialog(LoginActivity.this, context, error);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private class LoginTask extends AsyncTask<Void, Void, HttpHelper.HttpResult> {
 
 		@Override
@@ -249,24 +271,19 @@ public class LoginActivity extends Activity {
 			switch(result.getCode()) {
 				case HttpStatus.SC_OK:
 					try {
-						JSONObject json = new JSONObject(result.getResult());
-						if(app.token != null) {
-							app.reset();
-						}
-						app.token = json.getString("auth");
-						Intent intent = new Intent(getApplicationContext(), TicketsActivity.class);
-						startActivity(intent);
+						login(result.getResult());
 					} catch (JSONException e) {
 						BusTicketUtils.createAlertDialog(LoginActivity.this, "Login", "Didn't get token");
 					}
 					return;
 				default:
-					BusTicketUtils.createAlertDialog(LoginActivity.this, "Login", result.toString());
+					showError("Login", result.getResult());
+					//BusTicketUtils.createAlertDialog(LoginActivity.this, "Login", result.toString());
 					return;
 			}
 		}
 	}
-		
+	
 	private class RegisterTask extends AsyncTask<Void, Void, HttpHelper.HttpResult> {
 
 		@Override
@@ -278,7 +295,17 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onPostExecute(HttpHelper.HttpResult result) {
 			progress_dialog.dismiss();
-			BusTicketUtils.createAlertDialog(LoginActivity.this, "Register", result.toString());
+			if(result.getCode() == HttpStatus.SC_OK) {
+				try {
+					login(result.getResult());
+					return;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			//BusTicketUtils.createAlertDialog(LoginActivity.this, "Register", result.getResult());
+			showError("Register", result.getResult());
 		}
 
 	}

@@ -15,7 +15,8 @@
         android:orientation="vertical"
         android:visibility="visible">
         
-        <TextView
+        <pt.feup.busticket.tickets.TextViewFont
+            android:textSize="25sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Bus" />
@@ -40,7 +41,9 @@
         android:orientation="vertical"
         android:visibility="gone" >
         
-        <TextView android:id="@+id/title_bus"
+        <pt.feup.busticket.tickets.TextViewFont
+            android:textSize="25sp"
+            android:id="@+id/title_bus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bus 0"
@@ -51,7 +54,9 @@
             android:text="Receive Ticket"
             android:onClick="onReceiveTicketClick"/>
         
-        <TextView android:layout_width="wrap_content"
+        <pt.feup.busticket.tickets.TextViewFont
+            android:textSize="25sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Validated Tickets"/>
         
@@ -59,6 +64,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></ListView>
+        <pt.feup.busticket.tickets.TextViewFont
+	        android:id="@+id/tickets_validated_empty"
+		    android:layout_width="match_parent"
+		    android:layout_height="0dp"
+		    android:layout_weight="1" 
+		    android:text="The Bus Has No Validated Tickets"
+		    android:textSize="20sp"
+		    android:padding="3dp"
+		    android:visibility="gone" />
         
     </LinearLayout>
 

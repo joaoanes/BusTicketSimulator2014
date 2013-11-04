@@ -7,6 +7,7 @@ import pt.feup.busticket.tickets.HttpHelper;
 import pt.feup.busticket.tickets.HttpHelper.HttpResult;
 import pt.feup.busticket.tickets.SimpleServer;
 import pt.feup.busticket.tickets.SimpleServer.SimpleServerListener;
+import pt.feup.busticket.tickets.TextViewFont;
 import pt.feup.busticket.tickets.Ticket;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -16,7 +17,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class BusActivity extends Activity implements SimpleServerListener, OnCancelListener {
@@ -28,6 +28,7 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	LinearLayout main_layout;
 	LinearLayout select_layout;
 	EditText bus_id_edittext;
+	TextViewFont textview_bus_id;
 	
 	BusTicketBus app;
 	
@@ -46,6 +47,7 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 		main_layout = (LinearLayout) findViewById(R.id.bus_main_layout);
 		select_layout = (LinearLayout) findViewById(R.id.bus_select_layout);
 		bus_id_edittext = (EditText) findViewById(R.id.bus_id_edittext);
+		textview_bus_id = (TextViewFont) findViewById(R.id.textview_bus_id);
 		
 		if(app.in_select_layout) {
 			showSelectLayout();
@@ -63,6 +65,7 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	
 	public void showMainLayout() {
 		app.in_select_layout = false;
+		textview_bus_id.setText("Bus " + app.bus_id);
 		select_layout.setVisibility(View.GONE);
 		main_layout.setVisibility(View.VISIBLE);
 	}
@@ -83,7 +86,6 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	}
 	
 	public void openServer(View view) {
-		((TextView) findViewById(R.id.status_id)).setText("Server open");
 		dialog.show();
 		(new Thread(new ValidateTicketThread())).start();
 	}
@@ -139,19 +141,18 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	public void onServerClose(boolean forced) {
 		dialog.dismiss();
 		if(!forced) {
-			runOnUiThread(new Runnable() {
+			/*runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
-					((TextView) findViewById(R.id.status_id)).setText("Server Closed");
 					
 				}
-			});
+			});*/
 		}
 		else {
 			runOnUiThread(new Runnable() {
 				public void run() {
-					BusTicketUtils.createAlertDialog(BusActivity.this, "Cenas", "forced");
+					BusTicketUtils.createAlertDialog(BusActivity.this, "Validate Ticket", "The connection was closed");
 				}
 			});
 			
@@ -162,6 +163,5 @@ public class BusActivity extends Activity implements SimpleServerListener, OnCan
 	@Override
 	public void onCancel(DialogInterface arg0) {
 		server.closeConnection(true);
-		((TextView) findViewById(R.id.status_id)).setText("Server force close");
 	}
 }
