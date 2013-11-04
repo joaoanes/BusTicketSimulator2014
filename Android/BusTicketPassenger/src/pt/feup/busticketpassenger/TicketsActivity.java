@@ -1,15 +1,10 @@
 package pt.feup.busticketpassenger;
 
-import java.util.Date;
-
 import org.apache.http.HttpStatus;
 
 import pt.feup.busticket.tickets.BusTicketUtils;
 import pt.feup.busticket.tickets.ClientSocket;
 import pt.feup.busticket.tickets.HttpHelper;
-import pt.feup.busticket.tickets.T1;
-import pt.feup.busticket.tickets.T2;
-import pt.feup.busticket.tickets.T3;
 import pt.feup.busticketpassenger.ChangeIPAndPortDialogFragment.ChangeIPAndPortDialogListener;
 import android.app.Activity;
 import android.app.ProgressDialog;
