@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,13 +16,21 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="pt.feup.stockportfolio.TickActivity"
+            android:name="pt.feup.stockportfolio.QuoteActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="pt.feup.stockportfolio.AddQuotesActivity"
+            android:label="@string/title_activity_add_quotes"
+            android:parentActivityName="pt.feup.stockportfolio.QuoteActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pt.feup.stockportfolio.TickActivity" />
         </activity>
     </application>
 

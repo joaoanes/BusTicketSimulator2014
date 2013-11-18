@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuoteActivity" 
+    android:baselineAligned="false">
+
+    <fragment
+        android:id="@+id/quote_fragment"
+        android:name="pt.feup.stockportfolio.QuoteFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        tools:context=".TickActivity"
+        tools:layout="@layout/fragment_quote" />
+
+    <FrameLayout
+        android:id="@+id/details_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2" >
+    </FrameLayout>
+
+</LinearLayout>
