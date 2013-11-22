@@ -7,6 +7,7 @@ import java.util.HashMap;
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
 import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
+import pt.feup.stockportfolio.QuoteDetailsFragment.QuoteDetailsListener;
 import pt.feup.stockportfolio.QuotesFragment.QuotesListener;
 import android.app.Activity;
 import android.app.Fragment;
@@ -21,7 +22,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener {
+public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener, QuoteDetailsListener {
 	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
 	static ArrayList<Quote> quotes = new ArrayList<Quote>();
 
@@ -100,6 +101,11 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		returnToQuoteFragment();
 		
 		quotes_fragment.adapter.add(quote);
+	}
+	
+	@Override
+	public void onQuantityChange() {
+		quotes_fragment.adapter.notifyDataSetChanged();
 	}
 
 	public void startAddQuote() {

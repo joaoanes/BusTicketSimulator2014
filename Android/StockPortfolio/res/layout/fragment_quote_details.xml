@@ -34,6 +34,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        
+        <Button android:id="@+id/quote_details_remove_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- 10"/>
+        
+        <Button android:id="@+id/quote_details_remove_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- 1"/>
+        
+        <Button android:id="@+id/quote_details_add_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ 1"/>
+        
+        <Button android:id="@+id/quote_details_add_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ 10"/>
+        
+    </LinearLayout>
+    
     <TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
