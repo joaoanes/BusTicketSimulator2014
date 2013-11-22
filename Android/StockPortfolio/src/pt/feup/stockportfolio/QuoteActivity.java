@@ -57,8 +57,11 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 				startAddQuote();
 				return true;
 			case android.R.id.home:
-				returnToQuoteFragment();
-				return true;
+				if(extra_fragment != null) {
+					returnToQuoteFragment();
+					return true;
+				}
+				break;
 			default:
 				break;
 		};
