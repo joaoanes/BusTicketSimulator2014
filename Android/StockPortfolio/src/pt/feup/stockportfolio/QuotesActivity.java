@@ -1,14 +1,18 @@
 package pt.feup.stockportfolio;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
+import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
+import pt.feup.stockportfolio.QuotesFragment.QuotesListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Menu;
@@ -17,15 +21,19 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class QuotesActivity extends Activity implements AddQuoteListener {
+public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener {
 	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
 	static ArrayList<Quote> quotes = new ArrayList<Quote>();
 
+	HttpHelper http_helper = new HttpHelper();	
+	
 	boolean landscape = false;
 	QuotesFragment quotes_fragment;
 	static Fragment extra_fragment;
 	FragmentManager fragment_manager;
 	FrameLayout details_layout;
+	
+	static Quote selected_quote;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +85,12 @@ public class QuotesActivity extends Activity implements AddQuoteListener {
 		
 		super.onBackPressed();
 	}
+	
+	@Override //QuotesListener
+	public void onQuoteClick(Quote quote) {
+		selected_quote = quote;
+		showExtraFragment(new QuoteDetailsFragment());
+	}
 
 	@Override // AddQuoteListener
 	public void addQuote(String tick, int quantity, double value) {
@@ -108,6 +122,12 @@ public class QuotesActivity extends Activity implements AddQuoteListener {
 	}
 	
 	public void showExtraFragment(Fragment fragment) {
+		if(extra_fragment != null) {
+			fragment_manager.beginTransaction()
+				.remove(extra_fragment)
+				.commit();
+		}
+		
 		extra_fragment = fragment;
 		showExtraFragment();
 	}
@@ -163,6 +183,45 @@ public class QuotesActivity extends Activity implements AddQuoteListener {
 		Display display = getWindowManager().getDefaultDisplay();
 		return display.getWidth() > display.getHeight();
 
+	}
+	
+	public class GetQuotesValuesTask extends AsyncTask<Void, Void, ArrayList<QuoteResult>> {
+
+		@Override
+		protected ArrayList<QuoteResult> doInBackground(Void... params) {
+			String[] quotes = {"GOOG", "AAPL", "DELL"};
+			return http_helper.getTickValues(new ArrayList<String>(Arrays.asList(quotes)));
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<QuoteResult> result) {
+			String print = "";
+			for(QuoteResult quote : result) {
+				print += quote.toString() + "\n";
+			}
+			
+			Utils.createAlertDialog(QuotesActivity.this, "Cenas", print);
+		}
+		
+	}
+	
+	public class GetTickHistoricTask extends AsyncTask<Void, Void, ArrayList<HistoricResult>> {
+
+		@Override
+		protected ArrayList<HistoricResult> doInBackground(Void... params) {
+			return http_helper.getHistoric("GOOG");
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<HistoricResult> result) {
+			String print = "";
+			for(HistoricResult historic : result) {
+				print += historic.toString() + "\n";
+			}
+			
+			Utils.createAlertDialog(QuotesActivity.this, "Cenas", print);
+		}
+		
 	}
 
 }

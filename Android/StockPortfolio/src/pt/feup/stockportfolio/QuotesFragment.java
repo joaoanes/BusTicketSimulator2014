@@ -1,90 +1,70 @@
 package pt.feup.stockportfolio;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import pt.feup.stockportfolio.HttpHelper.HistoricResult;
-import pt.feup.stockportfolio.HttpHelper.QuoteResult;
+import pt.feup.stockportfolio.QuoteDetailsFragment.QuoteDetailsListener;
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class QuotesFragment extends Fragment {
-	HttpHelper http_helper = new HttpHelper();
-	
-	
+
 	ListView quotes_list;
 	QuotesAdapter adapter;
 	View v;
+	
+	QuotesListener listener = dummyListener;
+	public interface QuotesListener {
+		public void onQuoteClick(Quote quote);
+	}
+	
+	private static QuotesListener dummyListener = new QuotesListener() {
+		@Override
+		public void onQuoteClick(Quote quote) {}
+	};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//(new GetTickHistoricTask()).execute(new Void[]{});
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		v =  inflater.inflate(R.layout.fragment_quote, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		v =  inflater.inflate(R.layout.fragment_quotes, container, false);
 		setListView();
 		return v;
 	}
 
-	private class GetQuotesValuesTask extends AsyncTask<Void, Void, ArrayList<QuoteResult>> {
-
-		@Override
-		protected ArrayList<QuoteResult> doInBackground(Void... params) {
-			String[] quotes = {"GOOG", "AAPL", "DELL"};
-			return http_helper.getTickValues(new ArrayList<String>(Arrays.asList(quotes)));
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<QuoteResult> result) {
-			String print = "";
-			for(QuoteResult quote : result) {
-				print += quote.toString() + "\n";
-			}
-			
-			Utils.createAlertDialog(getActivity(), "Cenas", print);
-		}
-		
-	}
-	
-	private class GetTickHistoricTask extends AsyncTask<Void, Void, ArrayList<HistoricResult>> {
-
-		@Override
-		protected ArrayList<HistoricResult> doInBackground(Void... params) {
-			return http_helper.getHistoric("GOOG");
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<HistoricResult> result) {
-			String print = "";
-			for(HistoricResult historic : result) {
-				print += historic.toString() + "\n";
-			}
-			
-			Utils.createAlertDialog(getActivity(), "Cenas", print);
-		}
-		
-	}
-
-	
 	void setListView() {
 		quotes_list = (ListView) v.findViewById(R.id.quotes_list);
 		adapter = new QuotesAdapter();
 		quotes_list.setAdapter(adapter);
 		quotes_list.setEmptyView(v.findViewById(R.id.quotes_list_empty));
+		quotes_list.setOnItemClickListener(click_quote);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		if (!(activity instanceof QuotesListener)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		listener = (QuotesListener) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		listener = dummyListener;
 	}
 	
 	class QuotesAdapter extends ArrayAdapter<Quote> {
@@ -111,5 +91,14 @@ public class QuotesFragment extends Fragment {
 		}
 		
 	}
+	
+	OnItemClickListener click_quote = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			view.setSelected(true);
+			listener.onQuoteClick(adapter.getItem(position));
+		}
+		
+	};
 
 }
