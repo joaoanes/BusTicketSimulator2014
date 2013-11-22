@@ -1,8 +1,20 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/quote_fragment"
-    android:name="pt.feup.stockportfolio.QuoteFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TickActivity"
-    tools:layout="@layout/fragment_quote" />
+    android:orientation="vertical" >
+
+    <fragment
+        android:id="@+id/quote_fragment"
+        android:name="pt.feup.stockportfolio.QuoteFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_quote" />
+
+    <FrameLayout
+        android:id="@+id/details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</LinearLayout>

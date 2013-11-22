@@ -2,7 +2,6 @@ package pt.feup.stockportfolio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;

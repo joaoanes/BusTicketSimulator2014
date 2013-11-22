@@ -5,29 +5,51 @@ import java.util.HashMap;
 
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
-
 import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 public class QuoteActivity extends Activity implements AddQuoteListener {
 	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
 	static ArrayList<Quote> quotes = new ArrayList<Quote>();
-	
-	private boolean landscape = false;
+
+	boolean landscape = false;
+	QuoteFragment quote_fragment;
+	static Fragment extra_fragment;
+	FragmentManager fragment_manager;
+	FrameLayout details_layout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quote);
+
+		details_layout = (FrameLayout) findViewById(R.id.details_layout);
+		fragment_manager = getFragmentManager();
+		landscape = isLandscape();
+
+		quote_fragment = (QuoteFragment) fragment_manager.findFragmentById(R.id.quote_fragment);
 		
-		if(findViewById(R.id.details_layout) != null) {
-			landscape = true;
+		if(extra_fragment != null) {
+			showExtraFragment();
 		}
-		
+
+		/*if(findViewById(R.id.details_layout) != null) {
+			landscape = true;
+		} else {
+			quote_fragment = new QuoteFragment();
+			getFragmentManager().beginTransaction()
+				.replace(R.id.details_layout, quote_fragment).commit();
+		}*/
+
 	}
 
 	@Override
@@ -49,53 +71,108 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 		};
 		return false;
 	}
-	
+
 	@Override
 	public void addQuote(String tick, int quantity, double value) {
 		Toast.makeText(this, tick+" "+String.valueOf(quantity) , Toast.LENGTH_SHORT).show();
 		Quote quote = new Quote(tick, quantity);
-		QuoteFragment frag = (QuoteFragment) getFragmentManager().findFragmentById(R.id.quote_fragment);
-		frag.adapter.add(quote);
+		
+		/*fragment_manager.beginTransaction()
+			.remove(extra_fragment)
+			.commit();
+
+		if(!landscape) {
+			fragment_manager.beginTransaction()
+				.show(quote_fragment)
+				.commit();
+			
+			details_layout.setVisibility(View.GONE);
+		}*/
+		returnToQuoteFragment();
+		
+		quote_fragment.adapter.add(quote);
 	}
 
 	public void startAddQuote() {
-		if (landscape) {
-			AddQuotesFragment fragment = new AddQuotesFragment();
-			getFragmentManager().beginTransaction()
-					.replace(R.id.details_layout, fragment).commit();
-
-		} else {
-			Intent detailIntent = new Intent(this, AddQuotesActivity.class);
-			startActivity(detailIntent);
-		}
+		showExtraFragment(new AddQuotesFragment());
+		/*fragment_manager.beginTransaction()
+			.replace(R.id.details_layout, extra_fragment)
+			.commit();
+		
+		if (!landscape) {
+			details_layout.setVisibility(View.VISIBLE);
+			fragment_manager.beginTransaction()
+				.hide(quote_fragment)
+				.commit();
+		}*/
 	}
 	
+	public void showExtraFragment() {
+		FragmentTransaction transaction = fragment_manager.beginTransaction();
+		transaction.replace(R.id.details_layout, extra_fragment);
+		
+		if (!landscape) {
+			details_layout.setVisibility(View.VISIBLE);
+			transaction.hide(quote_fragment);
+		}
+		
+		transaction.commit();
+	}
+	
+	public void showExtraFragment(Fragment fragment) {
+		extra_fragment = fragment;
+		showExtraFragment();
+	}
+	
+	
+	public void returnToQuoteFragment() {
+		FragmentTransaction transaction = fragment_manager.beginTransaction();
+		transaction.remove(extra_fragment);
+		
+		extra_fragment = null;
+	
+		if(!landscape) {
+			transaction.show(quote_fragment);
+			
+			details_layout.setVisibility(View.GONE);
+		}
+		
+		transaction.commit();
+	}
+
 	public static boolean hasQuote(String tick) {
 		return quotes_map.containsKey(tick);
 	}
-	
+
 	public static void addQuote(Quote quote) {
 		quotes_map.put(quote.getTick(), quote);
 	}
-	
+
 	public static void updateQuoteValue(QuoteResult quote_result) {
 		String tick = quote_result.getTick();
 		if(hasQuote(tick)) {
 			quotes_map.get(tick).setValue(quote_result.getValue());
 		}
 	}
-	
+
 	public static void updateQuoteQuantity(String tick, int change) {
 		if(hasQuote(tick)) {
 			quotes_map.get(tick).changeQuantity(change);
 		}
 	}
-	
+
 	public static void removeQuote(String tick) {
 		if(hasQuote(tick)) {
 			quotes.remove(quotes_map.get(tick));
 			quotes_map.remove(tick);
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public boolean isLandscape() {
+		Display display = getWindowManager().getDefaultDisplay();
+		return display.getWidth() > display.getHeight();
+
 	}
 
 }
