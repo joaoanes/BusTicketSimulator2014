@@ -17,12 +17,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class QuoteActivity extends Activity implements AddQuoteListener {
+public class QuotesActivity extends Activity implements AddQuoteListener {
 	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
 	static ArrayList<Quote> quotes = new ArrayList<Quote>();
 
 	boolean landscape = false;
-	QuoteFragment quote_fragment;
+	QuotesFragment quotes_fragment;
 	static Fragment extra_fragment;
 	FragmentManager fragment_manager;
 	FrameLayout details_layout;
@@ -30,13 +30,13 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_quote);
+		setContentView(R.layout.activity_quotes);
 
 		details_layout = (FrameLayout) findViewById(R.id.details_layout);
 		fragment_manager = getFragmentManager();
 		landscape = isLandscape();
 
-		quote_fragment = (QuoteFragment) fragment_manager.findFragmentById(R.id.quote_fragment);
+		quotes_fragment = (QuotesFragment) fragment_manager.findFragmentById(R.id.quote_fragment);
 		
 		if(extra_fragment != null) {
 			showExtraFragment();
@@ -85,7 +85,7 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 		
 		returnToQuoteFragment();
 		
-		quote_fragment.adapter.add(quote);
+		quotes_fragment.adapter.add(quote);
 	}
 
 	public void startAddQuote() {
@@ -98,7 +98,7 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 		
 		if (!landscape) {
 			details_layout.setVisibility(View.VISIBLE);
-			transaction.hide(quote_fragment);
+			transaction.hide(quotes_fragment);
 			
 			if(!landscape) {
 				getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -120,7 +120,7 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 		extra_fragment = null;
 	
 		if(!landscape) {
-			transaction.show(quote_fragment);
+			transaction.show(quotes_fragment);
 			
 			details_layout.setVisibility(View.GONE);
 		}

@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuoteActivity" 
+    tools:context=".QuotesActivity" 
     android:baselineAligned="false">
 
     <fragment
         android:id="@+id/quote_fragment"
-        android:name="pt.feup.stockportfolio.QuoteFragment"
+        android:name="pt.feup.stockportfolio.QuotesFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

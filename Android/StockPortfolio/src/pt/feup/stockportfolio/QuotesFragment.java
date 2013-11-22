@@ -16,12 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class QuoteFragment extends Fragment {
+public class QuotesFragment extends Fragment {
 	HttpHelper http_helper = new HttpHelper();
 	
 	
 	ListView quotes_list;
-	QuoteAdapter adapter;
+	QuotesAdapter adapter;
 	View v;
 	
 	@Override
@@ -82,15 +82,15 @@ public class QuoteFragment extends Fragment {
 	
 	void setListView() {
 		quotes_list = (ListView) v.findViewById(R.id.quotes_list);
-		adapter = new QuoteAdapter();
+		adapter = new QuotesAdapter();
 		quotes_list.setAdapter(adapter);
 		quotes_list.setEmptyView(v.findViewById(R.id.quotes_list_empty));
 	}
 	
-	class QuoteAdapter extends ArrayAdapter<Quote> {
+	class QuotesAdapter extends ArrayAdapter<Quote> {
 		int layout_id;
-		public QuoteAdapter() {
-			super(QuoteFragment.this.getActivity(), R.layout.row_quote, QuoteActivity.quotes);
+		public QuotesAdapter() {
+			super(QuotesFragment.this.getActivity(), R.layout.row_quote, QuotesActivity.quotes);
 			layout_id = R.layout.row_quote;
 		}
 
@@ -102,7 +102,7 @@ public class QuoteFragment extends Fragment {
 				row = inflater.inflate(layout_id, null);
 			}
 
-			Quote quote = QuoteActivity.quotes.get(position);
+			Quote quote = QuotesActivity.quotes.get(position);
 			((TextView) row.findViewById(R.id.row_quote_tick)).setText(quote.getTick());
 			((TextView) row.findViewById(R.id.row_quote_quantiy)).setText(String.valueOf(quote.getQuantity()));
 			((TextView) row.findViewById(R.id.row_quote_value)).setText(String.valueOf(quote.getValue()));

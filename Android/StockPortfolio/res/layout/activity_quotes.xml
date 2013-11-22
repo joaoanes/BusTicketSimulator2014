@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/quote_fragment"
-        android:name="pt.feup.stockportfolio.QuoteFragment"
+        android:name="pt.feup.stockportfolio.QuotesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_quote" />
