@@ -1,6 +1,5 @@
 package pt.feup.stockportfolio;
 
-import pt.feup.stockportfolio.QuoteDetailsFragment.QuoteDetailsListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -95,7 +94,6 @@ public class QuotesFragment extends Fragment {
 	OnItemClickListener click_quote = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			view.setSelected(true);
 			listener.onQuoteClick(adapter.getItem(position));
 		}
 		

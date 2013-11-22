@@ -89,7 +89,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	@Override //QuotesListener
 	public void onQuoteClick(Quote quote) {
 		selected_quote = quote;
-		showExtraFragment(new QuoteDetailsFragment());
+		showQuoteDetails();
 	}
 
 	@Override // AddQuoteListener
@@ -183,6 +183,14 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		Display display = getWindowManager().getDefaultDisplay();
 		return display.getWidth() > display.getHeight();
 
+	}
+	
+	void showQuoteDetails() {
+		if(extra_fragment instanceof QuoteDetailsFragment) {
+			((QuoteDetailsFragment) extra_fragment).setDetails(selected_quote);
+		} else {
+			showExtraFragment(new QuoteDetailsFragment());
+		}
 	}
 	
 	public class GetQuotesValuesTask extends AsyncTask<Void, Void, ArrayList<QuoteResult>> {

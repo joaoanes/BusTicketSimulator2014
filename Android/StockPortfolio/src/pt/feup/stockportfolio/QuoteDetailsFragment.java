@@ -49,6 +49,17 @@ public class QuoteDetailsFragment extends Fragment {
 		quantity_view.setText(String.valueOf(quote.getQuantity()));
 		value_view.setText(String.valueOf(quote.getValue()));
 	}
+	
+	public void setDetails(String tick, int quantity, double value) {
+		tick_view.setText(tick);
+		quantity_view.setText(String.valueOf(quantity));
+		value_view.setText(String.valueOf(value));
+	}
+	
+	public void setDetails(Quote quote) {
+		setDetails(quote.getTick(), quote.getQuantity(), quote.getValue());
+	}
+	
 	/*
 	@Override
 	public void onAttach(Activity activity) {
