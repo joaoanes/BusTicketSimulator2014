@@ -32,7 +32,6 @@ public class AddQuotesFragment extends Fragment {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
 	}
@@ -40,7 +39,6 @@ public class AddQuotesFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		view = inflater.inflate(R.layout.fragment_add_quote, container, false);
 		setViews();
 		return view;
@@ -49,7 +47,6 @@ public class AddQuotesFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		// Activities containing this fragment must implement its callbacks.
 		if (!(activity instanceof AddQuoteListener)) {
 			throw new IllegalStateException(
 					"Activity must implement fragment's callbacks.");
@@ -61,7 +58,6 @@ public class AddQuotesFragment extends Fragment {
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		// Reset the active callbacks interface to the dummy implementation.
 		listener = dummyListener;
 	}
 	

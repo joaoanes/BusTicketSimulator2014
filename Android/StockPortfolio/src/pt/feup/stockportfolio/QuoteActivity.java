@@ -41,15 +41,6 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 		if(extra_fragment != null) {
 			showExtraFragment();
 		}
-
-		/*if(findViewById(R.id.details_layout) != null) {
-			landscape = true;
-		} else {
-			quote_fragment = new QuoteFragment();
-			getFragmentManager().beginTransaction()
-				.replace(R.id.details_layout, quote_fragment).commit();
-		}*/
-
 	}
 
 	@Override
@@ -62,32 +53,33 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_add_quote:
-			startAddQuote();
-			return true;
-
-		default:
-			break;
+			case R.id.action_add_quote:
+				startAddQuote();
+				return true;
+			case android.R.id.home:
+				returnToQuoteFragment();
+				return true;
+			default:
+				break;
 		};
 		return false;
 	}
-
+	
 	@Override
+	public void onBackPressed() {
+		if(extra_fragment != null && !landscape) {
+			returnToQuoteFragment();
+			return;
+		}
+		
+		super.onBackPressed();
+	}
+
+	@Override // AddQuoteListener
 	public void addQuote(String tick, int quantity, double value) {
 		Toast.makeText(this, tick+" "+String.valueOf(quantity) , Toast.LENGTH_SHORT).show();
 		Quote quote = new Quote(tick, quantity);
 		
-		/*fragment_manager.beginTransaction()
-			.remove(extra_fragment)
-			.commit();
-
-		if(!landscape) {
-			fragment_manager.beginTransaction()
-				.show(quote_fragment)
-				.commit();
-			
-			details_layout.setVisibility(View.GONE);
-		}*/
 		returnToQuoteFragment();
 		
 		quote_fragment.adapter.add(quote);
@@ -95,16 +87,6 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 
 	public void startAddQuote() {
 		showExtraFragment(new AddQuotesFragment());
-		/*fragment_manager.beginTransaction()
-			.replace(R.id.details_layout, extra_fragment)
-			.commit();
-		
-		if (!landscape) {
-			details_layout.setVisibility(View.VISIBLE);
-			fragment_manager.beginTransaction()
-				.hide(quote_fragment)
-				.commit();
-		}*/
 	}
 	
 	public void showExtraFragment() {
@@ -114,8 +96,11 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 		if (!landscape) {
 			details_layout.setVisibility(View.VISIBLE);
 			transaction.hide(quote_fragment);
+			
+			if(!landscape) {
+				getActionBar().setDisplayHomeAsUpEnabled(true);
+			}
 		}
-		
 		transaction.commit();
 	}
 	
@@ -137,6 +122,8 @@ public class QuoteActivity extends Activity implements AddQuoteListener {
 			details_layout.setVisibility(View.GONE);
 		}
 		
+
+		getActionBar().setDisplayHomeAsUpEnabled(false);
 		transaction.commit();
 	}
 
