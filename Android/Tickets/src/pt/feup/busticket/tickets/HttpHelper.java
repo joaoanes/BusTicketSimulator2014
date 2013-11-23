@@ -23,8 +23,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class HttpHelper {
 	HttpClient client;
-	//String ip = "joaoanes.no-ip.biz";
-	String ip = "10.0.2.2";
+	String ip = "joaoanes.no-ip.biz";
+	//String ip = "10.0.2.2";
 	int port = 8080;
 	
 	public class HttpResult {

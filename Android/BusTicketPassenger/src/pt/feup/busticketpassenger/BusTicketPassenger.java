@@ -21,8 +21,8 @@ public class BusTicketPassenger extends Application {
 	String bus_ip = "10.0.2.2";
 	int bus_port = 5000;
 	
-	//String server_ip = "joaoanes.no-ip.biz";
-	String server_ip = "10.0.2.2";
+	String server_ip = "joaoanes.no-ip.biz";
+	//String server_ip = "10.0.2.2";
 	int server_port = 8080;
 	
 	String inspector_ip = "10.0.2.2";

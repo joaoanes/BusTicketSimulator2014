@@ -171,7 +171,20 @@ public class LoginActivity extends Activity {
 	
 	private void instantiateDatePicker() {
 		register_card_validity = (DatePicker) findViewById(R.id.datepicker_register_card_validity);
+
+		
 		try {
+			Time now = new Time();
+			now.setToNow();
+			long millis = now.toMillis(false);
+			
+			Time then = new Time();
+			then.set(31, 12, 2020);
+			
+			register_card_validity.setMaxDate(then.toMillis(false));
+			
+			register_card_validity.setMinDate(millis);
+			
 			Field f[] = register_card_validity.getClass().getDeclaredFields();
 			for (Field field : f) {
 
@@ -187,9 +200,6 @@ public class LoginActivity extends Activity {
 			Log.d("ERROR", e.getMessage());
 		}
 		
-		Time now = new Time();
-		now.setToNow();
-		register_card_validity.setMinDate(now.toMillis(false));
 	}
 
 	private void populateCardTypeSpinner() {

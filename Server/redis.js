@@ -91,7 +91,7 @@ function registerUser(user, response)
 			multi.exec(function(err, replies){
 				for (var j = 0; j < replies.length; ++j)
 				{
-                    debugger;
+					debugger;
 					replies[j]["id"] = allTickets[j];
 
 					if (replies[j]["validated"] == null)
@@ -107,210 +107,211 @@ function registerUser(user, response)
 	}
 
 
-    function validateTicket(uid, tid, busid, response)
-    {
+	function validateTicket(uid, tid, busid, response)
+	{
 
-      var multi = client.multi();
-      multi.sismember("user_id:" + uid + ":tickets:1", tid);
-      multi.sismember("user_id:" + uid + ":tickets:2", tid);
-      multi.sismember("user_id:" + uid + ":tickets:3", tid);
-      multi.exec(function(err, replies){
+		var multi = client.multi();
+		multi.sismember("user_id:" + uid + ":tickets:1", tid);
+		multi.sismember("user_id:" + uid + ":tickets:2", tid);
+		multi.sismember("user_id:" + uid + ":tickets:3", tid);
+		multi.exec(function(err, replies){
 
-       var theTruth = false;
-       for (var i = 0; i < replies.length; ++i)
-        theTruth = theTruth || replies[i];
+			var theTruth = false;
+			for (var i = 0; i < replies.length; ++i)
+				theTruth = theTruth || replies[i];
 
-    if (!theTruth)
-        return handleReply(buildResponse(403, null, "The ticket does not belong to the user"), response);
+			if (!theTruth)
+				return handleReply(buildResponse(403, null, "The ticket does not belong to the user"), response);
 
-    client.hgetall("ticket_id:" + tid, "validated", function(err, reply){
-        if (reply != null)
-         return handleReply(buildResponse(403, null, "The ticket has expired"), response);
+			client.hgetall("ticket_id:" + tid, "validated", function(err, reply){
+				if (reply != null)
+					return handleReply(buildResponse(403, null, "The ticket has expired"), response);
 
-     client.hset("ticket_id:" + tid, "validated", new Date(), redis.print);
-     client.hset("ticket_id:" + tid, "bus", busid, redis.print);	
-     client.sadd("bus_id:" + busid + ":tickets", tid);
-     handleReply(buildResponse(200, null, null), response);
+				client.hset("ticket_id:" + tid, "validated", new Date(), redis.print);
+				client.hset("ticket_id:" + tid, "bus", busid, redis.print);	
+				client.sadd("bus_id:" + busid + ":tickets", tid);
+				handleReply(buildResponse(200, null, null), response);
 
-     //Now to remove the ticket!
-     client.hget("ticket_id:" + tid, "type", function(err, reply)
-     {
-         var delay = 0;
-         switch(reply)
-         {
-          case "T1":
-          delay = 15;
-          break;
-          case "T2":
-          delay = 30;
-          break;
-          case "T3":
-          delay = 60;
-          break;
-      }
-      setTimeout(removeTicket, 1000*60*delay, tid);
-  });
- });
-});
+	 //Now to remove the ticket!
+	 client.hget("ticket_id:" + tid, "type", function(err, reply)
+	 {
+	 	var delay = 0;
+	 	switch(reply)
+	 	{
+	 		case "T1":
+	 		delay = 15;
+	 		break;
+	 		case "T2":
+	 		delay = 30;
+	 		break;
+	 		case "T3":
+	 		delay = 60;
+	 		break;
+	 	}
+	 	setTimeout(removeTicket, 1000*60*delay, tid);
+	 });
+	});
+		});
 
 
 }
 
 function removeTicket(tid)
 {
-  client.hgetall("ticket_id:" + tid, function(err, reply)
-  {
-    if (err)
-     return console.log("Error removing ticket " + tid);
- client.srem("user_id:" + reply["uid"] + ":tickets:" + reply["type"].slice(-1), tid, redis.print);
- console.log("Removed ticket " + tid);
-}); 
+	client.hgetall("ticket_id:" + tid, function(err, reply)
+	{
+		if (err)
+			return console.log("Error removing ticket " + tid);
+		client.srem("user_id:" + reply["uid"] + ":tickets:" + reply["type"].slice(-1), tid, redis.print);
+		console.log("Removed ticket " + tid);
+	}); 
 }
 
 function getTicketsByBus(busid, response)
 {
-  client.smembers("bus_id:" + busid + ":tickets", function(err, reply)
-  {
-    if (err)
-     return handleReply(buildResponse(500, null, err));
- var multi = client.multi();
- for (var i = 0; i < reply.length; ++i)
-    multi.hgetall("ticket_id:" + reply[i]);        
+	client.smembers("bus_id:" + busid + ":tickets", function(err, reply)
+	{
+		if (err)
+			return handleReply(buildResponse(500, null, err));
+		var multi = client.multi();
+		for (var i = 0; i < reply.length; ++i)
+			multi.hgetall("ticket_id:" + reply[i]);        
 
-multi.exec(function(err, replies)
-{
-    debugger;
-    if (err)
-        return handleReply(buildResponse(500, null, err));
+		multi.exec(function(err, replies)
+		{
+			debugger;
+			if (err)
+				return handleReply(buildResponse(500, null, err));
 
-    var tickets_arr = new Array();
-    var now = new Date();
-    var then = new Date(now - 5400000);
+			var tickets_arr = new Array();
+			var now = new Date();
+			var then = new Date(now - 5400000);
 
-    for (var i = 0; i < replies.length; ++i)    
-        if (new Date(replies[i]["validated"]) > then)
-        {
-            replies[i]["id"] = reply[i];
-            tickets_arr.push(replies[i]);
-        }
+			for (var i = 0; i < replies.length; ++i)    
+				if (new Date(replies[i]["validated"]) > then)
+				{
+					replies[i]["id"] = reply[i];
+					tickets_arr.push(replies[i]);
+				}
 
-    return handleReply(buildResponse(200, tickets_arr, null), response);
+				return handleReply(buildResponse(200, tickets_arr, null), response);
 
-        });
-});
+			});
+	});
 }
 
 
 function buyTickets(uid, ticket_n_1, ticket_n_2, ticket_n_3, confirm, response)
 {
-  client.hgetall("global:ticket_prices", function(err, prices)
-  {
-   if (prices == null)
-   {
-    prices = {};
-    prices[0] = 25;
-    prices[1] = 35;
-    prices[2] = 45;
-}
-client.get("global:ticket_id", function(err, tid) {
-    if (tid == null)
-    {
-     client.set("global:ticket_id", 1, redis.print);
-     console.log("No global ticket id? Already set to 1");
-     tid = "1";
- }
- if (err)
- {
-     console.log(err);
-     return handleReply(buildResponse(500, null, err), response);
- }
- var tickets1 = new Array();
- var tickets2 = new Array();
- var tickets3 = new Array();
+	client.lrange("global:ticket_prices", 0, -1, function(err, prices)
+	{
+		if (prices == null)
+		{
+			prices = {};
+			prices[0] = 25;
+			prices[1] = 45;
+			prices[2] = 60;
+			client.rpush("global:ticket_prices", 25, 35, 45);
+		}
+		client.get("global:ticket_id", function(err, tid) {
+			if (tid == null)
+			{
+				client.set("global:ticket_id", 1, redis.print);
+				console.log("No global ticket id? Already set to 1");
+				tid = "1";
+			}
+			if (err)
+			{
+				console.log(err);
+				return handleReply(buildResponse(500, null, err), response);
+			}
+			var tickets1 = new Array();
+			var tickets2 = new Array();
+			var tickets3 = new Array();
 
- var t3counter = parseInt(ticket_n_3);
- var t2counter = parseInt(ticket_n_2);
- var t1counter = parseInt(ticket_n_1);
- var t3counter_c = t3counter;
- var t2counter_c = t2counter;
- var t1counter_c = t1counter;
- var extraTicket = null;
- var extra = (t1counter + t2counter + t3counter) >= 10;
- if (extra)
- {
-     if (t1counter != 0)
-      {++t1counter; extraTicket = "T1";}
-  else if (t2counter != 0)
-      {++t2counter; extraTicket = "T2";}
-  else if (t3counter != 0)
-      {++t3counter; extraTicket = "T3";}
-}
+			var t3counter = parseInt(ticket_n_3);
+			var t2counter = parseInt(ticket_n_2);
+			var t1counter = parseInt(ticket_n_1);
+			var t3counter_c = t3counter;
+			var t2counter_c = t2counter;
+			var t1counter_c = t1counter;
+			var extraTicket = null;
+			var extra = (t1counter + t2counter + t3counter) >= 10;
+			if (extra)
+			{
+				if (t1counter != 0)
+					{++t1counter; extraTicket = "T1";}
+				else if (t2counter != 0)
+					{++t2counter; extraTicket = "T2";}
+				else if (t3counter != 0)
+					{++t3counter; extraTicket = "T3";}
+			}
 
-var t3counter_c = t3counter;
-var t2counter_c = t2counter;
-var t1counter_c = t1counter;
-var shasum;
+			var t3counter_c = t3counter;
+			var t2counter_c = t2counter;
+			var t1counter_c = t1counter;
+			var shasum;
 
-var allTickets = parseInt(tid) + parseInt(ticket_n_1) + parseInt(ticket_n_2) + parseInt(ticket_n_3) + (extra ? 1 : 0);
+			var allTickets = parseInt(tid) + parseInt(ticket_n_1) + parseInt(ticket_n_2) + parseInt(ticket_n_3) + (extra ? 1 : 0);
 
 
-for (; tid < allTickets; ++tid)
-{
- shasum = crypto.createHash('sha1');
- shasum.update("" + tid, 'ascii');
- if (t3counter > 0)
- {
-  tickets3.push(shasum.digest('hex'));
-  --t3counter;
-}
-else if (t2counter > 0)
-{
-  tickets2.push(shasum.digest('hex'));
-  --t2counter;
-}	
-else if (t1counter > 0)
-{
-  tickets1.push(shasum.digest('hex'));
-  --t1counter;
-}		
+			for (; tid < allTickets; ++tid)
+			{
+				shasum = crypto.createHash('sha1');
+				shasum.update("" + tid, 'ascii');
+				if (t3counter > 0)
+				{
+					tickets3.push(shasum.digest('hex'));
+					--t3counter;
+				}
+				else if (t2counter > 0)
+				{
+					tickets2.push(shasum.digest('hex'));
+					--t2counter;
+				}	
+				else if (t1counter > 0)
+				{
+					tickets1.push(shasum.digest('hex'));
+					--t1counter;
+				}		
 
-}
-t3counter = t3counter_c;
-t2counter = t2counter_c;
-t1counter = t1counter_c;
+			}
+			t3counter = t3counter_c;
+			t2counter = t2counter_c;
+			t1counter = t1counter_c;
 
-var multi = client.multi();
-var ticket;
-var ticket_arr = new Array();
+			var multi = client.multi();
+			var ticket;
+			var ticket_arr = new Array();
 
-processTickets(multi, uid, tickets1, "T1", ticket_arr);
-processTickets(multi, uid, tickets2, "T2", ticket_arr);
-processTickets(multi, uid, tickets3, "T3", ticket_arr);
+			processTickets(multi, uid, tickets1, "T1", ticket_arr);
+			processTickets(multi, uid, tickets2, "T2", ticket_arr);
+			processTickets(multi, uid, tickets3, "T3", ticket_arr);
 
-if (confirm)
-{
- multi.exec(redis.print);
- client.incrby("global:ticket_id", t1counter+t2counter+t3counter, redis.print);
- return handleReply(buildResponse(200, {"tickets" : ticket_arr}, null), response);
-}
-else
-{
- var last = {};
- var checkoutPrice = prices[0]*t1counter + prices[1]*t2counter + prices[2]*t3counter;
- last["price"] = checkoutPrice;
- if (t1counter > 0)
-  last["T1"] = t1counter;
-if (t2counter > 0)
-  last["T2"] = t2counter;
-if (t3counter > 0)
-  last["T3"] = t3counter;
-if (extra)
-  last["extra"] = extraTicket;
+			if (confirm)
+			{
+				multi.exec(redis.print);
+				client.incrby("global:ticket_id", t1counter+t2counter+t3counter, redis.print);
+				return handleReply(buildResponse(200, {"tickets" : ticket_arr}, null), response);
+			}
+			else
+			{
+				var last = {};
+				var checkoutPrice = prices[0]*t1counter + prices[1]*t2counter + prices[2]*t3counter;
+				last["price"] = checkoutPrice;
+				if (t1counter > 0)
+					last["T1"] = t1counter;
+				if (t2counter > 0)
+					last["T2"] = t2counter;
+				if (t3counter > 0)
+					last["T3"] = t3counter;
+				if (extra)
+					last["extra"] = extraTicket;
 
-return handleReply(buildResponse(200, last, null), response);
-}
+				return handleReply(buildResponse(200, last, null), response);
+			}
 
-});
+		});
 }	);
 }
 
@@ -379,14 +380,14 @@ function processTickets(multi, uid, tickets, ticket_type, ticket_arr)
 		var auth = Math.random().toString(36).slice(2);
 		client.hmset("user_id:" + userId, {
 			"username" : user.username,
-	    	"password" : user.password, //TODO hash hash hash
-	    	"name" : user.name,
-	    	"card_type" : user.card_type,
-	    	"card_number" : user.card_number,
-	    	"card_validity" : user.card_validity,
-	    	"api_key" : auth,
-	    	"api_date" : new Date()
-	    }, redis.print);
+			"password" : user.password, //TODO hash hash hash
+			"name" : user.name,
+			"card_type" : user.card_type,
+			"card_number" : user.card_number,
+			"card_validity" : user.card_validity,
+			"api_key" : auth,
+			"api_date" : new Date()
+		}, redis.print);
 
 		client.set("username:" + user.username, userId);
 
@@ -425,4 +426,4 @@ function processTickets(multi, uid, tickets, ticket_type, ticket_arr)
 	exports.getTicketsById = getTicketsById;
 	exports.buyTickets = buyTickets;
 	exports.validateTicket = validateTicket;
-    exports.getTicketsByBus = getTicketsByBus;
+	exports.getTicketsByBus = getTicketsByBus;
