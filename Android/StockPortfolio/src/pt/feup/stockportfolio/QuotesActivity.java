@@ -3,6 +3,7 @@ package pt.feup.stockportfolio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
 import pt.feup.stockportfolio.HttpHelper.HistoricResult;
@@ -13,13 +14,22 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener, QuoteDetailsListener {
@@ -27,12 +37,14 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	static ArrayList<Quote> quotes = new ArrayList<Quote>();
 
 	HttpHelper http_helper = new HttpHelper();	
-	
 	boolean landscape = false;
 	QuotesFragment quotes_fragment;
 	static Fragment extra_fragment;
 	FragmentManager fragment_manager;
 	FrameLayout details_layout;
+	DrawerLayout mDrawerLayout;
+	ListView mDrawerList;
+
 	
 	static Quote selected_quote;
 
@@ -41,15 +53,26 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quotes);
 
-		details_layout = (FrameLayout) findViewById(R.id.details_layout);
-		fragment_manager = getFragmentManager();
-		landscape = isLandscape();
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		quotes_fragment = (QuotesFragment) fragment_manager.findFragmentById(R.id.quote_fragment);
-		
-		if(extra_fragment != null) {
-			showExtraFragment();
+		if (quotes.size() == 0)
+		{
+			quotes.add(new QuoteUpdate("MSFT", 100));
+			quotes.add(new QuoteUpdate("AAPL", 100));
+			quotes.add(new QuoteUpdate("GE", 100));
+			
+			quotes.add(new QuoteSeparator());
+			
+			quotes.add(new Quote("GE", 100));
+			quotes.add(new Quote("XMBC", 100));
+			quotes.add(new Quote("WORDS", 100));
+			quotes.add(new Quote("PSI20", 100));	
 		}
+		
+		mDrawerList.setAdapter(new QuotesAdapter(((Context) this), 0, quotes));
+		
+		
 	}
 
 	@Override
@@ -62,31 +85,31 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_add_quote:
-				startAddQuote();
+		case R.id.action_add_quote:
+			startAddQuote();
+			return true;
+		case android.R.id.home:
+			if(extra_fragment != null) {
+				returnToQuoteFragment();
 				return true;
-			case android.R.id.home:
-				if(extra_fragment != null) {
-					returnToQuoteFragment();
-					return true;
-				}
-				break;
-			default:
-				break;
+			}
+			break;
+		default:
+			break;
 		};
 		return false;
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if(extra_fragment != null && !landscape) {
 			returnToQuoteFragment();
 			return;
 		}
-		
+
 		super.onBackPressed();
 	}
-	
+
 	@Override //QuotesListener
 	public void onQuoteClick(Quote quote) {
 		selected_quote = quote;
@@ -97,12 +120,12 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	public void addQuote(String tick, int quantity, double value) {
 		Toast.makeText(this, tick+" "+String.valueOf(quantity) , Toast.LENGTH_SHORT).show();
 		Quote quote = new Quote(tick, quantity);
-		
+
 		returnToQuoteFragment();
-		
+
 		quotes_fragment.adapter.add(quote);
 	}
-	
+
 	@Override
 	public void onQuantityChange() {
 		quotes_fragment.adapter.notifyDataSetChanged();
@@ -111,46 +134,46 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	public void startAddQuote() {
 		showExtraFragment(new AddQuotesFragment());
 	}
-	
+
 	public void showExtraFragment() {
 		FragmentTransaction transaction = fragment_manager.beginTransaction();
 		transaction.replace(R.id.details_layout, extra_fragment);
-		
+
 		if (!landscape) {
 			details_layout.setVisibility(View.VISIBLE);
 			transaction.hide(quotes_fragment);
-			
+
 			if(!landscape) {
 				getActionBar().setDisplayHomeAsUpEnabled(true);
 			}
 		}
 		transaction.commit();
 	}
-	
+
 	public void showExtraFragment(Fragment fragment) {
 		if(extra_fragment != null) {
 			fragment_manager.beginTransaction()
-				.remove(extra_fragment)
-				.commit();
+			.remove(extra_fragment)
+			.commit();
 		}
-		
+
 		extra_fragment = fragment;
 		showExtraFragment();
 	}
-	
-	
+
+
 	public void returnToQuoteFragment() {
 		FragmentTransaction transaction = fragment_manager.beginTransaction();
 		transaction.remove(extra_fragment);
-		
+
 		extra_fragment = null;
-	
+
 		if(!landscape) {
 			transaction.show(quotes_fragment);
-			
+
 			details_layout.setVisibility(View.GONE);
 		}
-		
+
 
 		getActionBar().setDisplayHomeAsUpEnabled(false);
 		transaction.commit();
@@ -190,7 +213,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		return display.getWidth() > display.getHeight();
 
 	}
-	
+
 	void showQuoteDetails() {
 		if(extra_fragment instanceof QuoteDetailsFragment) {
 			((QuoteDetailsFragment) extra_fragment).setDetails(selected_quote);
@@ -198,7 +221,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 			showExtraFragment(new QuoteDetailsFragment());
 		}
 	}
-	
+
 	public class GetQuotesValuesTask extends AsyncTask<Void, Void, ArrayList<QuoteResult>> {
 
 		@Override
@@ -213,12 +236,12 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 			for(QuoteResult quote : result) {
 				print += quote.toString() + "\n";
 			}
-			
+
 			Utils.createAlertDialog(QuotesActivity.this, "Cenas", print);
 		}
-		
+
 	}
-	
+
 	public class GetTickHistoricTask extends AsyncTask<Void, Void, ArrayList<HistoricResult>> {
 
 		@Override
@@ -232,10 +255,10 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 			for(HistoricResult historic : result) {
 				print += historic.toString() + "\n";
 			}
-			
+
 			Utils.createAlertDialog(QuotesActivity.this, "Cenas", print);
 		}
-		
+
 	}
 
 }

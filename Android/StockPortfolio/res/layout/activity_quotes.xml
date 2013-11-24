@@ -1,20 +1,20 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <fragment
-        android:id="@+id/quote_fragment"
-        android:name="pt.feup.stockportfolio.QuotesFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/fragment_quotes" />
-
+    android:layout_height="match_parent">
+    <!-- The main content view -->
     <FrameLayout
-        android:id="@+id/details_layout"
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
-
-</LinearLayout>
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#efefef"/>
+</android.support.v4.widget.DrawerLayout>
