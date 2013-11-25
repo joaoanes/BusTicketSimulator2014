@@ -20,8 +20,10 @@ public class QuoteDetailsFragment extends Fragment {
 	Button remove_10_button;
 	Button add_1_button;
 	Button add_10_button;
+	GraphView graph;
 	
 	Quote quote;
+	
 	
 	QuoteDetailsListener listener = dummyListener;
 	public interface QuoteDetailsListener {
@@ -37,7 +39,7 @@ public class QuoteDetailsFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		quote = QuotesActivity.selected_quote;
+		quote = Utils.myQuotes.get(0);
 	}
 
 	@Override
@@ -62,6 +64,10 @@ public class QuoteDetailsFragment extends Fragment {
 		remove_10_button = (Button) view.findViewById(R.id.quote_details_remove_10);
 		remove_10_button.setOnClickListener(on_click_listener);
 		
+		graph = (GraphView) view.findViewById(R.id.graphView1);
+		
+		graph.quote = quote;
+
 		setDetails(quote);
 	}
 	
@@ -69,6 +75,11 @@ public class QuoteDetailsFragment extends Fragment {
 		tick_view.setText(tick);
 		quantity_view.setText(String.valueOf(quantity));
 		value_view.setText(String.valueOf(value));
+		
+		graph.changeQuote(quote);
+
+		view.setBackgroundColor(quote.color);
+		
 	}
 	
 	public void setDetails(Quote quote) {
@@ -105,10 +116,7 @@ public class QuoteDetailsFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		if (!(activity instanceof QuoteDetailsListener)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
+		
 
 		listener = (QuoteDetailsListener) activity;
 	}

@@ -1,15 +1,21 @@
 package pt.feup.stockportfolio;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.LayoutParams;
@@ -22,89 +28,149 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		super(_context, resource, _objects);
 		context = _context;
 		objects = _objects;
-		int counter = 0;
-		for (Quote q : objects)
-		{
-			if (q instanceof QuoteSeparator)
-				{
-					portfolioPosition = counter;
-					break;
-				}
-			++counter;
-		}
+		
 	}
 
 	Context context;
 	ArrayList<Quote> objects;
-	int portfolioPosition;
+	ArrayList<View> swipable = new ArrayList<View>();
+	private QuoteDetailsFragment fragment;
+
+	public void hideSwipables()
+	{
+
+		int i = 0;
+		for (i = 0; i < objects.size(); )
+		{
+			if (objects.get(i) instanceof QuoteUpdate)
+			{
+				this.remove(objects.get(i));
+				continue;
+			}
+			++i;
+		}
+		Toast.makeText(getContext(), "TOAST! Also hidden", Toast.LENGTH_SHORT).show();
+		super.notifyDataSetChanged();
 
 
+	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent)
 	{
-		if (objects.get(position) == null)
+		final Quote quote = objects.get(position);
+		if (quote == null)
 			return new View(context);
 		View view = convertView;
 		if (view == null) 
 		{
+			Log.e("HELLO QUOTES", "Refreshing a view!");
 			LayoutInflater inflator = ((Activity) getContext()).getLayoutInflater();
-			if (!objects.get(position).isUpdated)
-				objects.get(position).update();
-			
-			if(objects.get(position) instanceof QuoteUpdate)
+
+
+			if(quote instanceof QuoteUpdate)
 			{
 				if (position == 0)
 					view = inflator.inflate(R.layout.quote_update_first, null);
 				else
 					view = inflator.inflate(R.layout.quote_update, null);
-				((TextView) view.findViewById(R.id.quote)).setText(objects.get(position).tick);
+				((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
+				((RelativeLayout) view.findViewById(R.id.update_background)).setBackgroundColor(quote.color);
 				view.setOnClickListener(new OnClickListener(){
 
 					@Override
 					public void onClick(View v) {
-
-						Toast.makeText(context, "Hello from " + position, Toast.LENGTH_SHORT).show();
+						
+						hideSwipables();
 					}
 
+
 				});
+
+
+
+				swipable.add(view);
 			}
 			else
 			{
-				if (objects.get(position) instanceof QuoteSeparator)
+				if (quote instanceof QuoteSeparator)
 				{
 					view = inflator.inflate(R.layout.my_portfolio, null);
-					portfolioPosition = position;
 					view.setOnClickListener(new OnClickListener(){
 
 						@Override
 						public void onClick(View v) {
-							Toast.makeText(context, "Hello from the portfolio at " + portfolioPosition, Toast.LENGTH_SHORT).show();
+							Toast.makeText(context, "Hello from the portfolio at " + position, Toast.LENGTH_SHORT).show();
 						}
 
 					});
 				} 
 				else
 				{
-					view = inflator.inflate(R.layout.quote_real, null);
+					if (quote instanceof QuoteAdd)
+					{
+						view = inflator.inflate(R.layout.add_quote, null);
+						view.setOnClickListener(new OnClickListener(){
 
-					((TextView) view.findViewById(R.id.quote)).setText(objects.get(position).tick);
-					((TextView) view.findViewById(R.id.value)).setText("" + objects.get(position).history.get(0).close);
-					
-					
-					
-					((LinearLayout)view.findViewById(R.id.graph)).addView(new GraphViewSmall(context, null, objects.get(position)));
-					
-					
-					view.setOnClickListener(new OnClickListener(){
+							@Override
+							public void onClick(View v) {
 
-						@Override
-						public void onClick(View v) {
-							Toast.makeText(context, "Hello from " + position, Toast.LENGTH_SHORT).show();
-						}
+								Toast.makeText(context, "Hello from add quote at " + position, Toast.LENGTH_SHORT).show();
+							}
 
-					});
+						});
 					}
+					else
+					{
+						final QuotesAdapter hello = this;
+						class GraphAsync extends AsyncTask<Object, Void, Void>
+						{
+							View myView = null;
+							Quote quote = null;
+							@Override
+							protected Void doInBackground(Object... arg0) {
+
+								myView = (View) arg0[0];
+								quote = (Quote) arg0[1];
+								if (!quote.isUpdated)
+									quote.update();
+								return null;
+							}
+							@Override
+							protected void onPostExecute(Void result) {
+								((RelativeLayout) myView.findViewById(R.id.real_background)).setBackgroundColor(quote.color);
+								((TextView) myView.findViewById(R.id.value)).setText("" + quote.history.get(quote.history.size()-1).close);
+								GraphViewSmall mine = new GraphViewSmall(context, null, quote);
+								((LinearLayout)myView.findViewById(R.id.graph)).addView(mine);
+								Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.fade_in);
+								fadeInAnimation.setRepeatCount(0);
+								fadeInAnimation.setFillAfter(true);
+
+								mine.startAnimation(fadeInAnimation);
+								((LinearLayout)myView.findViewById(R.id.graph)).findViewById(R.id.progressBar).setVisibility(View.GONE);
+
+								hello.notifyDataSetChanged();
+							}
+
+						}
+						view = inflator.inflate(R.layout.quote_real, null);
+
+						new GraphAsync().execute(view, quote);
+						((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
+						//TODO colors and stuff
+
+
+
+						view.setOnClickListener(new OnClickListener(){
+
+							@Override
+							public void onClick(View v) {
+								Toast.makeText(context, "Hello from " + position, Toast.LENGTH_SHORT).show();
+								fragment.setDetails(quote);
+							}
+
+						});
+					}}
 			}
 		}
 
@@ -122,13 +188,26 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getItemViewType(int position)
 	{
-	if (position == 0)
-		return position;
-	if (position == portfolioPosition)
-		return 2;
-	if (position < portfolioPosition)
-		return 1;
-	return 3;
+
+		Quote quote = objects.get(position);
+		
+		
+		if (quote instanceof QuoteSeparator)
+			return 2;
+		
+		if (quote instanceof QuoteUpdate)
+			if (position == 0)
+			return 0;
+			else
+				return 1;
+		
+		
+		return 3;
+	}
+
+	public void setFragment(QuoteDetailsFragment frg) {
+		fragment = frg;
+		
 	}
 
 

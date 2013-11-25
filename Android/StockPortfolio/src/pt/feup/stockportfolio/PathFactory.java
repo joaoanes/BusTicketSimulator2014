@@ -23,8 +23,6 @@ public class PathFactory
 	public static Path generatePath(Quote money, ArrayList<Integer> xLevelUp, int[] width)
 	{
 		Path returnee = new Path();
-		if (!money.isUpdated)
-			money.update();
 
 		returnee.moveTo(0, ExtraUtils.dp2px(175));
 
@@ -87,8 +85,11 @@ public class PathFactory
 		Log.e("HELLO GRAPH", "Creating small path for " + money.tick);
 
 		double delta = high-low;
-		for (HistoricResult h : money.history)
+		HistoricResult h;
+		
+		for (int i = copyQuotesHistory.size()-8; i < copyQuotesHistory.size(); ++i)
 		{
+			h = money.history.get(i);
 			/*
 		canvas.drawText(Integer.toString(h.getDate().getDay()), x, KeepUtils.dp2px(20), textPaint);
 		canvas.drawText(Integer.toString(h.pointsFlow), x, KeepUtils.dp2px(40), textPaint);

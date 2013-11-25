@@ -213,12 +213,6 @@ public class HttpHelper {
 	}
 
 	public HttpResult execute(final HttpUriRequest request) throws IOException {
-		class HTTPExecute extends AsyncTask<Void, Void, HttpResult>
-		{
-
-			@Override
-			protected HttpResult doInBackground(Void ... params) {
-
 				HttpResponse response = null;
 				try {
 					response = client.execute(request);
@@ -258,25 +252,7 @@ public class HttpHelper {
 
 			}
 
-
-
-
-		}
-		Void[] args =
-			{};
-		try {
-			return new HTTPExecute().execute(args).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-
-	}
+	
 
 
 	public HttpResult executeGet(String domain, int port, String path, List<NameValuePair> args) {

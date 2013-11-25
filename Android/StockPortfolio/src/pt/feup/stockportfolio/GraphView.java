@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 
@@ -23,6 +24,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,7 +34,7 @@ import android.widget.Toast;
 public class GraphView extends View
 {
 
-	Paint bluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	Paint mainPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	Paint bluerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	Paint blueDottedPaint = new Paint();
 	Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -54,7 +56,7 @@ public class GraphView extends View
 	Path pointsGraph = null;
 	int touch_events = 0;
 
-	Quote quote = new Quote("MSFT", 100);
+	Quote quote = Utils.myQuotes.get(0);
 	
 	ArrayList<Integer> levelUps = new ArrayList<Integer>();
 	static Bitmap bufferedGraph;
@@ -62,9 +64,22 @@ public class GraphView extends View
 
 	boolean swipeDecay = false;
 	private boolean resetted = false;
+	
+	class TestUpdater extends AsyncTask<Void, Void, Void>
+	{
 
+		@Override
+		protected Void doInBackground(Void... params) {
+			if (!quote.isUpdated)
+				quote.update();
+			return null;
+		}
+		
+	}
+	
 	public GraphView(Context context, AttributeSet attrs)
 	{
+		
 		super(context, attrs);
 		Options opts = new Options();
 		opts.inDither = false; 
@@ -74,12 +89,12 @@ public class GraphView extends View
 
 		ExtraUtils.setMetrics(getResources().getDisplayMetrics());
 		ctxt = context;
-
-		this.setBackgroundColor(Color.parseColor("#eae9f2"));
+		
+		this.setBackgroundColor(Color.parseColor("#efefef"));
 		bluerPaint.setColor(Color.parseColor("#587C9B"));
-		bluePaint.setColor(Color.parseColor("#87B3D7"));
+		
 		blueDottedPaint.setStyle(Style.STROKE);
-		blueDottedPaint.setColor(Color.parseColor("#87B3D7"));
+		blueDottedPaint.setColor(Color.parseColor("#efefef"));
 		textPaint.setColor(Color.parseColor("#eae9f2"));
 		textPaint.setTextSize(ExtraUtils.dp2px(14));
 		textPaint.setTextAlign(Align.CENTER);
@@ -109,12 +124,31 @@ public class GraphView extends View
 
 		blueDottedPaint.setPathEffect(new DashPathEffect(new float[]
 				{ 10, 20 }, 0));
+		
+		
+		
+		buildGraph();
+	}
 
+	private void buildGraph() {
+		Void[] args = {};
+		if (!quote.isUpdated)
+			try {
+			new TestUpdater().execute(args).get();
+			} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+
+		mainPaint.setColor(quote.color);
 		int[] width =
 			{ ExtraUtils.dp2px(50) };
 		if (pointsGraph == null)
 			pointsGraph = PathFactory.generatePath(
-					new Quote("MSFT", 100), levelUps, width);
+					quote, levelUps, width);
 		if (bufferedGraph == null)
 		{
 
@@ -145,6 +179,7 @@ public class GraphView extends View
 		drawGraph();
 		defaultSlide = -(bufferedGraph.getWidth() - ExtraUtils.getScreenWidth());
 		slidex = defaultSlide;
+		
 	}
 
 	public void drawGraph()
@@ -156,17 +191,15 @@ public class GraphView extends View
 		{
 			bufferedGraphCanvas.drawCircle(
 					levelUps.get(i - 1) + ExtraUtils.dp2px(25), 80, 15,
-					bluePaint);
+					mainPaint);
 			bufferedGraphCanvas.drawText(Integer.toString(i),
 					levelUps.get(i - 1) + ExtraUtils.dp2px(24), 87, textPaint);
 		}
 
-		bufferedGraphCanvas.drawPath(pointsGraph, bluePaint);
+		bufferedGraphCanvas.drawPath(pointsGraph, mainPaint);
 
 		bufferedGraphCanvas.save();
 
-		if (!quote.isUpdated)
-			quote.update();
 		
 		for (HistoricResult entry : quote.history)
 		{
@@ -276,4 +309,15 @@ public class GraphView extends View
 		return true;
 	}
 
+	void changeQuote(Quote q)
+	{
+		Log.e("HELLO GRAPH", "Changed quote to " + q.tick);
+		quote = q;
+		bufferedGraph = null;
+		bufferedGraphCanvas = null;
+		resetted = true;
+		pointsGraph = null;
+		buildGraph();
+		invalidate();
+	}
 }

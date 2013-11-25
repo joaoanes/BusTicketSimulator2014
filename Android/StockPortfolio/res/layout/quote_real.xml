@@ -14,10 +14,11 @@
         android:orientation="horizontal" >
 
         <RelativeLayout
+            android:id="@+id/real_background"
             android:layout_width="100dp"
             android:layout_height="45dp"
             android:layout_marginTop="10dp"
-            android:background="#d6df23" >
+            android:background="#afafaf" >
 
             <TextView
                 android:id="@+id/quote"
@@ -50,7 +51,7 @@
     </LinearLayout>
 
 	<View
-	    android:layout_width="233dp"
+	    android:layout_width="231dp"
 	    android:layout_height="1dp"
 	    android:layout_gravity="center_horizontal"
 	    android:background="#d0d0d0" >

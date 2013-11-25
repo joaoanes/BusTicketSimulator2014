@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,33 +47,42 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	ListView mDrawerList;
 
 	
-	static Quote selected_quote;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		if (Utils.myQuotes.size() == 0)
+		{
+			Utils.myQuotes.add(new Quote("MSFT", 100));
+			Utils.myQuotes.add(new Quote("AAPL", 100));
+			Utils.myQuotes.add(new Quote("GE", 100));
+			Utils.myQuotes.add(new Quote("FB", 100));
+			Utils.myQuotes.add(new Quote("LNKD", 100));
+			Utils.myQuotes.add(new Quote("WMT", 100));
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quotes);
 
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
 		if (quotes.size() == 0)
 		{
-			quotes.add(new QuoteUpdate("MSFT", 100));
-			quotes.add(new QuoteUpdate("AAPL", 100));
-			quotes.add(new QuoteUpdate("GE", 100));
-			
+			quotes.add(new QuoteUpdate(Utils.myQuotes.get(0)));
+			quotes.add(new QuoteUpdate(Utils.myQuotes.get(1)));
+			quotes.add(new QuoteUpdate(Utils.myQuotes.get(2)));
 			quotes.add(new QuoteSeparator());
 			
-			quotes.add(new Quote("GE", 100));
-			quotes.add(new Quote("GOOG", 100));
-			quotes.add(new Quote("GOOG", 100));
-			quotes.add(new Quote("EA", 100));	
-
-			quotes.add(new Quote("EA", 100));
+			for (Quote q : Utils.myQuotes)
+				quotes.add(q);
+			
+			quotes.add(new QuoteAdd());
 
 		}
-		mDrawerList.setAdapter(new QuotesAdapter(((Context) this), 0, quotes));
+		
+		QuoteDetailsFragment frg = (QuoteDetailsFragment) getFragmentManager().findFragmentById(R.id.details);
+		
+		QuotesAdapter myAdapter = new QuotesAdapter(((Context) this), 0, quotes);
+		myAdapter.setFragment(frg);
+		mDrawerList.setAdapter(myAdapter);
 		
 		
 	}
@@ -92,7 +102,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 			return true;
 		case android.R.id.home:
 			if(extra_fragment != null) {
-				returnToQuoteFragment();
+				mDrawerLayout.openDrawer(Gravity.LEFT);
 				return true;
 			}
 			break;
@@ -114,8 +124,6 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 
 	@Override //QuotesListener
 	public void onQuoteClick(Quote quote) {
-		selected_quote = quote;
-		showQuoteDetails();
 	}
 
 	@Override // AddQuoteListener
@@ -217,50 +225,9 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	}
 
 	void showQuoteDetails() {
-		if(extra_fragment instanceof QuoteDetailsFragment) {
-			((QuoteDetailsFragment) extra_fragment).setDetails(selected_quote);
-		} else {
-			showExtraFragment(new QuoteDetailsFragment());
-		}
+		
 	}
 
-	public class GetQuotesValuesTask extends AsyncTask<Void, Void, ArrayList<QuoteResult>> {
 
-		@Override
-		protected ArrayList<QuoteResult> doInBackground(Void... params) {
-			String[] quotes = {"GOOG", "AAPL", "DELL"};
-			return http_helper.getTickValues(new ArrayList<String>(Arrays.asList(quotes)));
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<QuoteResult> result) {
-			String print = "";
-			for(QuoteResult quote : result) {
-				print += quote.toString() + "\n";
-			}
-
-			Utils.createAlertDialog(QuotesActivity.this, "Cenas", print);
-		}
-
-	}
-
-	public class GetTickHistoricTask extends AsyncTask<Void, Void, ArrayList<HistoricResult>> {
-
-		@Override
-		protected ArrayList<HistoricResult> doInBackground(Void... params) {
-			return http_helper.getHistoric("GOOG");
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<HistoricResult> result) {
-			String print = "";
-			for(HistoricResult historic : result) {
-				print += historic.toString() + "\n";
-			}
-
-			Utils.createAlertDialog(QuotesActivity.this, "Cenas", print);
-		}
-
-	}
 
 }

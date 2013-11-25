@@ -24,9 +24,10 @@
             android:orientation="horizontal" >
 
             <RelativeLayout
+                android:id="@+id/update_background"
                 android:layout_width="100dp"
                 android:layout_height="45dp"
-                android:background="#d6df23" >
+                android:background="#afafaf" >
 
                 <TextView
                     android:id="@+id/quote"
@@ -57,7 +58,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:paddingRight="10dp"
-                    android:paddingTop="2dp"
+                    android:paddingTop="0dp"
                     android:text="+550£"
                     android:textColor="#8cc63e"
                     android:textSize="26sp" />
@@ -76,7 +77,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="228dp"
+            android:layout_width="231dp"
             android:layout_height="1dp"
             android:background="#8cc63e" >
         </LinearLayout>

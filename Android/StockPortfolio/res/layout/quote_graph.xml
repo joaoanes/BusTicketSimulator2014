@@ -4,15 +4,24 @@
     android:layout_height="wrap_content" >
 
     <RelativeLayout
-        android:layout_width="130dp"
+        android:layout_width="128dp"
         android:layout_height="45dp" >
 
         <LinearLayout
-            android:orientation="horizontal"
             android:id="@+id/graph"
-            android:layout_width="130dp"
+            android:layout_width="128dp"
             android:layout_height="45dp"
-            android:background="#FF0000" >
+            android:background="#efefef"
+            android:orientation="horizontal" >
+            
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="60dp"
+                android:layout_height="match_parent" >
+
+        </ProgressBar>
+            
 
         </LinearLayout>
 

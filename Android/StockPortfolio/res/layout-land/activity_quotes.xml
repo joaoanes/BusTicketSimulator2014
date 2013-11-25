@@ -1,23 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".QuotesActivity" 
-    android:baselineAligned="false">
+    android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/quote_fragment"
-        android:name="pt.feup.stockportfolio.QuotesFragment"
-        android:layout_width="0dp"
+	 <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@layout/fragment_quotes" />
-
+        android:layout_gravity="start"
+        android:background="#efefef"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
+	
     <FrameLayout
         android:id="@+id/details_layout"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2" >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <fragment class="pt.feup.stockportfolio.QuoteDetailsFragment"
+            android:id="@+id/details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            ></fragment>
+
     </FrameLayout>
+   
 
 </LinearLayout>

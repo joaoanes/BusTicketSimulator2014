@@ -50,7 +50,6 @@ public class GraphViewSmall extends View
 	Canvas bufferedGraphCanvas;
 
 	boolean swipeDecay = false;
-	private boolean resetted = false;
 	private boolean readyDraw = false;
 
 	public GraphViewSmall(Context context, AttributeSet attrs, Quote quo)
@@ -66,7 +65,7 @@ public class GraphViewSmall extends View
 		ExtraUtils.setMetrics(getResources().getDisplayMetrics());
 		ctxt = context;
 
-		this.setBackgroundColor(Color.parseColor("#eae9f2"));
+		this.setBackgroundColor(Color.parseColor("#efefef"));
 		bluerPaint.setColor(Color.parseColor("#587C9B"));
 		bluePaint.setColor(Color.parseColor("#87B3D7"));
 		blueDottedPaint.setStyle(Style.STROKE);
@@ -117,7 +116,7 @@ public class GraphViewSmall extends View
 		{
 
 			bufferedGraph = Bitmap.createBitmap(ExtraUtils.dp2px(130), ExtraUtils.dp2px(45), Bitmap.Config.ARGB_8888);
-			resetted = true;
+		
 		}
 
 	
@@ -134,18 +133,9 @@ public class GraphViewSmall extends View
 			bufferedGraphCanvas.drawText(Integer.toString(i),
 					levelUps.get(i - 1) + ExtraUtils.dp2px(24), 87, textPaint);
 		}
-		bluePaint.setColor(Color.parseColor("#D6DF23"));
+		bluePaint.setColor(quote.color);
 		bufferedGraphCanvas.drawPath(pointsGraph, bluePaint);
 
-		bufferedGraphCanvas.save();
-
-		if (!quote.isUpdated)
-			quote.update();
-		
-		
-		bufferedGraphCanvas.translate(-ExtraUtils.dp2px(50), 0);
-
-		bufferedGraphCanvas.restore();
 		Log.e("HELLO GRAPH", "created new graph for " + quote.tick);
 		readyDraw  = true;
 	}

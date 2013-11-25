@@ -1,5 +1,7 @@
 package pt.feup.stockportfolio;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 
 public class Utils {
+	public static ArrayList<Quote> myQuotes = new ArrayList<Quote>();
+	
 	public static void createAlertDialog(Context context, String title, String content) {
 		new AlertDialog.Builder(context)
 	    .setTitle(title)
