@@ -73,7 +73,7 @@ public class QuoteDetailsFragment extends Fragment {
 	
 	public void setDetails(Quote quote) {
 		this.quote = quote;
-		setDetails(quote.getTick(), quote.getQuantity(), quote.getValue());
+		setDetails(quote.tick, quote.quantity, quote.value);
 	}
 	
 	OnClickListener on_click_listener = new OnClickListener() {
@@ -97,7 +97,7 @@ public class QuoteDetailsFragment extends Fragment {
 					change = 0;
 			}
 			quote.changeQuantity(change);
-			quantity_view.setText(String.valueOf(quote.getQuantity()));
+			quantity_view.setText(String.valueOf(quote.quantity));
 			listener.onQuantityChange();
 		}
 	}; 

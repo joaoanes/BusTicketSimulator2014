@@ -22,6 +22,16 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		super(_context, resource, _objects);
 		context = _context;
 		objects = _objects;
+		int counter = 0;
+		for (Quote q : objects)
+		{
+			if (q instanceof QuoteSeparator)
+				{
+					portfolioPosition = counter;
+					break;
+				}
+			++counter;
+		}
 	}
 
 	Context context;
@@ -33,13 +43,15 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent)
 	{
-		boolean skipListener = false;
+		if (objects.get(position) == null)
+			return new View(context);
 		View view = convertView;
 		if (view == null) 
 		{
 			LayoutInflater inflator = ((Activity) getContext()).getLayoutInflater();
-
-
+			if (!objects.get(position).isUpdated)
+				objects.get(position).update();
+			
 			if(objects.get(position) instanceof QuoteUpdate)
 			{
 				if (position == 0)
@@ -77,6 +89,13 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					view = inflator.inflate(R.layout.quote_real, null);
 
 					((TextView) view.findViewById(R.id.quote)).setText(objects.get(position).tick);
+					((TextView) view.findViewById(R.id.value)).setText("" + objects.get(position).history.get(0).close);
+					
+					
+					
+					((LinearLayout)view.findViewById(R.id.graph)).addView(new GraphViewSmall(context, null, objects.get(position)));
+					
+					
 					view.setOnClickListener(new OnClickListener(){
 
 						@Override
@@ -97,15 +116,19 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getViewTypeCount()
 	{
-		return 2;
+		return 4;
 	}
 
 	@Override
 	public int getItemViewType(int position)
 	{
-		if (position > 1)
-			return 0;
-		else return 1;
+	if (position == 0)
+		return position;
+	if (position == portfolioPosition)
+		return 2;
+	if (position < portfolioPosition)
+		return 1;
+	return 3;
 	}
 
 

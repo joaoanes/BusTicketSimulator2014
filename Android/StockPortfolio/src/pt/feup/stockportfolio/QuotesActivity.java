@@ -65,11 +65,13 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 			quotes.add(new QuoteSeparator());
 			
 			quotes.add(new Quote("GE", 100));
-			quotes.add(new Quote("XMBC", 100));
-			quotes.add(new Quote("WORDS", 100));
-			quotes.add(new Quote("PSI20", 100));	
+			quotes.add(new Quote("GOOG", 100));
+			quotes.add(new Quote("GOOG", 100));
+			quotes.add(new Quote("EA", 100));	
+
+			quotes.add(new Quote("EA", 100));
+
 		}
-		
 		mDrawerList.setAdapter(new QuotesAdapter(((Context) this), 0, quotes));
 		
 		
@@ -184,13 +186,13 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	}
 
 	public static void addQuote(Quote quote) {
-		quotes_map.put(quote.getTick(), quote);
+		quotes_map.put(quote.tick, quote);
 	}
 
 	public static void updateQuoteValue(QuoteResult quote_result) {
 		String tick = quote_result.getTick();
 		if(hasQuote(tick)) {
-			quotes_map.get(tick).setValue(quote_result.getValue());
+			quotes_map.get(tick).value = quote_result.getValue();
 		}
 	}
 

@@ -4,13 +4,16 @@
     android:layout_height="wrap_content" >
 
     <RelativeLayout
-        android:layout_width="100dp"
+        android:layout_width="130dp"
         android:layout_height="45dp" >
 
         <LinearLayout
-            android:layout_width="110dp"
+            android:orientation="horizontal"
+            android:id="@+id/graph"
+            android:layout_width="130dp"
             android:layout_height="45dp"
             android:background="#FF0000" >
+
         </LinearLayout>
 
         <RelativeLayout
@@ -22,6 +25,7 @@
             android:background="@drawable/border" >
 
             <TextView
+                android:id="@+id/value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="false"

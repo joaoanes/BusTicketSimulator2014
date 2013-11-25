@@ -82,9 +82,9 @@ public class QuotesFragment extends Fragment {
 			}
 
 			Quote quote = QuotesActivity.quotes.get(position);
-			((TextView) row.findViewById(R.id.row_quote_tick)).setText(quote.getTick());
-			((TextView) row.findViewById(R.id.row_quote_quantiy)).setText(String.valueOf(quote.getQuantity()));
-			((TextView) row.findViewById(R.id.row_quote_value)).setText(String.valueOf(quote.getValue()));
+			((TextView) row.findViewById(R.id.row_quote_tick)).setText(quote.tick);
+			((TextView) row.findViewById(R.id.row_quote_quantiy)).setText(String.valueOf(quote.quantity));
+			((TextView) row.findViewById(R.id.row_quote_value)).setText(String.valueOf(quote.value));
 			
 			return row;
 		}

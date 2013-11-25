@@ -1,41 +1,31 @@
 package pt.feup.stockportfolio;
 
+import java.util.ArrayList;
+
+import pt.feup.stockportfolio.HttpHelper.HistoricResult;
+
 public class Quote {
 	String tick;
 	int quantity;
 	double value;
+	boolean isUpdated = false;
+	ArrayList<HistoricResult> history = new ArrayList<HistoricResult>();
 	
 	public Quote(String tick, int quantity) {
 		this.tick = tick;
 		this.quantity = quantity;
 	}
 
-	public String getTick() {
-		return tick;
-	}
-
-	public void setTick(String tick) {
-		this.tick = tick;
-	}
-
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-
-	public double getValue() {
-		return value;
-	}
-
-	public void setValue(double value) {
-		this.value = value;
-	}
-	
-	public double getTotalValue() {
-		return quantity * value;
+	public boolean update()
+	{
+		HttpHelper http = new HttpHelper();
+		history = http.getHistoric(tick);
+		if (history != null)
+			isUpdated = true;
+		else
+			isUpdated = false;
+		
+		return isUpdated;
 	}
 	
 	public void changeQuantity(int change) {
