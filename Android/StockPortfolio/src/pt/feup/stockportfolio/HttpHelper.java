@@ -351,6 +351,19 @@ public class HttpHelper {
 		return historic;
 	}
 
+	public String getName(String tick)
+	{
+		//http://finance.yahoo.com/d/quotes?f=snl1d1t1v&s=GOOG
+		List<NameValuePair> params = new ArrayList<NameValuePair>(8);
+		params.add(new BasicNameValuePair("f", "snl1d1t1v"));
+		params.add(new BasicNameValuePair("s", "" + tick));
+	
+		HttpResult result = executeGet("finance.yahoo.com", "/d/quotes", params);
+
+		String[] historic_csv = result.getResult().split("[\\,]+");
+		return historic_csv[1].substring(1, historic_csv[1].length()-2);
+	}
+	
 	// return for the last 30 days
 	public ArrayList<HistoricResult> getHistoric(String tick) {
 		Calendar today_cal = Calendar.getInstance();

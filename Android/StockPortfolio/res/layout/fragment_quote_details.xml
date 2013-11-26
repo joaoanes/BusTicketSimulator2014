@@ -1,85 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    
       
     <LinearLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ff0000"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-     <pt.feup.stockportfolio.GraphView
-         android:id="@+id/graphView1"
+     <LinearLayout
+         android:id="@+id/insertGraphHere"
          android:layout_width="match_parent"
-         android:layout_height="175dp" />
+         android:layout_height="175dp"
+         android:gravity="center"
+         android:orientation="horizontal" >
+
+         <ProgressBar
+             android:id="@+id/graphProgress"
+             style="?android:attr/progressBarStyleLarge"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" />
+
+     </LinearLayout>
+    
+     <View
+         android:layout_width="match_parent"
+         android:layout_height="30dp"
+         android:background="#efefef" />
     
     <TextView
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quote"
+        android:layout_marginLeft="10dp"
+        android:text="please wait..."
         android:textColor="#ffffff"
-        android:textStyle="bold" />
-    
-    <TextView
-        android:id="@+id/quote_details_tick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff" />
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quantity"
-        android:textColor="#ffffff"
-        android:textStyle="bold" />
-    
-    <TextView
-        android:id="@+id/quote_details_quantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff" />
-    
+        android:textSize="40sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-        
-        <Button android:id="@+id/quote_details_remove_10"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:background="#efefef"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="- 10"/>
-        
-        <Button android:id="@+id/quote_details_remove_1"
+            android:layout_marginLeft="10dp"
+            android:text="is making you "
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#8cc63e" />
+
+        <TextView
+            android:id="@+id/personalworth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="- 1"/>
-        
-        <Button android:id="@+id/quote_details_add_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+ 1"/>
-        
-        <Button android:id="@+id/quote_details_add_10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+ 10"/>
+            android:text="..."
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#8cc63e" />
         
     </LinearLayout>
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Value"
-        android:textColor="#ffffff"
-        android:textStyle="bold" />
-    
-    <TextView
-        android:id="@+id/quote_details_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff" />
+      <RelativeLayout 
+        android:id="@+id/d"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <RelativeLayout
+            android:id="@+id/d2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" >
+
+    <RelativeLayout
+        android:id="@+id/FOUR"
+        android:layout_width="125dp"
+        android:layout_height="130dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/d3"
+        android:background="#efefef" >
+
+        <TextView
+            android:id="@+id/TextView04"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="false"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@+id/shares"
+            android:layout_centerHorizontal="true"
+            android:text="shares"
+            android:textColor="#a7a9ab"
+            android:textSize="15sp" />
+
+	<RelativeLayout
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/TextView04"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="5dp" >
+
+        <LinearLayout
+            android:id="@+id/increaseshares"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#ff0000"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/plus" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/decreaseshares"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/increaseshares"
+            android:background="#ff0000"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/minus" />
+
+        </LinearLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/shares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="..."
+            android:textColor="#8cc63e"
+            android:textSize="40sp" />
+        
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout01"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:background="#efefef" >
+
+        <TextView
+            android:id="@+id/percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="..."
+            android:textColor="#8cc63e"
+            android:textSize="35sp" />
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/percent"
+            android:src="@drawable/greenarrow_03" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/d3"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@+id/FOUR"
+        android:layout_alignParentLeft="true"
+        android:background="#efefef" >
+
+        <TextView
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="10dp"
+            android:text="..."
+            android:textColor="#ff0000"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/close"
+            android:layout_alignLeft="@+id/close"
+            android:layout_marginBottom="-5dp"
+            android:text="trading at"
+            android:textColor="#a7a9ab"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+        
+    </RelativeLayout>
+    </RelativeLayout>
+  
 
 </LinearLayout>
     
-    
-</ScrollView>

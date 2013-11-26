@@ -14,6 +14,11 @@ public class ColorFactory {
 		refresh();
 	}
 	
+	static int getDefault()
+	{
+		return Color.parseColor("#D6DF23");
+	}
+	
 	static void refresh()
 	{
 		availableColor.add(Color.parseColor("#D6DF23"));

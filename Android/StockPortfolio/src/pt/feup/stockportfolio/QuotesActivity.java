@@ -10,6 +10,8 @@ import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
 import pt.feup.stockportfolio.QuoteDetailsFragment.QuoteDetailsListener;
 import pt.feup.stockportfolio.QuotesFragment.QuotesListener;
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -17,6 +19,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Display;
 import android.view.Gravity;
@@ -45,6 +48,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	FrameLayout details_layout;
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
 
 	
 
@@ -63,7 +67,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		setContentView(R.layout.activity_quotes);
 
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
+		mDrawerLayout = ((DrawerLayout) findViewById(R.id.main_drawer));
 		if (quotes.size() == 0)
 		{
 			quotes.add(new QuoteUpdate(Utils.myQuotes.get(0)));
@@ -84,9 +88,53 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		myAdapter.setFragment(frg);
 		mDrawerList.setAdapter(myAdapter);
 		
+		setUpDrawerToggle();
+		
 		
 	}
 
+	private void setUpDrawerToggle(){
+	    ActionBar actionBar = getActionBar();
+
+	    // ActionBarDrawerToggle ties together the the proper interactions
+	    // between the navigation drawer and the action bar app icon.
+	    mDrawerToggle = new ActionBarDrawerToggle(
+	            this,                             /* host Activity */
+	            mDrawerLayout,                    /* DrawerLayout object */
+	            R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+	            R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
+	            R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
+	    ) {
+	        @Override
+	        public void onDrawerClosed(View drawerView) {
+	            invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+	        }
+
+	        @Override
+	        public void onDrawerOpened(View drawerView) {
+	            invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+	        }
+	        
+	    };
+	    
+	    
+
+	    // Defer code dependent on restoration of previous instance state.
+	    // NB: required for the drawer indicator to show up!
+	    mDrawerLayout.post(new Runnable() {
+	        @Override
+	        public void run() {
+	            mDrawerToggle.syncState();
+	            
+	        }
+	    });
+
+	    mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+	    actionBar.setDisplayHomeAsUpEnabled(true);
+	    actionBar.setHomeButtonEnabled(true);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -96,22 +144,24 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_add_quote:
-			startAddQuote();
+		// Pass the event to ActionBarDrawerToggle, if it returns
+		// true, then it has handled the app icon touch event
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
-		case android.R.id.home:
-			if(extra_fragment != null) {
-				mDrawerLayout.openDrawer(Gravity.LEFT);
-				return true;
-			}
+		}
+		// Handle your other action bar items...
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
 			break;
+
 		default:
 			break;
-		};
-		return false;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
+	
 	@Override
 	public void onBackPressed() {
 		if(extra_fragment != null && !landscape) {

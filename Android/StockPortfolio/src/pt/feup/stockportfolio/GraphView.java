@@ -63,24 +63,14 @@ public class GraphView extends View
 	Canvas bufferedGraphCanvas;
 
 	boolean swipeDecay = false;
-	private boolean resetted = false;
 	
-	class TestUpdater extends AsyncTask<Void, Void, Void>
-	{
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			if (!quote.isUpdated)
-				quote.update();
-			return null;
-		}
-		
-	}
 	
-	public GraphView(Context context, AttributeSet attrs)
+	
+	public GraphView(Context context, AttributeSet attrs, Quote _quote)
 	{
 		
 		super(context, attrs);
+		this.quote = _quote;
 		Options opts = new Options();
 		opts.inDither = false; 
 		opts.inPurgeable = true; 
@@ -103,7 +93,7 @@ public class GraphView extends View
 
 		smallTextPaint.setTypeface(Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-Light.ttf"));
-		smallTextPaint.setTextSize(ExtraUtils.dp2px(8));
+		smallTextPaint.setTextSize(ExtraUtils.dp2px(6));
 		bigTextPaint.setColor(Color.parseColor("#587C9B"));
 		bigTextPaint.setTypeface(Typeface.createFromAsset(context.getAssets(),
 				"fonts/Roboto-Regular.ttf"));
@@ -112,7 +102,7 @@ public class GraphView extends View
 		pointsPaint.setTypeface(Typeface.createFromAsset(context.getAssets(),
 				"fonts/Roboto-Regular.ttf"));
 		pointsPaint.setTextSize(ExtraUtils.dp2px(60));
-		pointsPaint.setColor(Color.parseColor("#000000"));
+		pointsPaint.setColor(Color.parseColor("#efefef"));
 		pointsPaint.setTextAlign(Align.LEFT);
 
 		objectiveTextPaint.setTypeface(Typeface.createFromAsset(
@@ -123,29 +113,19 @@ public class GraphView extends View
 		whitePaint.setColor(Color.WHITE);
 
 		blueDottedPaint.setPathEffect(new DashPathEffect(new float[]
-				{ 10, 20 }, 0));
-		
+				{ 2, 5 }, 0));
 		
 		
 		buildGraph();
+			
 	}
 
 	private void buildGraph() {
-		Void[] args = {};
-		if (!quote.isUpdated)
-			try {
-			new TestUpdater().execute(args).get();
-			} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			}
+
 
 		mainPaint.setColor(quote.color);
 		int[] width =
-			{ ExtraUtils.dp2px(50) };
+			{ ExtraUtils.dp2px(40) };
 		if (pointsGraph == null)
 			pointsGraph = PathFactory.generatePath(
 					quote, levelUps, width);
@@ -155,7 +135,7 @@ public class GraphView extends View
 			bufferedGraph = Bitmap.createBitmap(width[0] < ExtraUtils
 					.getScreenWidth() ? (int) ExtraUtils.getScreenWidth()
 							: width[0], ExtraUtils.dp2px(175), Bitmap.Config.ARGB_8888);
-			resetted = true;
+			
 		}
 
 		if (bufferedGraph.getWidth() != width[0])
@@ -165,17 +145,10 @@ public class GraphView extends View
 			bufferedGraph = Bitmap.createBitmap(width[0] < ExtraUtils
 					.getScreenWidth() ? (int) ExtraUtils.getScreenWidth()
 							: width[0], ExtraUtils.dp2px(175), Bitmap.Config.ARGB_8888);
-			resetted = true;
+		
 		}
 		bufferedGraphCanvas = new Canvas(bufferedGraph);
-		if (resetted)
-		{
-			Log.w("HELLO GRAPH", "Resetted graph..");
-			Paint paint = new Paint();
-			paint.setColor(Color.parseColor("#eae9f2"));
-			bufferedGraphCanvas.drawRect(0, 0, bufferedGraph.getWidth(),
-					bufferedGraph.getHeight(), paint);
-		}
+		
 		drawGraph();
 		defaultSlide = -(bufferedGraph.getWidth() - ExtraUtils.getScreenWidth());
 		slidex = defaultSlide;
@@ -187,14 +160,7 @@ public class GraphView extends View
 		// bufferedGraphCanvas.drawLine(0, KeepUtils.dp2px(50),
 		// bufferedGraphCanvas.getWidth(), KeepUtils.dp2px(25),
 		// blueDottedPaint);
-		for (int i = 1; i < levelUps.size() + 1; ++i)
-		{
-			bufferedGraphCanvas.drawCircle(
-					levelUps.get(i - 1) + ExtraUtils.dp2px(25), 80, 15,
-					mainPaint);
-			bufferedGraphCanvas.drawText(Integer.toString(i),
-					levelUps.get(i - 1) + ExtraUtils.dp2px(24), 87, textPaint);
-		}
+	
 
 		bufferedGraphCanvas.drawPath(pointsGraph, mainPaint);
 
@@ -219,11 +185,11 @@ public class GraphView extends View
 */
 			bufferedGraphCanvas.drawText(
 					Double.toString(entry.close) + " pts",
-					ExtraUtils.dp2px(5), ExtraUtils.dp2px(160), smallTextPaint);
-			bufferedGraphCanvas.translate(ExtraUtils.dp2px(50), 0);
+					ExtraUtils.dp2px(5), ExtraUtils.dp2px(165), smallTextPaint);
+			bufferedGraphCanvas.translate(ExtraUtils.dp2px(40), 0);
 
 		}
-		bufferedGraphCanvas.translate(-ExtraUtils.dp2px(50), 0);
+		bufferedGraphCanvas.translate(-ExtraUtils.dp2px(40), 0);
 
 		bufferedGraphCanvas.restore();
 
@@ -233,6 +199,12 @@ public class GraphView extends View
 	public void onDraw(Canvas canvas)
 	{
 		canvas.save();
+		Paint p = new Paint(pointsPaint);
+		p.setColor(Color.parseColor("#efefef"));
+		p.setStrokeWidth(4);
+		p.setShadowLayer(2, 0, 0, quote.color);
+		
+		canvas.drawText(quote.tick, ExtraUtils.dp2px(20), ExtraUtils.dp2px(150), p);
 		if (swipeDecay)
 		{
 			if (slidex < defaultSlide - 100) diffX = 15;
@@ -315,7 +287,6 @@ public class GraphView extends View
 		quote = q;
 		bufferedGraph = null;
 		bufferedGraphCanvas = null;
-		resetted = true;
 		pointsGraph = null;
 		buildGraph();
 		invalidate();

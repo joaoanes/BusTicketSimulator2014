@@ -1,16 +1,23 @@
 package pt.feup.stockportfolio;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -39,18 +46,46 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	public void hideSwipables()
 	{
 
-		int i = 0;
-		for (i = 0; i < objects.size(); )
+		Animation fadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+		fadeOutAnimation.setRepeatCount(0);
+		fadeOutAnimation.setFillAfter(true);
+
+		for (View v : swipable)
 		{
-			if (objects.get(i) instanceof QuoteUpdate)
-			{
-				this.remove(objects.get(i));
-				continue;
-			}
-			++i;
+			v.startAnimation(fadeOutAnimation);
 		}
-		Toast.makeText(getContext(), "TOAST! Also hidden", Toast.LENGTH_SHORT).show();
-		super.notifyDataSetChanged();
+		fadeOutAnimation.setAnimationListener(new AnimationListener(){
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				int i = 0;
+				for (i = 0; i < objects.size(); )
+				{
+					if (objects.get(i) instanceof QuoteUpdate)
+					{
+						remove(objects.get(i));
+						continue;
+					}
+					++i;
+				}
+				notifyDataSetChanged();
+				
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
 
 
 	}
@@ -139,7 +174,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 							@Override
 							protected void onPostExecute(Void result) {
 								((RelativeLayout) myView.findViewById(R.id.real_background)).setBackgroundColor(quote.color);
-								((TextView) myView.findViewById(R.id.value)).setText("" + quote.history.get(quote.history.size()-1).close);
+								((TextView) myView.findViewById(R.id.value)).setText("" + quote.getLast().close);
+								if (quote.getLast().close < quote.getFromLast(1).close)
+								{
+									((RelativeLayout) myView.findViewById(R.id.tick_box)).setBackgroundResource(R.drawable.border_red);
+									((TextView) myView.findViewById(R.id.value)).setTextColor(Color.parseColor("#ed1c24"));
+								}
 								GraphViewSmall mine = new GraphViewSmall(context, null, quote);
 								((LinearLayout)myView.findViewById(R.id.graph)).addView(mine);
 								Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.fade_in);
@@ -165,7 +205,15 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 							@Override
 							public void onClick(View v) {
-								Toast.makeText(context, "Hello from " + position, Toast.LENGTH_SHORT).show();
+								new Handler().postDelayed(new Runnable() {
+									 
+
+						            @Override
+						            public void run() {
+						            	((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
+						            }
+						        }, 500);
+								if (quote.isUpdated)
 								fragment.setDetails(quote);
 							}
 

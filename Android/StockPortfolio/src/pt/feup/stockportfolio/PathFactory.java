@@ -52,9 +52,9 @@ public class PathFactory
 
 
 			returnee.lineTo(width[0], ExtraUtils.dp2px(175) - ExtraUtils.dp2px((int) Math.floor(( process / delta) * 175.0)));
-			width[0] += ExtraUtils.dp2px(50);
+			width[0] += ExtraUtils.dp2px(40);
 		}
-		width[0] -= ExtraUtils.dp2px(50);
+		width[0] -= ExtraUtils.dp2px(40);
 		returnee.lineTo(width[0], ExtraUtils.dp2px(175));
 
 		return returnee;

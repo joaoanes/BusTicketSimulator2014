@@ -26,12 +26,13 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/tick_box"
             android:layout_width="60dp"
             android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="4dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/border" >
+            android:background="@drawable/border_green" >
 
             <TextView
                 android:id="@+id/value"
@@ -40,7 +41,7 @@
                 android:layout_alignParentRight="false"
                 android:layout_alignParentTop="false"
                 android:layout_centerInParent="true"
-                android:text="10000pt"
+                android:text="..."
                 android:textColor="#8cc63e" />
 
         </RelativeLayout>
