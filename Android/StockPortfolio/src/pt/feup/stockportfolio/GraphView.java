@@ -89,7 +89,7 @@ public class GraphView extends View
 		textPaint.setTextSize(ExtraUtils.dp2px(14));
 		textPaint.setTextAlign(Align.CENTER);
 
-		smallTextPaint.setColor(Color.parseColor("#587C9B"));
+		smallTextPaint.setColor(Color.parseColor("#efefef"));
 
 		smallTextPaint.setTypeface(Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-Light.ttf"));

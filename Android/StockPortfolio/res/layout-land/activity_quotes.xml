@@ -1,9 +1,8 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
 
 	 <ListView
         android:id="@+id/left_drawer"
@@ -17,8 +16,8 @@
 	
     <FrameLayout
         android:id="@+id/details_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <fragment class="pt.feup.stockportfolio.QuoteDetailsFragment"
             android:id="@+id/details"

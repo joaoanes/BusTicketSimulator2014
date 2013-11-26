@@ -1,42 +1,29 @@
 package pt.feup.stockportfolio;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
-import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
-import pt.feup.stockportfolio.QuoteDetailsFragment.QuoteDetailsListener;
 import pt.feup.stockportfolio.QuotesFragment.QuotesListener;
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener, QuoteDetailsListener {
+public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener {
 	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
 	static ArrayList<Quote> quotes = new ArrayList<Quote>();
 
@@ -94,6 +81,8 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	}
 
 	private void setUpDrawerToggle(){
+		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+			return;
 	    ActionBar actionBar = getActionBar();
 
 	    // ActionBarDrawerToggle ties together the the proper interactions
@@ -186,10 +175,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		quotes_fragment.adapter.add(quote);
 	}
 
-	@Override
-	public void onQuantityChange() {
-		quotes_fragment.adapter.notifyDataSetChanged();
-	}
+
 
 	public void startAddQuote() {
 		showExtraFragment(new AddQuotesFragment());

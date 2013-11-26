@@ -149,12 +149,16 @@
         
     </RelativeLayout>
 
+
     <RelativeLayout
-        android:id="@+id/RelativeLayout01"
+        android:id="@+id/d3"
         android:layout_width="160dp"
         android:layout_height="60dp"
+        android:layout_alignBottom="@+id/FOUR"
+        android:layout_alignParentLeft="true"
         android:background="#efefef" >
-
+	
+    
         <TextView
             android:id="@+id/percent"
             android:layout_width="wrap_content"
@@ -174,19 +178,16 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/percent"
             android:src="@drawable/greenarrow_03" />
-
-
+        
+	        
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/d3"
+            <RelativeLayout
+        android:id="@+id/RelativeLayout01"
         android:layout_width="160dp"
         android:layout_height="60dp"
-        android:layout_alignBottom="@+id/FOUR"
-        android:layout_alignParentLeft="true"
         android:background="#efefef" >
 
-        <TextView
+                <TextView
             android:id="@+id/close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -208,9 +209,9 @@
             android:text="trading at"
             android:textColor="#a7a9ab"
             android:textSize="12sp" />
+                
 
     </RelativeLayout>
-        
     </RelativeLayout>
     </RelativeLayout>
   

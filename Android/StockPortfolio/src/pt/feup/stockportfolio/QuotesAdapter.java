@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -199,12 +200,13 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
 						//TODO colors and stuff
 
-
+						final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
 						view.setOnClickListener(new OnClickListener(){
-
+							
 							@Override
 							public void onClick(View v) {
+								if (!landscape)	
 								new Handler().postDelayed(new Runnable() {
 									 
 

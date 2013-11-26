@@ -1,5 +1,7 @@
 package pt.feup.stockportfolio;
 
+import java.math.BigDecimal;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
@@ -112,18 +114,25 @@ public class QuoteDetailsFragment extends Fragment {
 		
 		if (graph != null)
 		graph.changeQuote(quote);
-		value_view.setText("" + quote.getLast().close * quote.quantity);
+		BigDecimal bd = new BigDecimal(quote.getLast().close * quote.quantity);
+		bd.setScale(2, BigDecimal.ROUND_DOWN);
+		value_view.setText("$" + bd.doubleValue());
 		view.setBackgroundColor(quote.color);
 		
 		double percent =  Quote.getPercentBetween(quote.getFromLast(1), quote.getLast());
 		((TextView) view.findViewById(R.id.percent)).setText("" + percent + "%");
-		((TextView) view.findViewById(R.id.close)).setText("" + quote.getLast().close);
+		((TextView) view.findViewById(R.id.close)).setText("$" + quote.getLast().close);
 		((TextView) view.findViewById(R.id.name)).setText(quote.name.substring(0, (quote.name.length() < 14) ? quote.name.length() : 14));
 		if (percent < 0)
 		{
 			((TextView) view.findViewById(R.id.percent)).setTextColor(Color.parseColor("#ed1c24"));
 			((ImageView) view.findViewById(R.id.arrow)).setImageResource(R.drawable.downarrow_03);
 		}	
+		else
+		{
+			((TextView) view.findViewById(R.id.percent)).setTextColor(Color.parseColor("#8cc63e"));
+			((ImageView) view.findViewById(R.id.arrow)).setImageResource(R.drawable.greenarrow_03);	
+		}
 		((TextView) view.findViewById(R.id.close)).setTextColor(quote.color);
 		((LinearLayout) view.findViewById(R.id.increaseshares)).setBackgroundColor(quote.color);
 
@@ -153,6 +162,8 @@ public class QuoteDetailsFragment extends Fragment {
 			}
 			quote.changeQuantity(change);
 			quantity_view.setText(String.valueOf(quote.quantity));
+			value_view.setText("$" + quote.getLast().close * quote.quantity);
+			
 			listener.onQuantityChange();
 		}
 	}; 
@@ -161,8 +172,6 @@ public class QuoteDetailsFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-
-		listener = (QuoteDetailsListener) activity;
 	}
 
 	@Override
