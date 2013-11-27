@@ -2,6 +2,7 @@ package pt.feup.stockportfolio;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +40,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	Context context;
 	ArrayList<Quote> objects;
 	ArrayList<View> swipable = new ArrayList<View>();
-	private QuoteDetailsFragment fragment;
+	private Fragment fragment;
 
 	public void hideSwipables()
 	{
@@ -87,8 +89,8 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 	}
 
-	
-	
+
+
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent)
 	{
@@ -135,6 +137,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						@Override
 						public void onClick(View v) {
 							Toast.makeText(context, "Hello from the portfolio at " + position, Toast.LENGTH_SHORT).show();
+
+							QuotesActivity act = (QuotesActivity) context;
+
+							QuotesActivity.extra_fragment = new PortfolioFragment();
+							act.showExtraFragment();
+							act.inspectingQuotes = false;
 						}
 
 					});
@@ -145,12 +153,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					{
 						view = inflator.inflate(R.layout.add_quote, null);
 						view.setOnClickListener(new OnClickListener(){
-							
+
 							class QuoteAsync extends AsyncTask<Object, Void, Void>
 							{
 								Quote quote = null;
 								View view = null;
-								
+
 								@Override
 								protected Void doInBackground(Object... arg0) {
 									quote = (Quote) arg0[0];
@@ -163,12 +171,14 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 								protected void onPostExecute(Void result) {
 									view.findViewById(R.id.updating).setVisibility(View.GONE);
 									if (quote.isUpdated)
-									((TextView) view.findViewById(R.id.close)).setText("" + quote.getLast().close);
-									
+									{
+										((ImageView) view.findViewById(R.id.button)).setImageResource(R.drawable.plus);
+										((TextView) view.findViewById(R.id.close)).setText("" + quote.getLast().close);
+									}
 								}
 
 							}
-							
+
 							@Override
 							public void onClick(View v) {
 
@@ -195,7 +205,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									}
 
 								});
-								
+
 								myView.findViewById(R.id.increaseshares).setOnLongClickListener(new OnLongClickListener(){
 
 									@Override
@@ -203,9 +213,9 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 										// TODO Auto-generated method stub
 										return false;
 									}
-									
+
 								});
-								
+
 								myView.findViewById(R.id.decreaseshares).setOnClickListener(new OnClickListener(){
 
 									@Override
@@ -221,27 +231,27 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 								myView.findViewById(R.id.accept).setOnClickListener(new OnClickListener(){
 
-									
+
 									Quote q = new Quote("NULL", 0);
 									@Override
 									public void onClick(View v) {
 										if (q.isUpdated)
 										{
-										Utils.myQuotes.add(q);
+											Utils.myQuotes.add(q);
 
-										Quote a = objects.get(objects.size()-1);
-										objects.remove(objects.size()-1);
-										objects.add(q);
-										objects.add(a);
+											Quote a = objects.get(objects.size()-1);
+											objects.remove(objects.size()-1);
+											objects.add(q);
+											objects.add(a);
 
-										notifyDataSetChanged();
-										alertDialog.dismiss();
+											notifyDataSetChanged();
+											alertDialog.dismiss();
 										}
 										else
 										{
 											myView.findViewById(R.id.updating).setVisibility(View.VISIBLE);
 											q = new Quote(ticker.getText().toString(), share_number[0]);
-											
+
 											Object[] quot = { q , myView };
 											new QuoteAsync().execute(quot);
 										}
@@ -296,7 +306,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 						new GraphAsync().execute(view, quote);
 						((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
-						
+
 
 						final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
@@ -314,7 +324,17 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 										}
 									}, 500);
 								if (quote.isUpdated)
-									fragment.setDetails(quote);
+								{
+
+									if (!((QuotesActivity) context).inspectingQuotes)
+										
+
+										((QuotesActivity) context).showExtraFragment(((QuotesActivity) context).d_frag);
+
+									((QuoteDetailsFragment) fragment).setDetails(quote);
+
+									((QuotesActivity) context).inspectingQuotes = true;
+								}
 							}
 
 						});

@@ -172,7 +172,7 @@ public class GraphView extends View
 					ExtraUtils.dp2px(5), ExtraUtils.dp2px(30), smallTextPaint);
 */
 			bufferedGraphCanvas.drawText(
-					Double.toString(entry.close) + " pts",
+					'$' + Double.toString(entry.close),
 					ExtraUtils.dp2px(5), ExtraUtils.dp2px(165), smallTextPaint);
 			bufferedGraphCanvas.translate(ExtraUtils.dp2px(40), 0);
 
