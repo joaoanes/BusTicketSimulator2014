@@ -22,13 +22,39 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuotesAdapter extends ArrayAdapter<Quote> 
 {
+	class QuoteAsync extends AsyncTask<Object, Void, Void>
+	{
+		Quote quote = null;
+		View view = null;
 
+		@Override
+		protected Void doInBackground(Object... arg0) {
+			quote = (Quote) arg0[0];
+			view = (View) arg0[1];
+			if (!quote.isUpdated)
+				quote.update();
+			return null;
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			view.findViewById(R.id.updating).setVisibility(View.GONE);
+			if (quote.isUpdated)
+			{
+				((ImageView) view.findViewById(R.id.button)).setImageResource(R.drawable.plus);
+				((TextView) view.findViewById(R.id.close)).setText("" + quote.getLast().close);
+			}
+		}
+
+	}
+	
+	
 	public QuotesAdapter(Context _context, int resource,
 			ArrayList<Quote> _objects) {
 		super(_context, resource, _objects);
@@ -41,6 +67,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	ArrayList<Quote> objects;
 	ArrayList<View> swipable = new ArrayList<View>();
 	private Fragment fragment;
+	private int removedItems = 0;
 
 	public void hideSwipables()
 	{
@@ -67,6 +94,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					}
 					++i;
 				}
+				removedItems = swipable.size();
 				notifyDataSetChanged();
 
 			}
@@ -92,8 +120,9 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent)
+	public View getView(final int position, View convertView, final ViewGroup parent)
 	{
+		
 		final Quote quote = objects.get(position);
 		if (quote == null)
 			return new View(context);
@@ -154,30 +183,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						view = inflator.inflate(R.layout.add_quote, null);
 						view.setOnClickListener(new OnClickListener(){
 
-							class QuoteAsync extends AsyncTask<Object, Void, Void>
-							{
-								Quote quote = null;
-								View view = null;
-
-								@Override
-								protected Void doInBackground(Object... arg0) {
-									quote = (Quote) arg0[0];
-									view = (View) arg0[1];
-									if (!quote.isUpdated)
-										quote.update();
-									return null;
-								}
-								@Override
-								protected void onPostExecute(Void result) {
-									view.findViewById(R.id.updating).setVisibility(View.GONE);
-									if (quote.isUpdated)
-									{
-										((ImageView) view.findViewById(R.id.button)).setImageResource(R.drawable.plus);
-										((TextView) view.findViewById(R.id.close)).setText("" + quote.getLast().close);
-									}
-								}
-
-							}
+							
 
 							@Override
 							public void onClick(View v) {
@@ -243,7 +249,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 											objects.remove(objects.size()-1);
 											objects.add(q);
 											objects.add(a);
-
+											Utils.myQuotes.add(q);
 											notifyDataSetChanged();
 											alertDialog.dismiss();
 										}
@@ -350,35 +356,35 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getViewTypeCount()
 	{
-		return 5;
+		return objects.size() + 3;
 	}
 
 	@Override
 	public int getItemViewType(int position)
 	{
-
+		
+		
+		int ret = 0;
+		
 		Quote quote = objects.get(position);
-
-
-		if (quote instanceof QuoteSeparator)
-			return 2;
-
+		
+		
 		if (quote instanceof QuoteUpdate)
-
+			
 		{
-			if (position == 0)
-			{
-				return 0;
-			}
-			else
-			{
-				return 1;
-			}
+			ret = objects.size();
 		}
-		if (quote instanceof QuoteAdd)
-			return 4;
-
-		return 3;
+		
+		else if (quote instanceof QuoteAdd)
+			ret = objects.size() + 1;
+		
+		else if (quote instanceof QuoteSeparator)
+			ret = objects.size() + 2;
+		
+		else ret = position + removedItems ;
+		
+		Log.e("HELLO ITEMS", "Get item view type for " + position + ", quote " + quote.tick + " with " + ret);
+		return ret;
 	}
 
 	public void setFragment(QuoteDetailsFragment frg) {

@@ -27,11 +27,11 @@ public class Quote implements Serializable {
 	public HistoricResult getLast(){
 		if (!isUpdated)
 			return null;
-		return this.history.get(history.size()-1);
+		return this.history.get(0);
 	}
 	
 	public HistoricResult getFromLast(int offset){
-		return this.history.get(history.size()- 1 - offset );
+		return this.history.get(offset);
 	}
 	
 	 //two is after one

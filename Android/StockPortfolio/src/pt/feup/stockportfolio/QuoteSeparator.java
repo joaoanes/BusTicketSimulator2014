@@ -5,7 +5,7 @@ public class QuoteSeparator extends Quote {
 
 
 	public QuoteSeparator() {
-		super("NULL", 0);
+		super("SEPARATOR", 0);
 		this.isUpdated = true;
 	}
 

@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
-import pt.feup.stockportfolio.QuotesFragment.QuotesListener;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -29,13 +28,11 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class QuotesActivity extends Activity implements QuotesListener, AddQuoteListener {
+public class QuotesActivity extends Activity {
 	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
-	static ArrayList<Quote> quotes = new ArrayList<Quote>();
-
 	HttpHelper http_helper = new HttpHelper();	
 	boolean landscape = false;
-	QuotesFragment quotes_fragment;
+
 	static Fragment extra_fragment;
 	FragmentManager fragment_manager;
 	FrameLayout details_layout;
@@ -49,6 +46,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		ArrayList<Quote> quotes = new ArrayList<Quote>();
 		if (Utils.myQuotes.size() == 0)
 		{
 			Utils.myQuotes.add(new Quote("MSFT", 100));
@@ -185,33 +183,11 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	
 	@Override
 	public void onBackPressed() {
-		if(extra_fragment != null && !landscape) {
-			returnToQuoteFragment();
-			return;
-		}
+	
 
 		super.onBackPressed();
 	}
 
-	@Override //QuotesListener
-	public void onQuoteClick(Quote quote) {
-	}
-
-	@Override // AddQuoteListener
-	public void addQuote(String tick, int quantity, double value) {
-		Toast.makeText(this, tick+" "+String.valueOf(quantity) , Toast.LENGTH_SHORT).show();
-		Quote quote = new Quote(tick, quantity);
-
-		returnToQuoteFragment();
-
-		quotes_fragment.adapter.add(quote);
-	}
-
-
-
-	public void startAddQuote() {
-		showExtraFragment(new AddQuotesFragment());
-	}
 
 	public void showExtraFragment() {
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -233,57 +209,7 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	}
 
 
-	public void returnToQuoteFragment() {
-		FragmentTransaction transaction = fragment_manager.beginTransaction();
-		transaction.remove(extra_fragment);
 
-		extra_fragment = null;
-
-		if(!landscape) {
-			transaction.show(quotes_fragment);
-
-			details_layout.setVisibility(View.GONE);
-		}
-
-
-		getActionBar().setDisplayHomeAsUpEnabled(false);
-		transaction.commit();
-	}
-
-	public static boolean hasQuote(String tick) {
-		return quotes_map.containsKey(tick);
-	}
-
-	public static void addQuote(Quote quote) {
-		quotes_map.put(quote.tick, quote);
-	}
-
-	public static void updateQuoteValue(QuoteResult quote_result) {
-		String tick = quote_result.getTick();
-		if(hasQuote(tick)) {
-			quotes_map.get(tick).value = quote_result.getValue();
-		}
-	}
-
-	public static void updateQuoteQuantity(String tick, int change) {
-		if(hasQuote(tick)) {
-			quotes_map.get(tick).changeQuantity(change);
-		}
-	}
-
-	public static void removeQuote(String tick) {
-		if(hasQuote(tick)) {
-			quotes.remove(quotes_map.get(tick));
-			quotes_map.remove(tick);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	public boolean isLandscape() {
-		Display display = getWindowManager().getDefaultDisplay();
-		return display.getWidth() > display.getHeight();
-
-	}
 
 	void showQuoteDetails() {
 		
