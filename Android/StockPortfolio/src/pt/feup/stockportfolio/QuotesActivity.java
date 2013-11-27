@@ -36,8 +36,10 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
+	QuoteDetailsFragment d_frag;
+	PortfolioFragment p_frag;
 
-	
+	boolean inspectingQuotes = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +71,14 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 
 		}
 		
-		QuoteDetailsFragment frg = (QuoteDetailsFragment) getFragmentManager().findFragmentById(R.id.details);
+		p_frag = new PortfolioFragment();
+		d_frag = new QuoteDetailsFragment();
+		extra_fragment = d_frag;
+		showExtraFragment();
 		
+	
 		QuotesAdapter myAdapter = new QuotesAdapter(((Context) this), 0, quotes);
-		myAdapter.setFragment(frg);
+		myAdapter.setFragment(d_frag);
 		mDrawerList.setAdapter(myAdapter);
 		
 		setUpDrawerToggle();
@@ -182,23 +188,16 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 	}
 
 	public void showExtraFragment() {
-		FragmentTransaction transaction = fragment_manager.beginTransaction();
-		transaction.replace(R.id.details_layout, extra_fragment);
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.content_frame, extra_fragment);
 
-		if (!landscape) {
-			details_layout.setVisibility(View.VISIBLE);
-			transaction.hide(quotes_fragment);
-
-			if(!landscape) {
-				getActionBar().setDisplayHomeAsUpEnabled(true);
-			}
-		}
+		
 		transaction.commit();
 	}
 
 	public void showExtraFragment(Fragment fragment) {
 		if(extra_fragment != null) {
-			fragment_manager.beginTransaction()
+			getFragmentManager().beginTransaction()
 			.remove(extra_fragment)
 			.commit();
 		}
