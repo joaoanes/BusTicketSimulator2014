@@ -43,4 +43,29 @@ public class Utils {
 		dialog.setCancelable(false);
 		return dialog;
 	}
+	
+	public static Quote getPortfolioQuote() {
+		Quote portfolio = new Quote("Portfolio", 0);
+		portfolio.name = "Portfolio";
+		portfolio.history = new ArrayList<HistoricResult>(30);
+		ArrayList<HistoricResult> history = portfolio.history;
+		
+		for(Quote quote : myQuotes) {
+			for(int i = 0; i < quote.history.size(); ++i) {
+				
+				HistoricResult portfolio_result = history.get(i);
+				HistoricResult quote_result = quote.history.get(i);
+				
+				if(portfolio_result == null) {
+					portfolio_result = new HistoricResult();
+					portfolio_result.date = quote_result.getDate();
+					history.add(i, portfolio_result);
+				}
+				
+				portfolio_result.increment(quote_result, quote.quantity);
+			}
+		}
+		
+		return portfolio;
+	}
 }

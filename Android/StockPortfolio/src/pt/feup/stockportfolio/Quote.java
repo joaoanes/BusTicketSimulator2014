@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import pt.feup.stockportfolio.HttpHelper.QuoteResult;
 import android.graphics.Color;
+import android.util.Log;
 
 public class Quote implements Serializable {
 	String tick;
@@ -39,8 +41,13 @@ public class Quote implements Serializable {
 		BigDecimal bd = new BigDecimal(delta/one.close * 100);
 	    bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
 	    return bd.doubleValue();
-		
-		
+	}
+	
+	public double getPercentage() {
+		double delta = value - getLast().close;
+		BigDecimal bd = new BigDecimal(delta/value * 100);
+	    bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+		return delta;
 	}
 	
 	public Quote(Quote other)
@@ -67,6 +74,11 @@ public class Quote implements Serializable {
 		HttpHelper http = new HttpHelper();
 		name = http.getName(this.tick);
 		history = http.getHistoric(tick);
+		QuoteResult quote_result = http.getTickValue(tick);
+		if(value != quote_result.getValue()) {
+			Log.i("VALUE DIFFERENCE", String.valueOf(value - quote_result.getValue()));
+			value = quote_result.getValue();
+		}
 		if (history != null)
 			isUpdated = true;
 		else

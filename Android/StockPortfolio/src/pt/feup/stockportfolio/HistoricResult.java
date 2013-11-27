@@ -11,6 +11,16 @@ public class HistoricResult implements Comparable<HistoricResult>, Serializable 
 	public int volume;
 	public double adj_close;
 
+	public HistoricResult() {
+		date = "";
+		open = 0.0;
+		high = 0.0;
+		low = 0.0;
+		close = 0;
+		volume = 0;
+		adj_close = 0;
+	}
+	
 	public HistoricResult(String csv) {
 		String[] contents = csv.split(",");
 
@@ -75,6 +85,15 @@ public class HistoricResult implements Comparable<HistoricResult>, Serializable 
 	public int compareTo(HistoricResult another) {
 		
 		return (int) (this.close-another.close);
+	}
+	
+	public void increment(HistoricResult result, int quantity) {
+		open += result.open*quantity;
+		high += result.high*quantity;
+		low += result.low*quantity;
+		close += result.close*quantity;
+		volume += result.volume*quantity;
+		adj_close += result.adj_close*quantity;
 	}
 
 }

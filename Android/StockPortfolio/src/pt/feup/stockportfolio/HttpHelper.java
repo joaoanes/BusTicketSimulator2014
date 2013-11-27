@@ -246,6 +246,16 @@ public class HttpHelper {
 
 		return quotes;
 	}
+	
+	public QuoteResult getTickValue(String tick) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+		params.add(new BasicNameValuePair("f", "sl1d1t1v"));
+		params.add(new BasicNameValuePair("s", tick));
+		HttpResult result = executeGet("finance.yahoo.com", "/d/quotes", params);
+
+		String[] quotes_csv = result.getResult().split("[\\r\\n]+");
+		return new QuoteResult(quotes_csv[0]);
+	}
 
 	public ArrayList<HistoricResult> getHistoric(String tick, int a, int b, int c, int d, int e, int f) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>(8);
@@ -264,7 +274,7 @@ public class HttpHelper {
 		String[] historic_csv = result.getResult().split("[\\r\\n]+");
 		ArrayList<HistoricResult> historic = new ArrayList<HistoricResult>();
 		//first element is nothing
-		for(int i = 1; i < historic_csv.length; ++i) {
+		for(int i = historic_csv.length - 1; i > 0; --i) {
 			historic.add(new HistoricResult(historic_csv[i]));
 		}
 

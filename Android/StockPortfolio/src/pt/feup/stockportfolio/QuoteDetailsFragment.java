@@ -37,7 +37,9 @@ public class QuoteDetailsFragment extends Fragment {
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			quote.update();
+			if(!quote.isUpdated) {
+				quote.update();
+			}
 			return null;
 		}
 		@Override
@@ -119,9 +121,12 @@ public class QuoteDetailsFragment extends Fragment {
 		value_view.setText("$" + bd.doubleValue());
 		view.setBackgroundColor(quote.color);
 		
-		double percent =  Quote.getPercentBetween(quote.getFromLast(1), quote.getLast());
-		((TextView) view.findViewById(R.id.percent)).setText("" + percent + "%");
-		((TextView) view.findViewById(R.id.close)).setText("$" + quote.getLast().close);
+		double percent =  quote.getPercentage();
+		String percentage_string = String.valueOf(percent);
+		percentage_string = percentage_string.substring(0, percentage_string.indexOf(".")+3);
+		((TextView) view.findViewById(R.id.percent)).setText("" + percentage_string + "%");
+		//((TextView) view.findViewById(R.id.close)).setText("$" + quote.getLast().close);
+		((TextView) view.findViewById(R.id.close)).setText("$" + quote.value);
 		((TextView) view.findViewById(R.id.name)).setText(quote.name.substring(0, (quote.name.length() < 14) ? quote.name.length() : 14));
 		if (percent < 0)
 		{

@@ -35,6 +35,9 @@ public class SplashActivity extends Activity {
 			FileInputStream fis = openFileInput(Utils.FILENAME);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Utils.myQuotes = (ArrayList<Quote>) ois.readObject();
+			for(Quote quote : Utils.myQuotes) {
+				quote.isUpdated = false;
+			}
 			ois.close();
 		} catch (FileNotFoundException e) {
 			//e.printStackTrace();
