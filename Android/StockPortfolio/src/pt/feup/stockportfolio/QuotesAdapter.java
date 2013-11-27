@@ -1,12 +1,8 @@
 package pt.feup.stockportfolio;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -15,18 +11,18 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AbsListView.LayoutParams;
 
 public class QuotesAdapter extends ArrayAdapter<Quote> 
 {
@@ -36,7 +32,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		super(_context, resource, _objects);
 		context = _context;
 		objects = _objects;
-		
+
 	}
 
 	Context context;
@@ -70,27 +66,29 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					++i;
 				}
 				notifyDataSetChanged();
-				
+
 			}
 
 			@Override
 			public void onAnimationRepeat(Animation animation) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onAnimationStart(Animation animation) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
-		
+
 
 
 	}
 
+	
+	
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent)
 	{
@@ -101,7 +99,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		if (view == null) 
 		{
 			Log.e("HELLO QUOTES", "Refreshing a view!");
-			LayoutInflater inflator = ((Activity) getContext()).getLayoutInflater();
+			final LayoutInflater inflator = ((Activity) getContext()).getLayoutInflater();
 
 
 			if(quote instanceof QuoteUpdate)
@@ -116,7 +114,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 					@Override
 					public void onClick(View v) {
-						
+
 						hideSwipables();
 					}
 
@@ -147,11 +145,111 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					{
 						view = inflator.inflate(R.layout.add_quote, null);
 						view.setOnClickListener(new OnClickListener(){
+							
+							class QuoteAsync extends AsyncTask<Object, Void, Void>
+							{
+								Quote quote = null;
+								View view = null;
+								
+								@Override
+								protected Void doInBackground(Object... arg0) {
+									quote = (Quote) arg0[0];
+									view = (View) arg0[1];
+									if (!quote.isUpdated)
+										quote.update();
+									return null;
+								}
+								@Override
+								protected void onPostExecute(Void result) {
+									view.findViewById(R.id.updating).setVisibility(View.GONE);
+									if (quote.isUpdated)
+									((TextView) view.findViewById(R.id.close)).setText("" + quote.getLast().close);
+									
+								}
 
+							}
+							
 							@Override
 							public void onClick(View v) {
 
-								Toast.makeText(context, "Hello from add quote at " + position, Toast.LENGTH_SHORT).show();
+								final AlertDialog alertDialog;
+								AlertDialog.Builder builder = new AlertDialog.Builder(context);
+								final View myView = inflator.inflate(R.layout.fragment_add_quote_2, null);
+								final int[] share_number = {0};
+								final EditText ticker = (EditText) myView.findViewById(R.id.ticker);
+								final TextView shares = (TextView) myView.findViewById(R.id.shares);
+
+
+								builder.setView(myView);
+
+
+								alertDialog = builder.create();
+
+								myView.findViewById(R.id.increaseshares).setOnClickListener(new OnClickListener(){
+
+									@Override
+									public void onClick(View v) {
+
+										share_number[0]++;
+										shares.setText("" + share_number[0]);
+									}
+
+								});
+								
+								myView.findViewById(R.id.increaseshares).setOnLongClickListener(new OnLongClickListener(){
+
+									@Override
+									public boolean onLongClick(View v) {
+										// TODO Auto-generated method stub
+										return false;
+									}
+									
+								});
+								
+								myView.findViewById(R.id.decreaseshares).setOnClickListener(new OnClickListener(){
+
+									@Override
+									public void onClick(View v) {
+										if (share_number[0] == 0)
+											return;
+										share_number[0]--;
+										shares.setText("" + share_number[0]);
+									}
+
+								});
+
+
+								myView.findViewById(R.id.accept).setOnClickListener(new OnClickListener(){
+
+									
+									Quote q = new Quote("NULL", 0);
+									@Override
+									public void onClick(View v) {
+										if (q.isUpdated)
+										{
+										Utils.myQuotes.add(q);
+
+										Quote a = objects.get(objects.size()-1);
+										objects.remove(objects.size()-1);
+										objects.add(q);
+										objects.add(a);
+
+										notifyDataSetChanged();
+										alertDialog.dismiss();
+										}
+										else
+										{
+											myView.findViewById(R.id.updating).setVisibility(View.VISIBLE);
+											q = new Quote(ticker.getText().toString(), share_number[0]);
+											
+											Object[] quot = { q , myView };
+											new QuoteAsync().execute(quot);
+										}
+									}
+
+								});
+
+								alertDialog.show();
 							}
 
 						});
@@ -198,25 +296,25 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 						new GraphAsync().execute(view, quote);
 						((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
-						//TODO colors and stuff
+						
 
 						final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
 						view.setOnClickListener(new OnClickListener(){
-							
+
 							@Override
 							public void onClick(View v) {
 								if (!landscape)	
-								new Handler().postDelayed(new Runnable() {
-									 
+									new Handler().postDelayed(new Runnable() {
 
-						            @Override
-						            public void run() {
-						            	((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
-						            }
-						        }, 500);
+
+										@Override
+										public void run() {
+											((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
+										}
+									}, 500);
 								if (quote.isUpdated)
-								fragment.setDetails(quote);
+									fragment.setDetails(quote);
 							}
 
 						});
@@ -232,7 +330,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getViewTypeCount()
 	{
-		return 4;
+		return 5;
 	}
 
 	@Override
@@ -240,24 +338,32 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	{
 
 		Quote quote = objects.get(position);
-		
-		
+
+
 		if (quote instanceof QuoteSeparator)
 			return 2;
-		
+
 		if (quote instanceof QuoteUpdate)
+
+		{
 			if (position == 0)
-			return 0;
+			{
+				return 0;
+			}
 			else
+			{
 				return 1;
-		
-		
+			}
+		}
+		if (quote instanceof QuoteAdd)
+			return 4;
+
 		return 3;
 	}
 
 	public void setFragment(QuoteDetailsFragment frg) {
 		fragment = frg;
-		
+
 	}
 
 

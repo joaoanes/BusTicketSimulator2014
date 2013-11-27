@@ -24,6 +24,8 @@ public class Quote {
 	}
 	
 	public HistoricResult getLast(){
+		if (!isUpdated)
+			return null;
 		return this.history.get(history.size()-1);
 	}
 	

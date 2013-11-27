@@ -115,7 +115,7 @@ public class QuoteDetailsFragment extends Fragment {
 		if (graph != null)
 		graph.changeQuote(quote);
 		BigDecimal bd = new BigDecimal(quote.getLast().close * quote.quantity);
-		bd.setScale(2, BigDecimal.ROUND_DOWN);
+		bd.setScale(2, BigDecimal.ROUND_FLOOR);
 		value_view.setText("$" + bd.doubleValue());
 		view.setBackgroundColor(quote.color);
 		

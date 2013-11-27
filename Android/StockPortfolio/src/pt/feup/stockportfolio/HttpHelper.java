@@ -340,7 +340,8 @@ public class HttpHelper {
 		params.add(new BasicNameValuePair("s", tick));
 
 		HttpResult result = executeGet("ichart.finance.yahoo.com", "/table.txt", params);
-
+		if (result.getResult() == null)
+			return null;
 		String[] historic_csv = result.getResult().split("[\\r\\n]+");
 		ArrayList<HistoricResult> historic = new ArrayList<HttpHelper.HistoricResult>();
 		//first element is nothing
