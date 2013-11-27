@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnClickListener;
 
 public class Utils {
 	public static ArrayList<Quote> myQuotes = new ArrayList<Quote>();
+	static String FILENAME = "quotes_file";
 	
 	public static void createAlertDialog(Context context, String title, String content) {
 		new AlertDialog.Builder(context)

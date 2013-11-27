@@ -1,11 +1,7 @@
 package pt.feup.stockportfolio;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
-import pt.feup.stockportfolio.HttpHelper.HistoricResult;
 import android.graphics.Path;
 import android.util.Log;
 

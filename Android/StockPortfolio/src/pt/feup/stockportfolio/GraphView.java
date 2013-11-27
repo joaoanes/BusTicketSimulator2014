@@ -1,35 +1,23 @@
 package pt.feup.stockportfolio;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
 
-import pt.feup.stockportfolio.HttpHelper.HistoricResult;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Paint.Align;
-import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.os.AsyncTask;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 public class GraphView extends View
 {
