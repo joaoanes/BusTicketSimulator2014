@@ -1,13 +1,12 @@
 package pt.feup.stockportfolio;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import android.graphics.Color;
 
-import pt.feup.stockportfolio.HttpHelper.HistoricResult;
-
-public class Quote {
+public class Quote implements Serializable {
 	String tick;
 	int quantity;
 	double value;

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-	 <ListView
+    <ListView
         android:id="@+id/left_drawer"
         android:layout_width="280dp"
         android:layout_height="match_parent"
@@ -13,13 +13,24 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp" />
-	
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
 
-    </FrameLayout>
-   
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <fragment
+                android:id="@+id/details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="pt.feup.stockportfolio.QuoteDetailsFragment" >
+            </fragment>
+        </FrameLayout>
+    </ScrollView>
 
 </LinearLayout>

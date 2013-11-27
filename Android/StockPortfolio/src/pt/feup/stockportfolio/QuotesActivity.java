@@ -1,7 +1,12 @@
 package pt.feup.stockportfolio;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
 import pt.feup.stockportfolio.QuotesFragment.QuotesListener;
@@ -15,6 +20,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,6 +90,26 @@ public class QuotesActivity extends Activity implements QuotesListener, AddQuote
 		setUpDrawerToggle();
 		
 		
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		Log.i("Save", "SAVING");
+		try {
+			FileOutputStream fos = openFileOutput(Utils.FILENAME, Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(Utils.myQuotes);
+			oos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		super.onDestroy();
 	}
 
 	private void setUpDrawerToggle(){
