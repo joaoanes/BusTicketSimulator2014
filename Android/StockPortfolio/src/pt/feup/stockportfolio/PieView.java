@@ -12,18 +12,30 @@ import android.view.View;
 public class PieView extends View {
 
 
+	public PieView(Context ctx, AttributeSet attrs) {
+		super(ctx, attrs);
 
-	public PieView(Context context, AttributeSet attrs) {
-		super(context, attrs);
 		// TODO Auto-generated constructor stub
+		this.setBackgroundColor(Color.parseColor("#efefef"));
 	}
 
-	
+	public PieView(Context context) {
+		// TODO Auto-generated constructor stub
+		super(context);
+	}
+
+	Quote activatedQuote = null;
 	Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+	
+	public void setActivated(Quote q)
+	{
+		activatedQuote = q;
+		invalidate();
+	}
 	
 	public void onDraw(Canvas canvas)
 	{
-	  
+
 		p.setColor(Color.BLACK);
 
 		int allStocks = 0;
@@ -39,12 +51,16 @@ public class PieView extends View {
 			Log.i("HELLO PIE", "Processing " + q.tick + " starting at " + start + "with offset " + (int) (offset));
 			if (offset < 2)
 				continue;
+				
 			p.setColor(q.color);
-			canvas.drawArc(new RectF(0, 0, 200, 200), start, (int) (offset), true, p);
+			if (q == activatedQuote)
+				canvas.drawArc(new RectF(ExtraUtils.dp2px(10), ExtraUtils.dp2px(10), ExtraUtils.dp2px(160), ExtraUtils.dp2px(160)), start, (int) (offset), true, p);
+			
+			else
+				canvas.drawArc(new RectF(ExtraUtils.dp2px(20), ExtraUtils.dp2px(20), ExtraUtils.dp2px(150), ExtraUtils.dp2px(150)), start, (int) (offset), true, p);
 			start = (int) (start + offset);
 		}
 		
-		canvas.rotate((float) (Math.random()*360));
 	}
 
 }

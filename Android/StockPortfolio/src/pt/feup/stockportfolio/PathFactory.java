@@ -45,11 +45,12 @@ public class PathFactory
 		canvas.drawText(Integer.toString(h.pointsFlow), x, KeepUtils.dp2px(40), textPaint);
 			 */
 			double process = (h.close - low);
-
+			Log.e("HELLO GRAPH TEST", "" + h.date + " " + h.close);
 
 			returnee.lineTo(width[0], ExtraUtils.dp2px(175) - ExtraUtils.dp2px((int) Math.floor(( process / delta) * 175.0)));
 			width[0] += ExtraUtils.dp2px(40);
 		}
+		returnee.lineTo(width[0], ExtraUtils.dp2px(175) - ExtraUtils.dp2px((int) Math.floor(((money.value - low) / delta) * 175.0)));
 		width[0] -= ExtraUtils.dp2px(40);
 		returnee.lineTo(width[0], ExtraUtils.dp2px(175));
 
@@ -96,6 +97,7 @@ public class PathFactory
 			returnee.lineTo(width[0], ExtraUtils.dp2px(45) - ExtraUtils.dp2px((int) Math.floor(( process / delta) * 45.0)));
 			width[0] += ExtraUtils.dp2px(20);
 		}
+		returnee.lineTo(width[0], ExtraUtils.dp2px(175) - ExtraUtils.dp2px((int) Math.floor(((money.value - low) / delta) * 175.0)));
 		width[0] -= ExtraUtils.dp2px(20);
 		returnee.lineTo(width[0], ExtraUtils.dp2px(45));
 		Log.e("HELLO GRAPH", "This one ended at " + money.history.get(money.history.size()-1).close);

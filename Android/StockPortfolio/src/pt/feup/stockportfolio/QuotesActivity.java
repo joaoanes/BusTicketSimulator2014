@@ -77,12 +77,11 @@ public class QuotesActivity extends Activity {
 		
 		p_frag = new PortfolioFragment();
 		d_frag = new QuoteDetailsFragment();
-		extra_fragment = d_frag;
-		showExtraFragment();
+		showExtraFragment(d_frag);
 		
 	
 		QuotesAdapter myAdapter = new QuotesAdapter(((Context) this), 0, quotes);
-		myAdapter.setFragment(d_frag);
+		
 		mDrawerList.setAdapter(myAdapter);
 		
 		setUpDrawerToggle();
@@ -198,11 +197,7 @@ public class QuotesActivity extends Activity {
 	}
 
 	public void showExtraFragment(Fragment fragment) {
-		if(extra_fragment != null) {
-			getFragmentManager().beginTransaction()
-			.remove(extra_fragment)
-			.commit();
-		}
+
 
 		extra_fragment = fragment;
 		showExtraFragment();

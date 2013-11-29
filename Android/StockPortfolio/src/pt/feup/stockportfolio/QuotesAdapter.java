@@ -1,5 +1,7 @@
 package pt.feup.stockportfolio;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -66,13 +68,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	Context context;
 	ArrayList<Quote> objects;
 	ArrayList<View> swipable = new ArrayList<View>();
-	private Fragment fragment;
 	private int removedItems = 0;
 
 	public void hideSwipables()
 	{
-
-		Animation fadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+		removedItems = swipable.size();
+		Animation fadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_left);
 		fadeOutAnimation.setRepeatCount(0);
 		fadeOutAnimation.setFillAfter(true);
 
@@ -94,7 +95,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					}
 					++i;
 				}
-				removedItems = swipable.size();
+				
 				notifyDataSetChanged();
 
 			}
@@ -127,6 +128,14 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		if (quote == null)
 			return new View(context);
 		View view = convertView;
+		if (view != null)
+		{
+			if ((((TextView) view.findViewById(R.id.quote)).getText() != quote.tick) && (!(quote instanceof QuoteUpdate)))
+			{
+				view = null;
+				Log.e("HELLO QUOTES", quote.tick + " recycled forcefully.");
+			}
+		}
 		if (view == null) 
 		{
 			Log.e("HELLO QUOTES", "Refreshing a view!");
@@ -145,16 +154,16 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 					@Override
 					public void onClick(View v) {
-
+						
 						hideSwipables();
 					}
 
 
 				});
+				if (!swipable.contains(view))
+					swipable.add(view);
 
-
-
-				swipable.add(view);
+				
 			}
 			else
 			{
@@ -165,8 +174,6 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 						@Override
 						public void onClick(View v) {
-							Toast.makeText(context, "Hello from the portfolio at " + position, Toast.LENGTH_SHORT).show();
-
 							QuotesActivity act = (QuotesActivity) context;
 
 							QuotesActivity.extra_fragment = new PortfolioFragment();
@@ -243,13 +250,13 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									public void onClick(View v) {
 										if (q.isUpdated)
 										{
+											q.quantity = share_number[0];
 											Utils.myQuotes.add(q);
 
 											Quote a = objects.get(objects.size()-1);
 											objects.remove(objects.size()-1);
 											objects.add(q);
 											objects.add(a);
-											Utils.myQuotes.add(q);
 											notifyDataSetChanged();
 											alertDialog.dismiss();
 										}
@@ -289,8 +296,8 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 							@Override
 							protected void onPostExecute(Void result) {
 								((RelativeLayout) myView.findViewById(R.id.real_background)).setBackgroundColor(quote.color);
-								((TextView) myView.findViewById(R.id.value)).setText("" + quote.getLast().close);
-								if (quote.getLast().close < quote.getFromLast(1).close)
+								((TextView) myView.findViewById(R.id.value)).setText("" + quote.value);
+								if (quote.getPercentage() < 0)
 								{
 									((RelativeLayout) myView.findViewById(R.id.tick_box)).setBackgroundResource(R.drawable.border_red);
 									((TextView) myView.findViewById(R.id.value)).setTextColor(Color.parseColor("#ed1c24"));
@@ -316,6 +323,41 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 						final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
+						view.setOnLongClickListener(new OnLongClickListener(){
+
+							@Override
+							public boolean onLongClick(View arg0) {
+								Animation fadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_left);
+								fadeOutAnimation.setRepeatCount(0);
+								fadeOutAnimation.setFillAfter(true);
+								fadeOutAnimation.setAnimationListener(new AnimationListener(){
+
+									@Override
+									public void onAnimationEnd(Animation arg0) {
+										objects.remove(quote);
+										Utils.myQuotes.remove(quote);
+										notifyDataSetChanged();
+									}
+
+									@Override
+									public void onAnimationRepeat(Animation arg0) {
+										// TODO Auto-generated method stub
+										
+									}
+
+									@Override
+									public void onAnimationStart(Animation arg0) {
+										// TODO Auto-generated method stub
+										
+									}});
+								
+								arg0.startAnimation(fadeOutAnimation);
+								
+								
+								return true;
+							}
+						});
+						
 						view.setOnClickListener(new OnClickListener(){
 
 							@Override
@@ -332,12 +374,11 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 								if (quote.isUpdated)
 								{
 
+									((QuoteDetailsFragment) ((QuotesActivity) context).d_frag).setDetails(quote);
+									
 									if (!((QuotesActivity) context).inspectingQuotes)
-										
-
 										((QuotesActivity) context).showExtraFragment(((QuotesActivity) context).d_frag);
 
-									((QuoteDetailsFragment) fragment).setDetails(quote);
 
 									((QuotesActivity) context).inspectingQuotes = true;
 								}
@@ -356,7 +397,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getViewTypeCount()
 	{
-		return objects.size() + 3;
+		return objects.size() + removedItems;
 	}
 
 	@Override
@@ -372,14 +413,14 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		if (quote instanceof QuoteUpdate)
 			
 		{
-			ret = objects.size();
+			ret =  position;
 		}
 		
 		else if (quote instanceof QuoteAdd)
-			ret = objects.size() + 1;
+			ret = -2;
 		
 		else if (quote instanceof QuoteSeparator)
-			ret = objects.size() + 2;
+			ret = -2;
 		
 		else ret = position + removedItems ;
 		
@@ -387,10 +428,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		return ret;
 	}
 
-	public void setFragment(QuoteDetailsFragment frg) {
-		fragment = frg;
 
-	}
 
 
 }

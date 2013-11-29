@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -75,7 +76,7 @@ public class HttpHelper {
 			String[] contents = csv.split(",");
 
 			this.tick = contents[0].replace("\"", "");
-			this.value = Double.parseDouble(contents[1]);
+			this.value = (contents[1] == "N/A" ? 0 : Double.parseDouble(contents[1]));
 			this.date = contents[2].replace("\"", "");
 			this.time = contents[3].replace("\"", "");
 			this.exchanged_shares = Integer.parseInt(contents[4]);
@@ -307,7 +308,9 @@ public class HttpHelper {
 		int e = today_cal.get(Calendar.DAY_OF_MONTH);
 		int f = today_cal.get(Calendar.YEAR);
 
-		return getHistoric(tick,a, b, c, d, e, f);
+		ArrayList<HistoricResult> ret = getHistoric(tick,a, b, c, d, e, f);
+		Collections.reverse(ret);
+		return ret;
 	}
 
 }

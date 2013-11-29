@@ -157,7 +157,7 @@ public class GraphView extends View
 		
 		for (HistoricResult entry : quote.history)
 		{
-		
+			
 			bufferedGraphCanvas.drawRect(-1, 0, -1, ExtraUtils.dp2px(175),
 					blueDottedPaint);
 			/*
@@ -173,7 +173,7 @@ public class GraphView extends View
 */
 			bufferedGraphCanvas.drawText(
 					'$' + Double.toString(entry.close),
-					ExtraUtils.dp2px(5), ExtraUtils.dp2px(165), smallTextPaint);
+					ExtraUtils.dp2px(12), ExtraUtils.dp2px(165), smallTextPaint);
 			bufferedGraphCanvas.translate(ExtraUtils.dp2px(40), 0);
 
 		}

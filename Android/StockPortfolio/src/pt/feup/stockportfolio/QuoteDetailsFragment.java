@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +30,7 @@ public class QuoteDetailsFragment extends Fragment {
 	LinearLayout add_1_button;
 	GraphView graph = null;
 	
-	Quote quote;
+	Quote quote = null;
 	
 	
 	class QuoteUpdater extends AsyncTask<Void, Void, Void>
@@ -48,21 +49,13 @@ public class QuoteDetailsFragment extends Fragment {
 	     }
 	}
 	
-	QuoteDetailsListener listener = dummyListener;
-	public interface QuoteDetailsListener {
-		public void onQuantityChange();
-	}
-	
-	private static QuoteDetailsListener dummyListener = new QuoteDetailsListener() {
-		@Override
-		public void onQuantityChange() {}
-	};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		quote = Utils.myQuotes.get(0);
+		if (quote == null)
+			quote = Utils.myQuotes.get(0);
+		Log.i("HELLO FRAGMENT", "Creating DETAIL fragment " + this.hashCode());
 	}
 
 	public void addGraph() {
@@ -96,7 +89,7 @@ public class QuoteDetailsFragment extends Fragment {
 		
 		if(!quote.isUpdated)
 		{
-			view.setBackgroundColor(ColorFactory.getDefault());
+			view.setBackgroundColor(ColorFactory.serve);
 			
 			new QuoteUpdater().execute(new Void[1]);
 		}
@@ -110,7 +103,6 @@ public class QuoteDetailsFragment extends Fragment {
 	
 	public void setDetails(String tick, int quantity, double value) {
 		
-			
 		quantity_view.setText(String.valueOf(quantity));
 		value_view.setText(String.valueOf(value));
 		
@@ -123,7 +115,7 @@ public class QuoteDetailsFragment extends Fragment {
 		
 		double percent =  quote.getPercentage();
 		String percentage_string = String.valueOf(percent);
-		percentage_string = percentage_string.substring(0, percentage_string.indexOf(".")+3);
+		percentage_string = percentage_string.substring(0, percentage_string.indexOf(".") +  2);
 		((TextView) view.findViewById(R.id.percent)).setText("" + percentage_string + "%");
 		//((TextView) view.findViewById(R.id.close)).setText("$" + quote.getLast().close);
 		((TextView) view.findViewById(R.id.close)).setText("$" + quote.value);
@@ -146,6 +138,8 @@ public class QuoteDetailsFragment extends Fragment {
 	}
 	
 	public void setDetails(Quote quote) {
+
+		Log.i("HELLO FRAGMENT", "DETAIL fragment details for quote " + quote.tick + " " + this.hashCode());
 		this.quote = quote;
 		if (quote != null)
 		setDetails(quote.tick, quote.quantity, quote.value);
@@ -169,19 +163,7 @@ public class QuoteDetailsFragment extends Fragment {
 			quantity_view.setText(String.valueOf(quote.quantity));
 			value_view.setText("$" + quote.getLast().close * quote.quantity);
 			
-			listener.onQuantityChange();
 		}
 	}; 
 	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		listener = dummyListener;
-	}
 }
