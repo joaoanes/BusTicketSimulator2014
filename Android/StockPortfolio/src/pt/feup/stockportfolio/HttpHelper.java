@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -308,9 +307,7 @@ public class HttpHelper {
 		int e = today_cal.get(Calendar.DAY_OF_MONTH);
 		int f = today_cal.get(Calendar.YEAR);
 
-		ArrayList<HistoricResult> ret = getHistoric(tick,a, b, c, d, e, f);
-		Collections.reverse(ret);
-		return ret;
+		return getHistoric(tick,a, b, c, d, e, f);
 	}
 
 }

@@ -173,7 +173,10 @@ public class GraphView extends View
 */
 			bufferedGraphCanvas.drawText(
 					'$' + Double.toString(entry.close),
-					ExtraUtils.dp2px(12), ExtraUtils.dp2px(165), smallTextPaint);
+					ExtraUtils.dp2px(12), ExtraUtils.dp2px(162), smallTextPaint);
+			bufferedGraphCanvas.drawText(
+					entry.date.substring(entry.date.indexOf("-")+1),
+					ExtraUtils.dp2px(12), ExtraUtils.dp2px(170), smallTextPaint);
 			bufferedGraphCanvas.translate(ExtraUtils.dp2px(40), 0);
 
 		}

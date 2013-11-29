@@ -27,11 +27,11 @@ public class Quote implements Serializable {
 	public HistoricResult getLast(){
 		if (!isUpdated)
 			return null;
-		return this.history.get(0);
+		return this.history.get(history.size()-1);
 	}
 	
 	public HistoricResult getFromLast(int offset){
-		return this.history.get(offset);
+		return this.history.get(history.size()-1-offset);
 	}
 	
 	 //two is after one
@@ -45,6 +45,8 @@ public class Quote implements Serializable {
 	
 	public double getPercentage() {
 		double delta = value - getLast().close;
+		if (delta == 0.0)
+			delta = value - getFromLast(1).close;
 		BigDecimal bd = new BigDecimal(delta/value * 100);
 	    bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
 		return delta;

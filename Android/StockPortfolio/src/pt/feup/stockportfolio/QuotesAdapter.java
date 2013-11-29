@@ -175,10 +175,20 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						@Override
 						public void onClick(View v) {
 							QuotesActivity act = (QuotesActivity) context;
+							final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
 							QuotesActivity.extra_fragment = new PortfolioFragment();
 							act.showExtraFragment();
 							act.inspectingQuotes = false;
+							if (!landscape)	
+								new Handler().postDelayed(new Runnable() {
+
+
+									@Override
+									public void run() {
+										((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
+									}
+								}, 500);
 						}
 
 					});
@@ -373,7 +383,10 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									}, 500);
 								if (quote.isUpdated)
 								{
-
+									Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right);
+									fadeInAnimation.setRepeatCount(0);
+									
+									v.startAnimation(fadeInAnimation);
 									((QuoteDetailsFragment) ((QuotesActivity) context).d_frag).setDetails(quote);
 									
 									if (!((QuotesActivity) context).inspectingQuotes)

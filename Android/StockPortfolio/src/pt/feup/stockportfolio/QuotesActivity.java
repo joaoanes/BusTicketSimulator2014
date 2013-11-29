@@ -94,6 +94,11 @@ public class QuotesActivity extends Activity {
 		super.onSaveInstanceState(outState);
 		
 		Log.i("Save", "SAVING");
+		save();
+		super.onDestroy();
+	}
+
+	private void save() {
 		try {
 			FileOutputStream fos = openFileOutput(Utils.FILENAME, Context.MODE_PRIVATE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -106,7 +111,7 @@ public class QuotesActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		super.onDestroy();
+		
 	}
 
 	private void setUpDrawerToggle(){
@@ -183,7 +188,7 @@ public class QuotesActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 	
-
+		save();
 		super.onBackPressed();
 	}
 
