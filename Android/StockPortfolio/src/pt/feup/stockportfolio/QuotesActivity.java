@@ -49,12 +49,9 @@ public class QuotesActivity extends Activity {
 		ArrayList<Quote> quotes = new ArrayList<Quote>();
 		if (Utils.myQuotes.size() == 0)
 		{
-			Utils.myQuotes.add(new Quote("MSFT", 100));
-			Utils.myQuotes.add(new Quote("AAPL", 100));
-			Utils.myQuotes.add(new Quote("GE", 100));
-			Utils.myQuotes.add(new Quote("FB", 100));
-			Utils.myQuotes.add(new Quote("LNKD", 100));
-			Utils.myQuotes.add(new Quote("WMT", 100));
+			Utils.myQuotes.add(new Quote("GOOG", 0));
+			Utils.myQuotes.add(new Quote("MSFT", 0));
+			Utils.myQuotes.add(new Quote("AAPL", 0));
 		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quotes);
@@ -63,9 +60,11 @@ public class QuotesActivity extends Activity {
 		mDrawerLayout = ((DrawerLayout) findViewById(R.id.main_drawer));
 		if (quotes.size() == 0)
 		{
-			quotes.add(new QuoteUpdate(Utils.myQuotes.get(0)));
-			quotes.add(new QuoteUpdate(Utils.myQuotes.get(1)));
-			quotes.add(new QuoteUpdate(Utils.myQuotes.get(2)));
+			for (QuoteUpdate q : Utils.myUpdates)
+			{
+				quotes.add(q);
+			}
+			Utils.myUpdates.clear();
 			quotes.add(new QuoteSeparator());
 			
 			for (Quote q : Utils.myQuotes)
@@ -161,7 +160,7 @@ public class QuotesActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.quote, menu);
+		//getMenuInflater().inflate(R.menu.quote, menu);
 		return true;
 	}
 
@@ -173,6 +172,7 @@ public class QuotesActivity extends Activity {
 			return true;
 		}
 		// Handle your other action bar items...
+		/*
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
@@ -181,6 +181,7 @@ public class QuotesActivity extends Activity {
 		default:
 			break;
 		}
+		*/
 		return super.onOptionsItemSelected(item);
 	}
 

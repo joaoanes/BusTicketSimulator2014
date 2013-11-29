@@ -71,14 +71,20 @@ public class HttpHelper {
 			this.exchanged_shares = exchanged_shares;
 		}
 
-		public QuoteResult(String csv) {
+		public QuoteResult(String csv) throws NoInternetException {
 			String[] contents = csv.split(",");
-
+			try
+			{
 			this.tick = contents[0].replace("\"", "");
 			this.value = (contents[1] == "N/A" ? 0 : Double.parseDouble(contents[1]));
 			this.date = contents[2].replace("\"", "");
 			this.time = contents[3].replace("\"", "");
 			this.exchanged_shares = Integer.parseInt(contents[4]);
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				throw new NoInternetException();
+			}
 		}
 
 		public String getTick() {
@@ -227,7 +233,7 @@ public class HttpHelper {
 		return executePost("/login", nameValuePairs);
 	}
 
-	public ArrayList<QuoteResult> getTickValues(ArrayList<String> ticks) {
+	public ArrayList<QuoteResult> getTickValues(ArrayList<String> ticks) throws NoInternetException {
 		String tick_name_list = "" + ticks.get(0);
 		for(int i = 1; i < ticks.size(); ++i) {
 			tick_name_list += "," + ticks.get(i);
@@ -247,7 +253,7 @@ public class HttpHelper {
 		return quotes;
 	}
 	
-	public QuoteResult getTickValue(String tick) {
+	public QuoteResult getTickValue(String tick) throws NoInternetException {
 		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
 		params.add(new BasicNameValuePair("f", "sl1d1t1v"));
 		params.add(new BasicNameValuePair("s", tick));

@@ -39,7 +39,12 @@ public class QuoteDetailsFragment extends Fragment {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			if(!quote.isUpdated) {
-				quote.update();
+				try {
+					quote.update();
+				} catch (NoInternetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}
@@ -115,7 +120,11 @@ public class QuoteDetailsFragment extends Fragment {
 		
 		double percent =  quote.getPercentage();
 		String percentage_string = String.valueOf(percent);
-		percentage_string = percentage_string.substring(0, percentage_string.indexOf(".") +  2);
+		int dotPosition = percentage_string.indexOf(".");
+		int offset = 3;
+		if ((dotPosition + 3) >= percentage_string.length() )
+			offset = 2;
+		percentage_string = percentage_string.substring(0, percentage_string.indexOf(".") +  offset);
 		((TextView) view.findViewById(R.id.percent)).setText("" + percentage_string + "%");
 		//((TextView) view.findViewById(R.id.close)).setText("$" + quote.getLast().close);
 		((TextView) view.findViewById(R.id.close)).setText("$" + quote.value);

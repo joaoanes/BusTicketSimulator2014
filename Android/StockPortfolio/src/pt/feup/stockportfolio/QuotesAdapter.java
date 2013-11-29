@@ -41,7 +41,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 			quote = (Quote) arg0[0];
 			view = (View) arg0[1];
 			if (!quote.isUpdated)
-				quote.update();
+				try {
+					quote.update();
+				} catch (NoInternetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			return null;
 		}
 		@Override
@@ -149,6 +154,9 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 				else
 					view = inflator.inflate(R.layout.quote_update, null);
 				((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
+				((TextView) view.findViewById(R.id.worth)).setText("$" + ((QuoteUpdate) quote).change);
+				((TextView) view.findViewById(R.id.shares)).setText("on your " + quote.quantity + " shares");
+				
 				((RelativeLayout) view.findViewById(R.id.update_background)).setBackgroundColor(quote.color);
 				view.setOnClickListener(new OnClickListener(){
 
@@ -300,7 +308,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 								myView = (View) arg0[0];
 								quote = (Quote) arg0[1];
 								if (!quote.isUpdated)
-									quote.update();
+									try {
+										quote.update();
+									} catch (NoInternetException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 								return null;
 							}
 							@Override
@@ -380,7 +393,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 										public void run() {
 											((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
 										}
-									}, 500);
+									}, 250);
 								if (quote.isUpdated)
 								{
 									Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right);

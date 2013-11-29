@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnClickListener;
 
 public class Utils {
 	public static ArrayList<Quote> myQuotes = new ArrayList<Quote>();
+	public static ArrayList<QuoteUpdate> myUpdates = new ArrayList<QuoteUpdate>();
 	static String FILENAME = "quotes_file";
 	
 	public static void createAlertDialog(Context context, String title, String content) {
@@ -46,14 +47,22 @@ public class Utils {
 	
 	public static Quote getPortfolioQuote() {
 		Quote portfolio = new Quote("Portfolio", 0);
+		portfolio.color = ColorFactory.getDefault();
 		portfolio.name = "Portfolio";
 		portfolio.history = new ArrayList<HistoricResult>(30);
+		
 		ArrayList<HistoricResult> history = portfolio.history;
 		
 		for(Quote quote : myQuotes) {
 			for(int i = 0; i < quote.history.size(); ++i) {
-				
-				HistoricResult portfolio_result = history.get(i);
+				HistoricResult portfolio_result;
+				try{
+				portfolio_result = history.get(i);
+				}
+				catch (IndexOutOfBoundsException e)
+				{
+					portfolio_result = null;
+				}
 				HistoricResult quote_result = quote.history.get(i);
 				
 				if(portfolio_result == null) {

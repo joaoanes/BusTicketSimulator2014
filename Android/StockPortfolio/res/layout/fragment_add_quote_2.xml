@@ -146,7 +146,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
-            android:text="ticker"
+            android:hint="ticker"
             android:textColor="#a7a9ab"
             android:textSize="20sp" />
 

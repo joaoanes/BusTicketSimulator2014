@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class PortfolioFragment extends Fragment {
 	View view;
+	GraphView graph;
 	PieView pie;
 		
 	@Override
@@ -30,6 +32,10 @@ public class PortfolioFragment extends Fragment {
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_portfolio, container, false);
 		pie = new PieView(getActivity());
+		Quote port = Utils.getPortfolioQuote();
+		graph = new GraphView(getActivity(), null, port);
+
+		((RelativeLayout) view.findViewById(R.id.graphHolder)).addView(graph);
 		
 		((LinearLayout) view.findViewById(R.id.pieView1)).addView(pie);
 		LinearLayout sharesLayout = ((LinearLayout) view.findViewById(R.id.quotes_list));

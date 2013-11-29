@@ -18,7 +18,7 @@ public class ColorFactory {
 	
 	static int getDefault()
 	{
-		return Color.parseColor("#D6DF23");
+		return Color.parseColor("#ED1C24");
 	}
 	
 	static void refresh()

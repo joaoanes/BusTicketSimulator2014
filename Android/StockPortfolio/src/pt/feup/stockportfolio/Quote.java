@@ -65,13 +65,14 @@ public class Quote implements Serializable {
 
 	/***************************************************************************************
 	 * PAY ATTENTION
+	 * @throws NoInternetException 
 	 ***************************************************************************************/
 	//THIS SHOULD NEVER
 	//EVER
 	//EVER	
 	//BE RUN ON THE MAIN THREAD OTHERWISE THE WHOLE CODEBASE WILL EXPLODE
 	//ASYNCTASK THAT S#IT
-	public boolean update()
+	public boolean update() throws NoInternetException
 	{
 		HttpHelper http = new HttpHelper();
 		name = http.getName(this.tick);

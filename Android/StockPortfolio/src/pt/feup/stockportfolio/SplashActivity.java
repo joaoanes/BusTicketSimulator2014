@@ -6,19 +6,59 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class SplashActivity extends Activity {
 
-	// Splash screen timer
-	private static int SPLASH_TIME_OUT = 1000;
+	boolean canProceed = true;
+
+	public class QuoteUpdateCreator extends AsyncTask<Void, Void, Void>
+	{
+		@Override
+		protected Void doInBackground(Void... params) {
+			HttpHelper http = new HttpHelper();
+			Looper.prepare();
+			for (Quote q : Utils.myQuotes)
+			{
+				double v = 0.0;
+				try 
+				{
+					v = http.getTickValue(q.tick).value;
+				} 
+				catch (NoInternetException e) {
+					// TODO Auto-generated catch block
+					runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							showToastAndDie();
+							canProceed = false;
+
+						}
+
+					});
+					return null;
+				} 
+				if (v != q.value)
+					Utils.myUpdates.add(new QuoteUpdate(q, v));
+			}
+			return null;
+		}
+
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +93,39 @@ public class SplashActivity extends Activity {
 			Log.i("Load", "file not found");
 		}
 
+		try {
+			Void[] args = {};
+			new QuoteUpdateCreator().execute(args).get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		new Handler().postDelayed(new Runnable() {
 
-			/*
-			 * Showing splash screen with a timer. This will be useful when you
-			 * want to show case your app logo / company
-			 */
+
 
 			@Override
 			public void run() {
-				// This method will be executed once the timer is over
-				// Start your app main activity
-				Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
-				startActivity(i);
-				overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-				// close this activity
+				if (canProceed)
+				{
+					Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
+					startActivity(i);
+					overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+				}
+				onDestroy();
 				finish();
 			}
-		}, SPLASH_TIME_OUT);
+		}, 1000);
+	}
+
+	void showToastAndDie()
+	{
+		Toast.makeText(this, "Connection problem.", Toast.LENGTH_SHORT).show();
+		onDestroy();
+		finish();
 	}
 
 }
