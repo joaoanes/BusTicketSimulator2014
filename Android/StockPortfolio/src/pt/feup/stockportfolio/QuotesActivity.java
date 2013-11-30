@@ -52,6 +52,7 @@ public class QuotesActivity extends Activity {
 			Utils.myQuotes.add(new Quote("GOOG", 0));
 			Utils.myQuotes.add(new Quote("MSFT", 0));
 			Utils.myQuotes.add(new Quote("AAPL", 0));
+
 		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quotes);

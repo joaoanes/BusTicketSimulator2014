@@ -1,9 +1,12 @@
 package pt.feup.stockportfolio;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,19 +37,48 @@ public class PortfolioFragment extends Fragment {
 		pie = new PieView(getActivity());
 		Quote port = Utils.getPortfolioQuote();
 		graph = new GraphView(getActivity(), null, port);
+		pie.setOnClickListener(new OnClickListener(){
 
-		((RelativeLayout) view.findViewById(R.id.graphHolder)).addView(graph);
+			@Override
+			public void onClick(View v) {
+				pie.quantityMode = !pie.quantityMode;
+				pie.invalidate();
+			}
+			
+		});
 		
-		((LinearLayout) view.findViewById(R.id.pieView1)).addView(pie);
+		
+		
 		LinearLayout sharesLayout = ((LinearLayout) view.findViewById(R.id.quotes_list));
 		View v;
 		double worth = 0;
-		for (final Quote q : Utils.myQuotes)
+		ArrayList<Quote> withShares = new ArrayList<Quote>();
+		for (Quote q : Utils.myQuotes)
+		{
+			if (q.quantity > 0)
+				withShares.add(q);
+		}
+		
+		if (withShares.size() == 0)
+		{
+			((TextView) view.findViewById(R.id.worth)).setText("no $");
+			
+			view.findViewById(R.id.worthless).setVisibility(View.GONE);
+			view.findViewById(R.id.junk).setVisibility(View.GONE); //hah
+			return view;
+			
+		}
+		
+		((RelativeLayout) view.findViewById(R.id.graphHolder)).addView(graph);
+		
+		((LinearLayout) view.findViewById(R.id.pieView1)).addView(pie);
+		
+		
+		for (final Quote q : withShares)
 		{
 			worth += q.value*q.quantity;
-			if (q.quantity == 0)
-				continue;
 			v = inflater.inflate(R.layout.quote_shares, null);
+			((LinearLayout) v).setGravity(Gravity.CENTER_HORIZONTAL);
 			((TextView) v.findViewById(R.id.quote)).setText(q.tick);
 			v.findViewById(R.id.real_background).setBackgroundColor(q.color);
 
@@ -63,7 +95,7 @@ public class PortfolioFragment extends Fragment {
 			sharesLayout.addView(v);
 		}
 		
-		((TextView) view.findViewById(R.id.worth)).setText("$" + worth);
+		((TextView) view.findViewById(R.id.worth)).setText("$" + String.valueOf(worth).substring(0, String.valueOf(worth).indexOf(".")+3));
 		
 		return view;
 	}

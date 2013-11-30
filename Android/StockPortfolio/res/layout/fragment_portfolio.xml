@@ -84,13 +84,17 @@
             android:layout_height="190dp" >
         </RelativeLayout>
         
-        <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#d0d0d0" >
-                </LinearLayout>
+        <View
+            android:id="@+id/worthless"
+            
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#d0d0d0" >
+
+                </View>
 
         <RelativeLayout
+            android:id="@+id/junk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -115,14 +119,23 @@
                     android:id="@+id/quotes_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_toRightOf="@+id/pieView1"
                     android:gravity="center_horizontal"
                     android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="25dp"
+                        android:text="shares"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#aeaeae" />
+
                 </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>

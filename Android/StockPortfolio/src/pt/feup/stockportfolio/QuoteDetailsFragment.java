@@ -109,7 +109,10 @@ public class QuoteDetailsFragment extends Fragment {
 	public void setDetails(String tick, int quantity, double value) {
 		
 		quantity_view.setText(String.valueOf(quantity));
-		value_view.setText(String.valueOf(value));
+		String val = String.valueOf(value);
+		val = val.substring(0 ,val.indexOf(".")+3 > val.length() ? val.indexOf(".") + 2 : val.indexOf(".") + 2 );
+		
+		value_view.setText(val);
 		
 		if (graph != null)
 		graph.changeQuote(quote);

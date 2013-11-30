@@ -26,10 +26,9 @@ public class ColorFactory {
 		availableColor.add(Color.parseColor("#D6DF23"));
 		availableColor.add(Color.parseColor("#F7931D"));
 		availableColor.add(Color.parseColor("#27A9E1"));
-		availableColor.add(Color.parseColor("#D91B5B"));
+
 		availableColor.add(Color.parseColor("#652C90"));
 		availableColor.add(Color.parseColor("#FBAF3F"));
-		availableColor.add(Color.parseColor("#F941C5"));
 		availableColor.add(Color.parseColor("#8A5D3B"));
 		
 

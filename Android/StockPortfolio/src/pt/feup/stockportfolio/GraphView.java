@@ -45,18 +45,18 @@ public class GraphView extends View
 	int touch_events = 0;
 
 	Quote quote = Utils.myQuotes.get(0);
-	
+
 	ArrayList<Integer> heights = new ArrayList<Integer>();
 	Bitmap bufferedGraph;
 	Canvas bufferedGraphCanvas;
 
 	boolean swipeDecay = false;
-	
-	
-	
+
+
+
 	public GraphView(Context context, AttributeSet attrs, Quote _quote)
 	{
-		
+
 		super(context, attrs);
 		this.quote = _quote;
 		Options opts = new Options();
@@ -67,18 +67,18 @@ public class GraphView extends View
 
 		ExtraUtils.setMetrics(getResources().getDisplayMetrics());
 		ctxt = context;
-		
+
 		this.setBackgroundColor(Color.parseColor("#efefef"));
 		bluerPaint.setColor(Color.parseColor("#587C9B"));
-		
+
 		blueDottedPaint.setStyle(Style.STROKE);
-		
+
 		float[] hsv = new float[3];
 		int color = _quote.color;
 		Color.colorToHSV(color, hsv);
 		hsv[2] *= 2.5f; 
 		color = Color.HSVToColor(hsv);
-		
+
 		blueDottedPaint.setColor(color);
 		textPaint.setColor(Color.parseColor("#eae9f2"));
 		textPaint.setTextSize(ExtraUtils.dp2px(14));
@@ -107,33 +107,35 @@ public class GraphView extends View
 
 		whitePaint.setColor(Color.WHITE);
 
-	
-		
-		
+
+
+
 		buildGraph();
-			
+
 	}
 
 	private void buildGraph() {
 
 
 		mainPaint.setColor(quote.color);
-		
-	
-		
-		
+
+
+
+
 		int[] width =
 			{ ExtraUtils.dp2px(40) };
 		if (pointsGraph == null)
 			pointsGraph = PathFactory.generatePath(
 					quote, heights, width);
+		if (quote.tick == "Portfolio")
+			width[0] -= ExtraUtils.dp2px(40);
 		if (bufferedGraph == null)
 		{
 
 			bufferedGraph = Bitmap.createBitmap(width[0] < ExtraUtils
 					.getScreenWidth() ? (int) ExtraUtils.getScreenWidth()
 							: width[0], ExtraUtils.dp2px(175), Bitmap.Config.ARGB_8888);
-			
+
 		}
 
 		if (bufferedGraph.getWidth() != width[0])
@@ -143,15 +145,15 @@ public class GraphView extends View
 			bufferedGraph = Bitmap.createBitmap(width[0] < ExtraUtils
 					.getScreenWidth() ? (int) ExtraUtils.getScreenWidth()
 							: width[0], ExtraUtils.dp2px(175), Bitmap.Config.ARGB_8888);
-		
+
 		}
 		bufferedGraphCanvas = new Canvas(bufferedGraph);
-		
+
 		drawGraph();
 		defaultSlide = -(bufferedGraph.getWidth() - ExtraUtils.getScreenWidth());
 		slidex = defaultSlide - ExtraUtils.getScreenWidth();
 		swipeDecay = true;
-		
+
 	}
 
 	public void drawGraph()
@@ -159,7 +161,7 @@ public class GraphView extends View
 		// bufferedGraphCanvas.drawLine(0, KeepUtils.dp2px(50),
 		// bufferedGraphCanvas.getWidth(), KeepUtils.dp2px(25),
 		// blueDottedPaint);
-		
+
 		float[] hsv = new float[3];
 		int color = quote.color;
 		Color.colorToHSV(color, hsv);
@@ -167,8 +169,8 @@ public class GraphView extends View
 		color = Color.HSVToColor(hsv);
 
 		blueDottedPaint.setColor(color);
-		
-		
+
+
 		bufferedGraphCanvas.drawPath(pointsGraph, mainPaint);
 
 		bufferedGraphCanvas.save();
@@ -177,8 +179,8 @@ public class GraphView extends View
 		for (HistoricResult entry : quote.history)
 		{
 			if (i != 0)
-			bufferedGraphCanvas.drawRect(0, ExtraUtils.dp2px(175) - heights.get(i-1), 0, ExtraUtils.dp2px(175),
-					blueDottedPaint);
+				bufferedGraphCanvas.drawRect(0, ExtraUtils.dp2px(175) - heights.get(i-1), 0, ExtraUtils.dp2px(175),
+						blueDottedPaint);
 			/*
 			 * th = "/" + entry.getKey().get(Calendar.MONTH);
 
@@ -189,9 +191,13 @@ public class GraphView extends View
 			bufferedGraphCanvas.drawText(
 					Integer.toString(entry.getValue().pointsFlow) + " pts",
 					ExtraUtils.dp2px(5), ExtraUtils.dp2px(30), smallTextPaint);
-*/
+			 */
+			String worth = String.valueOf(entry.close);
+			int dot = worth.indexOf(".");
+			
+			worth = worth.substring(0, (dot + 3) >= worth.length() ? (dot + 2) : (dot + 3));
 			bufferedGraphCanvas.drawText(
-					'$' + Double.toString(entry.close),
+					'$' + worth,
 					ExtraUtils.dp2px(12), ExtraUtils.dp2px(162), smallTextPaint);
 			bufferedGraphCanvas.drawText(
 					entry.date.substring(entry.date.indexOf("-")+1),
@@ -200,18 +206,16 @@ public class GraphView extends View
 			++i;
 
 		}
-		bufferedGraphCanvas.drawRect(-1, 0, -1, heights.get(i),
-				blueDottedPaint);
-		bufferedGraphCanvas.drawText(
-				'$' + Double.toString(quote.value),
-				ExtraUtils.dp2px(12), ExtraUtils.dp2px(162), smallTextPaint);
-		bufferedGraphCanvas.drawText("today",
-				ExtraUtils.dp2px(12), ExtraUtils.dp2px(170), smallTextPaint);
-		bufferedGraphCanvas.translate(ExtraUtils.dp2px(40), 0);
-		
-		
-		bufferedGraphCanvas.translate(-ExtraUtils.dp2px(40), 0);
-
+		if (quote.value != 0)
+		{
+			bufferedGraphCanvas.drawRect(0, ExtraUtils.dp2px(175) - heights.get(i-1), 0, ExtraUtils.dp2px(175),
+					blueDottedPaint);
+			bufferedGraphCanvas.drawText(
+					'$' + Double.toString(quote.value),
+					ExtraUtils.dp2px(12), ExtraUtils.dp2px(162), smallTextPaint);
+			bufferedGraphCanvas.drawText("now",
+					ExtraUtils.dp2px(12), ExtraUtils.dp2px(170), smallTextPaint);
+		}
 		bufferedGraphCanvas.restore();
 
 	}
@@ -224,7 +228,7 @@ public class GraphView extends View
 		p.setColor(Color.parseColor("#efefef"));
 		p.setStrokeWidth(4);
 		p.setShadowLayer(2, 0, 0, quote.color);
-		
+
 		canvas.drawText(quote.tick, ExtraUtils.dp2px(20), ExtraUtils.dp2px(150), p);
 		if (swipeDecay)
 		{
@@ -272,13 +276,7 @@ public class GraphView extends View
 
 		case MotionEvent.ACTION_UP:
 			Log.w("HELLO TOUCH", "ACTION UP");
-			if (new Rect(0, ExtraUtils.dp2px(185),
-					(int) ExtraUtils.getScreenWidth(), ExtraUtils.dp2px(245))
-			.contains((int) arg1.getX(), (int) arg1.getY()))
-			{
-
-			}
-			else if (!swipeDecay && (touch_events <= 3))
+			if (!swipeDecay && (touch_events <= 3))
 			{
 				int selected = (int) Math
 						.floor(((arg1.getX() - slidex) / ExtraUtils.dp2px(50)));
@@ -288,7 +286,7 @@ public class GraphView extends View
 			}
 
 			lastPosX = -1;
-			if (Math.abs(diffX) > 10)
+			if (Math.abs(diffX) > 5)
 			{
 				swipeDecay = true;
 				Log.w("HELLO", "swipeDecay ON");

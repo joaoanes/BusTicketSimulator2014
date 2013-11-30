@@ -45,7 +45,7 @@ public class SplashActivity extends Activity {
 						public void run() {
 							// TODO Auto-generated method stub
 							showToastAndDie();
-							canProceed = false;
+							
 
 						}
 
@@ -109,23 +109,22 @@ public class SplashActivity extends Activity {
 
 			@Override
 			public void run() {
-				if (canProceed)
-				{
-					Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
-					startActivity(i);
-					overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-				}
+			
+				Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
+				startActivity(i);
+				overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+				
 				onDestroy();
 				finish();
 			}
-		}, 1000);
+		}, 5000);
 	}
 
 	void showToastAndDie()
 	{
 		Toast.makeText(this, "Connection problem.", Toast.LENGTH_SHORT).show();
-		onDestroy();
-		finish();
+		for (Quote q : Utils.myQuotes)
+			q.isUpdated = true;
 	}
 
 }

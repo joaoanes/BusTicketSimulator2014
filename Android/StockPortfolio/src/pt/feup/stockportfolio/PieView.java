@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -26,12 +28,15 @@ public class PieView extends View {
 
 	Quote activatedQuote = null;
 	Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+	boolean quantityMode = false;
 	
 	public void setActivated(Quote q)
 	{
 		activatedQuote = q;
 		invalidate();
 	}
+	
+	
 	
 	public void onDraw(Canvas canvas)
 	{
@@ -41,13 +46,21 @@ public class PieView extends View {
 		int allStocks = 0;
 
 		for (Quote q : Utils.myQuotes)
-			allStocks += q.quantity;
+		{
+			if (quantityMode)
+				allStocks += q.quantity;
+			else
+				allStocks += q.quantity*q.value;
+			
+		}
 		int start = 0;
 		double offset = 0;
 		for (Quote q : Utils.myQuotes)
 		{
-			offset = Math.round(((double) q.quantity/ (double)allStocks)*360);
-
+			if (quantityMode)
+				offset = Math.round(((double) q.quantity/ (double)allStocks)*360);
+			else
+				offset = Math.round(((((double) q.quantity)*((double) q.value)) /(double)allStocks)*360);
 			Log.i("HELLO PIE", "Processing " + q.tick + " starting at " + start + "with offset " + (int) (offset));
 			if (offset < 2)
 				continue;
@@ -57,9 +70,23 @@ public class PieView extends View {
 				canvas.drawArc(new RectF(ExtraUtils.dp2px(10), ExtraUtils.dp2px(10), ExtraUtils.dp2px(160), ExtraUtils.dp2px(160)), start, (int) (offset), true, p);
 			
 			else
+			{
+				if (activatedQuote == null)
+					activatedQuote = q;
 				canvas.drawArc(new RectF(ExtraUtils.dp2px(20), ExtraUtils.dp2px(20), ExtraUtils.dp2px(150), ExtraUtils.dp2px(150)), start, (int) (offset), true, p);
+			}
 			start = (int) (start + offset);
 		}
+		Paint smalltext = new Paint(Paint.ANTI_ALIAS_FLAG);
+		smalltext.setTypeface(Typeface.createFromAsset(
+				getContext().getAssets(), "fonts/Roboto-Light.ttf"));
+		smalltext.setColor(Color.parseColor("#efefef"));
+		smalltext.setTextSize(ExtraUtils.dp2px(15));
+		smalltext.setTextAlign(Align.CENTER);
+		canvas.drawText(quantityMode ? "ownership" : "worth", ExtraUtils.dp2px(85), ExtraUtils.dp2px(125), smalltext);
+		smalltext.setColor(Color.parseColor("#afafaf"));
+		smalltext.setTextSize(ExtraUtils.dp2px(8));
+		canvas.drawText("tap to switch", ExtraUtils.dp2px(85), ExtraUtils.dp2px(132), smalltext);
 		
 	}
 

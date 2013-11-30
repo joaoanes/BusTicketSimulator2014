@@ -258,7 +258,8 @@ public class HttpHelper {
 		params.add(new BasicNameValuePair("f", "sl1d1t1v"));
 		params.add(new BasicNameValuePair("s", tick));
 		HttpResult result = executeGet("finance.yahoo.com", "/d/quotes", params);
-
+		if (result.getResult() == null)
+			throw new NoInternetException();
 		String[] quotes_csv = result.getResult().split("[\\r\\n]+");
 		return new QuoteResult(quotes_csv[0]);
 	}
