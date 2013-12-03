@@ -29,7 +29,7 @@ public class PieView extends View {
 	Quote activatedQuote = null;
 	Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 	boolean quantityMode = false;
-	
+	float rand = 0;
 	public void setActivated(Quote q)
 	{
 		activatedQuote = q;
@@ -55,28 +55,37 @@ public class PieView extends View {
 		}
 		int start = 0;
 		double offset = 0;
+		canvas.save();
+		if (rand == 0)
+			rand = (float) Math.random()*360;
+		canvas.rotate(rand, (float) ExtraUtils.dp2px(85), (float) ExtraUtils.dp2px(85));
+		
 		for (Quote q : Utils.myQuotes)
 		{
 			if (quantityMode)
 				offset = Math.round(((double) q.quantity/ (double)allStocks)*360);
 			else
 				offset = Math.round(((((double) q.quantity)*((double) q.value)) /(double)allStocks)*360);
-			Log.i("HELLO PIE", "Processing " + q.tick + " starting at " + start + "with offset " + (int) (offset));
+			//Log.i("HELLO PIE", "Processing " + q.tick + " starting at " + start + "with offset " + (int) (offset));
 			if (offset < 2)
 				continue;
 				
+			if (activatedQuote == null)
+				activatedQuote = q;
+			
 			p.setColor(q.color);
 			if (q == activatedQuote)
 				canvas.drawArc(new RectF(ExtraUtils.dp2px(10), ExtraUtils.dp2px(10), ExtraUtils.dp2px(160), ExtraUtils.dp2px(160)), start, (int) (offset), true, p);
 			
 			else
 			{
-				if (activatedQuote == null)
-					activatedQuote = q;
+			
 				canvas.drawArc(new RectF(ExtraUtils.dp2px(20), ExtraUtils.dp2px(20), ExtraUtils.dp2px(150), ExtraUtils.dp2px(150)), start, (int) (offset), true, p);
 			}
 			start = (int) (start + offset);
 		}
+		canvas.restore();
+		
 		Paint smalltext = new Paint(Paint.ANTI_ALIAS_FLAG);
 		smalltext.setTypeface(Typeface.createFromAsset(
 				getContext().getAssets(), "fonts/Roboto-Light.ttf"));

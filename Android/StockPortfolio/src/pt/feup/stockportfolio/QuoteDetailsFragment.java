@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -65,7 +66,10 @@ public class QuoteDetailsFragment extends Fragment {
 
 	public void addGraph() {
 		view.findViewById(R.id.graphProgress).setVisibility(View.GONE);
-		graph = new GraphView(getActivity(), null, quote);
+		Context act = getActivity();
+		if (act == null)
+			Log.e("HELLO GRAPH", "Creating graph with no context?");
+		graph = new GraphView(act, null, quote);
 		((LinearLayout) view.findViewById(R.id.insertGraphHere)).addView(graph);
 		Animation fadeInAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
 		fadeInAnimation.setRepeatCount(0);

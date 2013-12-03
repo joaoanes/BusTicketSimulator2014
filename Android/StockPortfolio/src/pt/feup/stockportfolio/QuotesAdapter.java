@@ -2,6 +2,9 @@ package pt.feup.stockportfolio;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.AnimatorSet.Builder;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -18,6 +21,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -138,12 +142,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 			if ((((TextView) view.findViewById(R.id.quote)).getText() != quote.tick) && (!(quote instanceof QuoteUpdate)))
 			{
 				view = null;
-				Log.e("HELLO QUOTES", quote.tick + " recycled forcefully.");
+				//Log.e("HELLO QUOTES", quote.tick + " recycled forcefully.");
 			}
 		}
 		if (view == null) 
 		{
-			Log.e("HELLO QUOTES", "Refreshing a view!");
+			//Log.e("HELLO QUOTES", "Refreshing a view!");
 			final LayoutInflater inflator = ((Activity) getContext()).getLayoutInflater();
 
 
@@ -184,9 +188,10 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						public void onClick(View v) {
 							QuotesActivity act = (QuotesActivity) context;
 							final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-
-							QuotesActivity.extra_fragment = new PortfolioFragment();
-							act.showExtraFragment();
+							
+							if (act.inspectingQuotes)
+								act.showExtraFragment(act.p_frag);
+							
 							act.inspectingQuotes = false;
 							if (!landscape)	
 								new Handler().postDelayed(new Runnable() {
@@ -266,6 +271,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									Quote q = new Quote("NULL", 0);
 									@Override
 									public void onClick(View v) {
+										if (!Utils.hasInternet)
+										{
+											Toast.makeText(getContext(), "Not available offline", Toast.LENGTH_LONG).show();
+											return;
+										}
+										
 										if (q.isUpdated)
 										{
 											q.quantity = share_number[0];
@@ -281,7 +292,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 										else
 										{
 											myView.findViewById(R.id.updating).setVisibility(View.VISIBLE);
-											q = new Quote(ticker.getText().toString(), share_number[0]);
+											q = new Quote(ticker.getText().toString().toUpperCase(), share_number[0]);
 
 											Object[] quot = { q , myView };
 											new QuoteAsync().execute(quot);
@@ -384,29 +395,56 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						view.setOnClickListener(new OnClickListener(){
 
 							@Override
-							public void onClick(View v) {
-								if (!landscape)	
-									new Handler().postDelayed(new Runnable() {
-
-
-										@Override
-										public void run() {
-											((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
-										}
-									}, 250);
+							public void onClick(final View v) {
 								if (quote.isUpdated)
 								{
 									Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right);
 									fadeInAnimation.setRepeatCount(0);
+									final Animation fadeInAnimationCont = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right_recover);
+									fadeInAnimation.setRepeatCount(0);
 									
-									v.startAnimation(fadeInAnimation);
+									fadeInAnimation.setAnimationListener(new AnimationListener(){
+
+										@Override
+										public void onAnimationEnd(Animation arg0) 
+										{
+											v.startAnimation(fadeInAnimationCont);
+										}
+
+										@Override
+										public void onAnimationRepeat(
+												Animation animation) {
+											
+										}
+
+										@Override
+										public void onAnimationStart(
+												Animation animation) {
+											
+										}
+										
+									});
+									if (!landscape)	
+										new Handler().postDelayed(new Runnable() {
+
+
+											@Override
+											public void run() {
+												((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
+											}
+										}, 250 + (((QuotesActivity) context).inspectingQuotes ? 0 : 500));
+									
 									((QuoteDetailsFragment) ((QuotesActivity) context).d_frag).setDetails(quote);
 									
 									if (!((QuotesActivity) context).inspectingQuotes)
+									{
 										((QuotesActivity) context).showExtraFragment(((QuotesActivity) context).d_frag);
-
-
-									((QuotesActivity) context).inspectingQuotes = true;
+										((QuotesActivity) context).inspectingQuotes = true;
+									}
+									
+									v.startAnimation(fadeInAnimation);
+									
+									
 								}
 							}
 
@@ -450,7 +488,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		
 		else ret = position + removedItems ;
 		
-		Log.e("HELLO ITEMS", "Get item view type for " + position + ", quote " + quote.tick + " with " + ret);
+		//Log.e("HELLO ITEMS", "Get item view type for " + position + ", quote " + quote.tick + " with " + ret);
 		return ret;
 	}
 

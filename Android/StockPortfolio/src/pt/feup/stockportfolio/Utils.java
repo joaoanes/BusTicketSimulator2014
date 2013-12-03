@@ -12,6 +12,7 @@ public class Utils {
 	public static ArrayList<Quote> myQuotes = new ArrayList<Quote>();
 	public static ArrayList<QuoteUpdate> myUpdates = new ArrayList<QuoteUpdate>();
 	static String FILENAME = "quotes_file";
+	public static boolean hasInternet = true;
 	
 	public static void createAlertDialog(Context context, String title, String content) {
 		new AlertDialog.Builder(context)
@@ -50,6 +51,7 @@ public class Utils {
 		portfolio.color = ColorFactory.getDefault();
 		portfolio.name = "Portfolio";
 		portfolio.history = new ArrayList<HistoricResult>(30);
+		
 		
 		ArrayList<HistoricResult> history = portfolio.history;
 		

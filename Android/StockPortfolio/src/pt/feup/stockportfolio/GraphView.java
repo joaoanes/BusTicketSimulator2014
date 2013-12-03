@@ -56,7 +56,6 @@ public class GraphView extends View
 
 	public GraphView(Context context, AttributeSet attrs, Quote _quote)
 	{
-
 		super(context, attrs);
 		this.quote = _quote;
 		Options opts = new Options();
@@ -241,15 +240,15 @@ public class GraphView extends View
 			if (Math.abs(diffX) < 1f)
 			{
 				swipeDecay = false;
-				Log.w("HELLO", "swipeDecay OFF");
+				//Log.w("HELLO", "swipeDecay OFF");
 			}
 		}
 		else
 			canvas.translate(slidex, 0);
 
 		canvas.drawBitmap(bufferedGraph, 0, 0, defaultPaint);
-		Log.w("HELLO", "slidex > " + Float.toString(slidex));
-		Log.w("HELLO", "diffX > " + Float.toString(diffX));
+		//Log.w("HELLO", "slidex > " + Float.toString(slidex));
+		//Log.w("HELLO", "diffX > " + Float.toString(diffX));
 		canvas.restore();
 		canvas.drawText(quote.tick, ExtraUtils.dp2px(20), ExtraUtils.dp2px(150), pointsPaint);
 	}
@@ -261,7 +260,7 @@ public class GraphView extends View
 		switch (arg1.getAction())
 		{
 		case MotionEvent.ACTION_MOVE:
-			Log.w("HELLO TOUCH", "ACTION MOVE");
+			//Log.w("HELLO TOUCH", "ACTION MOVE");
 			diffX = ExtraUtils.px2dp((int) (arg1.getX() - lastPosX));
 			slidex += diffX;
 			lastPosX = arg1.getX();
@@ -270,39 +269,31 @@ public class GraphView extends View
 			break;
 
 		case MotionEvent.ACTION_DOWN:
-			Log.w("HELLO TOUCH", "ACTION DOWN");
+			//Log.w("HELLO TOUCH", "ACTION DOWN");
 			lastPosX = arg1.getX();
 			break;
 
 		case MotionEvent.ACTION_UP:
-			Log.w("HELLO TOUCH", "ACTION UP");
-			if (!swipeDecay && (touch_events <= 3))
-			{
-				int selected = (int) Math
-						.floor(((arg1.getX() - slidex) / ExtraUtils.dp2px(50)));
-				Log.w("HELLO SELECT", Float.toString(arg1.getX())
-						+ " YOU HAVE SELECTED THE " + selected);
-
-			}
+			
 
 			lastPosX = -1;
 			if (Math.abs(diffX) > 5)
 			{
 				swipeDecay = true;
-				Log.w("HELLO", "swipeDecay ON");
+				//Log.w("HELLO", "swipeDecay ON");
 				invalidate();
 			}
 			touch_events = 0;
 			break;
 		}
-		Log.w("HELLO TOUCH", "diffx > " + Float.toString(diffX));
+		//Log.w("HELLO TOUCH", "diffx > " + Float.toString(diffX));
 		if (slidex < defaultSlide) slidex = defaultSlide;
 		return true;
 	}
 
 	void changeQuote(Quote q)
 	{
-		Log.e("HELLO GRAPH", "Changed quote to " + q.tick);
+		//Log.e("HELLO GRAPH", "Changed quote to " + q.tick);
 		quote = q;
 		bufferedGraph = null;
 		bufferedGraphCanvas = null;

@@ -135,7 +135,7 @@ public class GraphViewSmall extends View
 		bluePaint.setColor(quote.color);
 		bufferedGraphCanvas.drawPath(pointsGraph, bluePaint);
 
-		Log.e("HELLO GRAPH", "created new graph for " + quote.tick);
+		//Log.e("HELLO GRAPH", "created new graph for " + quote.tick);
 		readyDraw  = true;
 	}
 

@@ -264,7 +264,7 @@ public class HttpHelper {
 		return new QuoteResult(quotes_csv[0]);
 	}
 
-	public ArrayList<HistoricResult> getHistoric(String tick, int a, int b, int c, int d, int e, int f) {
+	public ArrayList<HistoricResult> getHistoric(String tick, int a, int b, int c, int d, int e, int f) throws NoInternetException {
 		List<NameValuePair> params = new ArrayList<NameValuePair>(8);
 		params.add(new BasicNameValuePair("a", "" + a));
 		params.add(new BasicNameValuePair("b", "" + b));
@@ -277,7 +277,7 @@ public class HttpHelper {
 
 		HttpResult result = executeGet("ichart.finance.yahoo.com", "/table.txt", params);
 		if (result.getResult() == null)
-			return null;
+			throw new NoInternetException();
 		String[] historic_csv = result.getResult().split("[\\r\\n]+");
 		ArrayList<HistoricResult> historic = new ArrayList<HistoricResult>();
 		//first element is nothing
@@ -288,7 +288,7 @@ public class HttpHelper {
 		return historic;
 	}
 
-	public String getName(String tick)
+	public String getName(String tick) throws NoInternetException
 	{
 		//http://finance.yahoo.com/d/quotes?f=snl1d1t1v&s=GOOG
 		List<NameValuePair> params = new ArrayList<NameValuePair>(8);
@@ -297,12 +297,15 @@ public class HttpHelper {
 	
 		HttpResult result = executeGet("finance.yahoo.com", "/d/quotes", params);
 
+		if (result.getResult() == null)
+			throw new NoInternetException();
+		
 		String[] historic_csv = result.getResult().split("[\\,]+");
 		return historic_csv[1].substring(1, historic_csv[1].length()-2);
 	}
 	
 	// return for the last 30 days
-	public ArrayList<HistoricResult> getHistoric(String tick) {
+	public ArrayList<HistoricResult> getHistoric(String tick) throws NoInternetException {
 		Calendar today_cal = Calendar.getInstance();
 		Calendar before_cal = Calendar.getInstance();
 		before_cal.add(Calendar.DATE, -30);

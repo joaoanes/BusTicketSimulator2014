@@ -36,7 +36,7 @@ public class PathFactory
 				low = h.close;
 		}
 
-		Log.e("HELLO GRAPH", "Creating path for " + money.tick);
+		//Log.e("HELLO GRAPH", "Creating path for " + money.tick);
 		double delta = high-low;
 		double process = 0;
 		int height = 0;
@@ -90,7 +90,7 @@ public class PathFactory
 				low = h.close;
 		}
 
-		Log.e("HELLO GRAPH", "Creating small path for " + money.tick);
+		//Log.e("HELLO GRAPH", "Creating small path for " + money.tick);
 
 		double delta = high-low;
 		HistoricResult h;
@@ -111,7 +111,7 @@ public class PathFactory
 		returnee.lineTo(width[0], ExtraUtils.dp2px(175) - ExtraUtils.dp2px((int) Math.floor(((money.value - low) / delta) * 175.0)));
 		width[0] -= ExtraUtils.dp2px(20);
 		returnee.lineTo(width[0], ExtraUtils.dp2px(45));
-		Log.e("HELLO GRAPH", "This one ended at " + money.history.get(money.history.size()-1).close);
+		//Log.e("HELLO GRAPH", "This one ended at " + money.history.get(money.history.size()-1).close);
 		return returnee;
 	}
 

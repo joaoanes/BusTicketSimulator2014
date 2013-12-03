@@ -46,8 +46,15 @@ public class ColorFactory {
 			return serve();
 		if (availableColor.size() == 0)
 			refresh();
-		Integer ret = availableColor.get(0);
-		availableColor.remove(ret);
+		Integer ret ;
+		int i = 0;
+		do
+		{
+			ret = availableColor.get(i);
+			i++;
+		}
+		while(ret == Utils.myQuotes.get(Utils.myQuotes.size()-1).color);
+		availableColor.remove(i);
 		return ret;
 	}
 

@@ -29,9 +29,11 @@ public class SplashActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			HttpHelper http = new HttpHelper();
-			Looper.prepare();
+			
 			for (Quote q : Utils.myQuotes)
 			{
+				if (q.quantity == 0)
+					continue;
 				double v = 0.0;
 				try 
 				{
@@ -39,23 +41,26 @@ public class SplashActivity extends Activity {
 				} 
 				catch (NoInternetException e) {
 					// TODO Auto-generated catch block
-					runOnUiThread(new Runnable() {
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							showToastAndDie();
-							
-
-						}
-
-					});
+					Utils.hasInternet = false;
 					return null;
 				} 
-				if (v != q.value)
+				if ((v != q.value) && (v > q.value))
 					Utils.myUpdates.add(new QuoteUpdate(q, v));
 			}
 			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			if (!Utils.hasInternet)
+				showToastAndDie();
+			Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
+			startActivity(i);
+			overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+			
+			onDestroy();
+			finish();
 		}
 
 	}
@@ -69,7 +74,7 @@ public class SplashActivity extends Activity {
 
 		setContentView(R.layout.activity_splash);
 
-		Log.i("Load", "Loading quote files");
+		//Log.i("Load", "Loading quote files");
 
 		try {
 			FileInputStream fis = openFileInput(Utils.FILENAME);
@@ -81,16 +86,16 @@ public class SplashActivity extends Activity {
 			ois.close();
 		} catch (FileNotFoundException e) {
 			//e.printStackTrace();
-			Log.i("Load", "file not found");
+			//Log.i("Load", "file not found");
 		} catch (StreamCorruptedException e) {
 			//e.printStackTrace();
-			Log.i("Load", "corrupted file");
+			//Log.i("Load", "corrupted file");
 		} catch (IOException e) {
 			//e.printStackTrace();
-			Log.i("Load", "IO Exception");
+			//Log.i("Load", "IO Exception");
 		} catch (ClassNotFoundException e) {
 			//e.printStackTrace();
-			Log.i("Load", "file not found");
+			//Log.i("Load", "file not found");
 		}
 
 		try {
@@ -102,27 +107,13 @@ public class SplashActivity extends Activity {
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}	
 		}
-		new Handler().postDelayed(new Runnable() {
-
-
-
-			@Override
-			public void run() {
-			
-				Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
-				startActivity(i);
-				overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-				
-				onDestroy();
-				finish();
-			}
-		}, 5000);
-	}
 
 	void showToastAndDie()
 	{
-		Toast.makeText(this, "Connection problem.", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Connection problem. Connect and restart for extra features.", Toast.LENGTH_SHORT).show();
+		Utils.hasInternet = false;
 		for (Quote q : Utils.myQuotes)
 			q.isUpdated = true;
 	}
