@@ -114,15 +114,14 @@ public class QuoteDetailsFragment extends Fragment {
 		
 		quantity_view.setText(String.valueOf(quantity));
 		String val = String.valueOf(value);
-		val = val.substring(0 ,val.indexOf(".")+3 > val.length() ? val.indexOf(".") + 2 : val.indexOf(".") + 2 );
-		
+		val = Utils.sanitize(val);
 		value_view.setText(val);
 		
 		if (graph != null)
-		graph.changeQuote(quote);
+			graph.changeQuote(quote);
 		BigDecimal bd = new BigDecimal(quote.getLast().close * quote.quantity);
 		bd.setScale(2, BigDecimal.ROUND_FLOOR);
-		value_view.setText("$" + bd.doubleValue());
+		value_view.setText(Utils.sanitize("$" + bd.doubleValue()));
 		view.setBackgroundColor(quote.color);
 		
 		double percent =  quote.getPercentage();
@@ -134,7 +133,7 @@ public class QuoteDetailsFragment extends Fragment {
 		percentage_string = percentage_string.substring(0, percentage_string.indexOf(".") +  offset);
 		((TextView) view.findViewById(R.id.percent)).setText("" + percentage_string + "%");
 		//((TextView) view.findViewById(R.id.close)).setText("$" + quote.getLast().close);
-		((TextView) view.findViewById(R.id.close)).setText("$" + quote.value);
+		((TextView) view.findViewById(R.id.close)).setText(Utils.sanitize("$" + quote.value));
 		((TextView) view.findViewById(R.id.name)).setText(quote.name.substring(0, (quote.name.length() < 14) ? quote.name.length() : 14));
 		if (percent < 0)
 		{

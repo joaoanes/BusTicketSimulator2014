@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import pt.feup.stockportfolio.AddQuotesFragment.AddQuoteListener;
 import pt.feup.stockportfolio.HttpHelper.QuoteResult;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -29,7 +27,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class QuotesActivity extends Activity {
-	static HashMap<String, Quote> quotes_map = new HashMap<String, Quote>();
 	HttpHelper http_helper = new HttpHelper();	
 	boolean landscape = false;
 

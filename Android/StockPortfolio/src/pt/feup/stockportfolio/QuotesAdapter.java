@@ -157,8 +157,9 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					view = inflator.inflate(R.layout.quote_update_first, null);
 				else
 					view = inflator.inflate(R.layout.quote_update, null);
+				
 				((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
-				((TextView) view.findViewById(R.id.worth)).setText("$" + ((QuoteUpdate) quote).change);
+				((TextView) view.findViewById(R.id.worth)).setText(Utils.sanitize(("$" + (((QuoteUpdate) quote).change))));
 				((TextView) view.findViewById(R.id.shares)).setText("on your " + quote.quantity + " shares");
 				
 				((RelativeLayout) view.findViewById(R.id.update_background)).setBackgroundColor(quote.color);
@@ -330,7 +331,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 							@Override
 							protected void onPostExecute(Void result) {
 								((RelativeLayout) myView.findViewById(R.id.real_background)).setBackgroundColor(quote.color);
-								((TextView) myView.findViewById(R.id.value)).setText("" + quote.value);
+								((TextView) myView.findViewById(R.id.value)).setText(Utils.sanitize("" + quote.value));
 								if (quote.getPercentage() < 0)
 								{
 									((RelativeLayout) myView.findViewById(R.id.tick_box)).setBackgroundResource(R.drawable.border_red);
@@ -400,8 +401,9 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 								{
 									Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right);
 									fadeInAnimation.setRepeatCount(0);
+									fadeInAnimation.setStartOffset(((QuotesActivity) context).inspectingQuotes ? 0 : 200);
 									final Animation fadeInAnimationCont = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right_recover);
-									fadeInAnimation.setRepeatCount(0);
+									fadeInAnimationCont.setRepeatCount(0);
 									
 									fadeInAnimation.setAnimationListener(new AnimationListener(){
 
@@ -432,7 +434,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 											public void run() {
 												((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
 											}
-										}, 250 + (((QuotesActivity) context).inspectingQuotes ? 0 : 500));
+										}, 250 + (((QuotesActivity) context).inspectingQuotes ? 0 : 700));
 									
 									((QuoteDetailsFragment) ((QuotesActivity) context).d_frag).setDetails(quote);
 									

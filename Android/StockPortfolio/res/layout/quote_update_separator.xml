@@ -28,7 +28,7 @@
             android:id="@+id/quotes_worth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Swipe to hide for now"
+            android:text="Click to hide"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp" />
     </LinearLayout>

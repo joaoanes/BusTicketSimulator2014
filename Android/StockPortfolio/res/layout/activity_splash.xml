@@ -4,13 +4,35 @@
     android:layout_height="match_parent"
     android:background="#ed1c24" >
 
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        
         android:layout_margin="20dp"
         android:src="@drawable/logo" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLargeInverse"
+        android:layout_width="130dp"
+        android:layout_height="130dp" />
+
+    <pt.feup.stockportfolio.TextViewFont
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="now loading"
+        android:textColor="#efefef"
+        android:textSize="25sp" />
+
+</LinearLayout>
 
 </RelativeLayout>

@@ -20,8 +20,10 @@ public class Quote implements Serializable {
 	public Quote(String tick, int quantity) {
 		this.tick = tick;
 		this.quantity = quantity;
-
-		color = ColorFactory.getColor();
+		if (tick != "Portfolio")
+			color = ColorFactory.getColor();
+		else
+			color = ColorFactory.getDefault();
 	}
 	
 	public HistoricResult getLast(){

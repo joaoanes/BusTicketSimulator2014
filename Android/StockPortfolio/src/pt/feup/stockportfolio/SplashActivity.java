@@ -74,6 +74,12 @@ public class SplashActivity extends Activity {
 
 		setContentView(R.layout.activity_splash);
 
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		//Log.i("Load", "Loading quote files");
 
 		try {
@@ -98,22 +104,13 @@ public class SplashActivity extends Activity {
 			//Log.i("Load", "file not found");
 		}
 
-		try {
 			Void[] args = {};
-			new QuoteUpdateCreator().execute(args).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+			new QuoteUpdateCreator().execute(args);
 		}
 
 	void showToastAndDie()
 	{
 		Toast.makeText(this, "Connection problem. Connect and restart for extra features.", Toast.LENGTH_SHORT).show();
-		Utils.hasInternet = false;
 		for (Quote q : Utils.myQuotes)
 			q.isUpdated = true;
 	}

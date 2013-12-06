@@ -46,10 +46,20 @@ public class Utils {
 		return dialog;
 	}
 	
+	public static String sanitize(String str)
+	{
+		try
+		{
+			return str.substring(0, str.lastIndexOf(".") + 3);
+		}
+		catch (Exception e)
+		{
+			return str.substring(0, str.lastIndexOf(".") + 2);
+		}
+	}
+	
 	public static Quote getPortfolioQuote() {
 		Quote portfolio = new Quote("Portfolio", 0);
-		portfolio.color = ColorFactory.getDefault();
-		portfolio.name = "Portfolio";
 		portfolio.history = new ArrayList<HistoricResult>(30);
 		
 		
