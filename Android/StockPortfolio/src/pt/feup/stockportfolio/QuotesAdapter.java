@@ -137,12 +137,21 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		if (quote == null)
 			return new View(context);
 		View view = convertView;
+		View recycled = null;
 		if (view != null)
 		{
+			try
+			{
 			if ((((TextView) view.findViewById(R.id.quote)).getText() != quote.tick) && (!(quote instanceof QuoteUpdate)))
 			{
+				recycled = view;
 				view = null;
 				//Log.e("HELLO QUOTES", quote.tick + " recycled forcefully.");
+			}
+			}
+			catch (NullPointerException e)
+			{
+				view = null;
 			}
 		}
 		if (view == null) 
@@ -153,11 +162,15 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 			if(quote instanceof QuoteUpdate)
 			{
-				if (position == 0)
-					view = inflator.inflate(R.layout.quote_update_first, null);
+				if (recycled != null)
+					view = recycled;
 				else
-					view = inflator.inflate(R.layout.quote_update, null);
-				
+				{
+					if (position == 0)
+						view = inflator.inflate(R.layout.quote_update_first, null);
+					else
+						view = inflator.inflate(R.layout.quote_update, null);
+				}
 				((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
 				((TextView) view.findViewById(R.id.worth)).setText(Utils.sanitize(("$" + (((QuoteUpdate) quote).change))));
 				((TextView) view.findViewById(R.id.shares)).setText("on your " + quote.quantity + " shares");
@@ -243,16 +256,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 								});
 
-								myView.findViewById(R.id.increaseshares).setOnLongClickListener(new OnLongClickListener(){
-
-									@Override
-									public boolean onLongClick(View v) {
-										// TODO Auto-generated method stub
-										return false;
-									}
-
-								});
-
+	
 								myView.findViewById(R.id.decreaseshares).setOnClickListener(new OnClickListener(){
 
 									@Override
@@ -338,6 +342,16 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									((TextView) myView.findViewById(R.id.value)).setTextColor(Color.parseColor("#ed1c24"));
 								}
 								GraphViewSmall mine = new GraphViewSmall(context, null, quote);
+								int size = ((LinearLayout)myView.findViewById(R.id.graph)).getChildCount();
+								for (int i = 0; i < size; ++i)
+								{
+									if (((LinearLayout)myView.findViewById(R.id.graph)).getChildAt(i) instanceof GraphViewSmall)
+									{
+										((LinearLayout)myView.findViewById(R.id.graph)).removeViewAt(i);
+										break;
+									}
+								}
+								
 								((LinearLayout)myView.findViewById(R.id.graph)).addView(mine);
 								Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.fade_in);
 								fadeInAnimation.setRepeatCount(0);
@@ -350,7 +364,10 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 							}
 
 						}
-						view = inflator.inflate(R.layout.quote_real, null);
+						if (recycled != null)
+							view = recycled;
+						else
+							view = inflator.inflate(R.layout.quote_real, null);
 
 						new GraphAsync().execute(view, quote);
 						((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
@@ -364,7 +381,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 							public boolean onLongClick(View arg0) {
 								Animation fadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_left);
 								fadeOutAnimation.setRepeatCount(0);
-								fadeOutAnimation.setFillAfter(true);
+								fadeOutAnimation.setFillAfter(false);
 								fadeOutAnimation.setAnimationListener(new AnimationListener(){
 
 									@Override
@@ -463,7 +480,8 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getViewTypeCount()
 	{
-		return objects.size() + removedItems;
+		//return objects.size() + removedItems;
+		return 4;
 	}
 
 	@Override
@@ -479,17 +497,20 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		if (quote instanceof QuoteUpdate)
 			
 		{
-			ret =  position;
+			//ret =  position;
+			ret = 0;
 		}
 		
 		else if (quote instanceof QuoteAdd)
-			ret = -2;
+			//ret = -2;
+			ret = 1;
 		
 		else if (quote instanceof QuoteSeparator)
-			ret = -2;
+			//ret = -2;
+			ret = 2;
 		
-		else ret = position + removedItems ;
-		
+		else //ret = position + removedItems ;
+			ret = 3;
 		//Log.e("HELLO ITEMS", "Get item view type for " + position + ", quote " + quote.tick + " with " + ret);
 		return ret;
 	}
