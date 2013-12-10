@@ -343,11 +343,13 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 								}
 								GraphViewSmall mine = new GraphViewSmall(context, null, quote);
 								int size = ((LinearLayout)myView.findViewById(R.id.graph)).getChildCount();
+								boolean found = false;
 								for (int i = 0; i < size; ++i)
 								{
 									if (((LinearLayout)myView.findViewById(R.id.graph)).getChildAt(i) instanceof GraphViewSmall)
 									{
 										((LinearLayout)myView.findViewById(R.id.graph)).removeViewAt(i);
+										found = true;
 										break;
 									}
 								}
@@ -356,8 +358,9 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 								Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.fade_in);
 								fadeInAnimation.setRepeatCount(0);
 								fadeInAnimation.setFillAfter(true);
-
-								mine.startAnimation(fadeInAnimation);
+								if (!found)
+									mine.startAnimation(fadeInAnimation);
+								
 								((LinearLayout)myView.findViewById(R.id.graph)).findViewById(R.id.progressBar).setVisibility(View.GONE);
 
 								hello.notifyDataSetChanged();

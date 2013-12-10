@@ -54,7 +54,13 @@ public class ColorFactory {
 			i++;
 		}
 		while(ret == Utils.myQuotes.get(Utils.myQuotes.size()-1).color);
+		try{
 		availableColor.remove(i);
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			availableColor.remove(0);
+		}
 		return ret;
 	}
 
