@@ -1,34 +1,26 @@
 package pt.feup.stockportfolio;
 import java.util.ArrayList;
-import java.util.Collections;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.AnimatorSet.Builder;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,8 +56,8 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		}
 
 	}
-	
-	
+
+
 	public QuotesAdapter(Context _context, int resource,
 			ArrayList<Quote> _objects) {
 		super(_context, resource, _objects);
@@ -104,7 +96,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 					}
 					++i;
 				}
-				
+
 				notifyDataSetChanged();
 
 			}
@@ -132,7 +124,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent)
 	{
-		
+
 		final Quote quote = objects.get(position);
 		if (quote == null)
 			return new View(context);
@@ -142,12 +134,12 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 		{
 			try
 			{
-			if ((((TextView) view.findViewById(R.id.quote)).getText() != quote.tick) && (!(quote instanceof QuoteUpdate)))
-			{
-				recycled = view;
-				view = null;
-				//Log.e("HELLO QUOTES", quote.tick + " recycled forcefully.");
-			}
+				if ((((TextView) view.findViewById(R.id.quote)).getText() != quote.tick) && (!(quote instanceof QuoteUpdate)))
+				{
+					recycled = view;
+					view = null;
+					//Log.e("HELLO QUOTES", quote.tick + " recycled forcefully.");
+				}
 			}
 			catch (NullPointerException e)
 			{
@@ -174,13 +166,13 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 				((TextView) view.findViewById(R.id.quote)).setText(quote.tick);
 				((TextView) view.findViewById(R.id.worth)).setText(Utils.sanitize(("$" + (((QuoteUpdate) quote).change))));
 				((TextView) view.findViewById(R.id.shares)).setText("on your " + quote.quantity + " shares");
-				
+
 				((RelativeLayout) view.findViewById(R.id.update_background)).setBackgroundColor(quote.color);
 				view.setOnClickListener(new OnClickListener(){
 
 					@Override
 					public void onClick(View v) {
-						
+
 						hideSwipables();
 					}
 
@@ -189,7 +181,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 				if (!swipable.contains(view))
 					swipable.add(view);
 
-				
+
 			}
 			else
 			{
@@ -202,10 +194,10 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						public void onClick(View v) {
 							QuotesActivity act = (QuotesActivity) context;
 							final boolean landscape = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-							
+
 							if (act.inspectingQuotes)
 								act.showExtraFragment(act.p_frag);
-							
+
 							act.inspectingQuotes = false;
 							if (!landscape)	
 								new Handler().postDelayed(new Runnable() {
@@ -227,7 +219,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 						view = inflator.inflate(R.layout.add_quote, null);
 						view.setOnClickListener(new OnClickListener(){
 
-							
+
 
 							@Override
 							public void onClick(View v) {
@@ -256,7 +248,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 
 								});
 
-	
+
 								myView.findViewById(R.id.decreaseshares).setOnClickListener(new OnClickListener(){
 
 									@Override
@@ -281,7 +273,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 											Toast.makeText(getContext(), "Not available offline", Toast.LENGTH_LONG).show();
 											return;
 										}
-										
+
 										if (q.isUpdated)
 										{
 											q.quantity = share_number[0];
@@ -353,14 +345,14 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 										break;
 									}
 								}
-								
+
 								((LinearLayout)myView.findViewById(R.id.graph)).addView(mine);
 								Animation fadeInAnimation = AnimationUtils.loadAnimation(hello.getContext(), R.anim.fade_in);
 								fadeInAnimation.setRepeatCount(0);
 								fadeInAnimation.setFillAfter(true);
 								if (!found)
 									mine.startAnimation(fadeInAnimation);
-								
+
 								((LinearLayout)myView.findViewById(R.id.graph)).findViewById(R.id.progressBar).setVisibility(View.GONE);
 
 								hello.notifyDataSetChanged();
@@ -397,22 +389,22 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									@Override
 									public void onAnimationRepeat(Animation arg0) {
 										// TODO Auto-generated method stub
-										
+
 									}
 
 									@Override
 									public void onAnimationStart(Animation arg0) {
 										// TODO Auto-generated method stub
-										
+
 									}});
-								
+
 								arg0.startAnimation(fadeOutAnimation);
-								
-								
+
+
 								return true;
 							}
 						});
-						
+
 						view.setOnClickListener(new OnClickListener(){
 
 							@Override
@@ -424,7 +416,7 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 									fadeInAnimation.setStartOffset(((QuotesActivity) context).inspectingQuotes ? 0 : 200);
 									final Animation fadeInAnimationCont = AnimationUtils.loadAnimation(hello.getContext(), R.anim.slide_right_recover);
 									fadeInAnimationCont.setRepeatCount(0);
-									
+
 									fadeInAnimation.setAnimationListener(new AnimationListener(){
 
 										@Override
@@ -436,15 +428,15 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 										@Override
 										public void onAnimationRepeat(
 												Animation animation) {
-											
+
 										}
 
 										@Override
 										public void onAnimationStart(
 												Animation animation) {
-											
+
 										}
-										
+
 									});
 									if (!landscape)	
 										new Handler().postDelayed(new Runnable() {
@@ -455,18 +447,18 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 												((QuotesActivity) context).mDrawerLayout.closeDrawer(Gravity.LEFT);
 											}
 										}, 250 + (((QuotesActivity) context).inspectingQuotes ? 0 : 700));
-									
+
 									((QuoteDetailsFragment) ((QuotesActivity) context).d_frag).setDetails(quote);
-									
+
 									if (!((QuotesActivity) context).inspectingQuotes)
 									{
 										((QuotesActivity) context).showExtraFragment(((QuotesActivity) context).d_frag);
 										((QuotesActivity) context).inspectingQuotes = true;
 									}
-									
+
 									v.startAnimation(fadeInAnimation);
-									
-									
+
+
 								}
 							}
 
@@ -490,28 +482,28 @@ public class QuotesAdapter extends ArrayAdapter<Quote>
 	@Override
 	public int getItemViewType(int position)
 	{
-		
-		
+
+
 		int ret = 0;
-		
+
 		Quote quote = objects.get(position);
-		
-		
+
+
 		if (quote instanceof QuoteUpdate)
-			
+
 		{
 			//ret =  position;
 			ret = 0;
 		}
-		
+
 		else if (quote instanceof QuoteAdd)
 			//ret = -2;
 			ret = 1;
-		
+
 		else if (quote instanceof QuoteSeparator)
 			//ret = -2;
 			ret = 2;
-		
+
 		else //ret = position + removedItems ;
 			ret = 3;
 		//Log.e("HELLO ITEMS", "Get item view type for " + position + ", quote " + quote.tick + " with " + ret);

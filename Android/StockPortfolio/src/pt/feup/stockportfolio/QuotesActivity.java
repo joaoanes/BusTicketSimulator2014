@@ -5,8 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import pt.feup.stockportfolio.HttpHelper.QuoteResult;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -18,13 +17,11 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class QuotesActivity extends Activity {
 	HttpHelper http_helper = new HttpHelper();	
@@ -64,32 +61,32 @@ public class QuotesActivity extends Activity {
 			}
 			Utils.myUpdates.clear();
 			quotes.add(new QuoteSeparator());
-			
+
 			for (Quote q : Utils.myQuotes)
 				quotes.add(q);
-			
+
 			quotes.add(new QuoteAdd());
 
 		}
-		
+
 		p_frag = new PortfolioFragment();
 		d_frag = new QuoteDetailsFragment();
 		showExtraFragment(d_frag);
-		
-	
+
+
 		QuotesAdapter myAdapter = new QuotesAdapter(((Context) this), 0, quotes);
-		
+
 		mDrawerList.setAdapter(myAdapter);
-		
+
 		setUpDrawerToggle();
-		
-		
+
+
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		Log.i("Save", "SAVING");
 		save();
 		super.onDestroy();
@@ -108,53 +105,53 @@ public class QuotesActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void setUpDrawerToggle(){
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 			return;
-	    ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getActionBar();
 
-	    // ActionBarDrawerToggle ties together the the proper interactions
-	    // between the navigation drawer and the action bar app icon.
-	    mDrawerToggle = new ActionBarDrawerToggle(
-	            this,                             /* host Activity */
-	            mDrawerLayout,                    /* DrawerLayout object */
-	            R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
-	            R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
-	            R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
-	    ) {
-	        @Override
-	        public void onDrawerClosed(View drawerView) {
-	            invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-	        }
+		// ActionBarDrawerToggle ties together the the proper interactions
+		// between the navigation drawer and the action bar app icon.
+		mDrawerToggle = new ActionBarDrawerToggle(
+				this,                             /* host Activity */
+				mDrawerLayout,                    /* DrawerLayout object */
+				R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+				R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
+				R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
+				) {
+			@Override
+			public void onDrawerClosed(View drawerView) {
+				invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+			}
 
-	        @Override
-	        public void onDrawerOpened(View drawerView) {
-	            invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
-	        }
-	        
-	    };
-	    
-	    
+			@Override
+			public void onDrawerOpened(View drawerView) {
+				invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+			}
 
-	    // Defer code dependent on restoration of previous instance state.
-	    // NB: required for the drawer indicator to show up!
-	    mDrawerLayout.post(new Runnable() {
-	        @Override
-	        public void run() {
-	            mDrawerToggle.syncState();
-	            
-	        }
-	    });
+		};
 
-	    mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-	    actionBar.setDisplayHomeAsUpEnabled(true);
-	    actionBar.setHomeButtonEnabled(true);
+
+		// Defer code dependent on restoration of previous instance state.
+		// NB: required for the drawer indicator to show up!
+		mDrawerLayout.post(new Runnable() {
+			@Override
+			public void run() {
+				mDrawerToggle.syncState();
+
+			}
+		});
+
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -179,14 +176,14 @@ public class QuotesActivity extends Activity {
 		default:
 			break;
 		}
-		*/
+		 */
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+
 	@Override
 	public void onBackPressed() {
-	
+
 		save();
 		super.onBackPressed();
 	}
@@ -196,7 +193,7 @@ public class QuotesActivity extends Activity {
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.content_frame, extra_fragment);
 
-		
+
 		transaction.commit();
 	}
 
@@ -207,11 +204,8 @@ public class QuotesActivity extends Activity {
 		showExtraFragment();
 	}
 
-
-
-
 	void showQuoteDetails() {
-		
+
 	}
 
 

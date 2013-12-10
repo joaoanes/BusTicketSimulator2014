@@ -6,16 +6,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -29,7 +24,7 @@ public class SplashActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			HttpHelper http = new HttpHelper();
-			
+
 			for (Quote q : Utils.myQuotes)
 			{
 				if (q.quantity == 0)
@@ -49,7 +44,7 @@ public class SplashActivity extends Activity {
 			}
 			return null;
 		}
-		
+
 		@Override
 		protected void onPostExecute(Void result)
 		{
@@ -58,7 +53,7 @@ public class SplashActivity extends Activity {
 			Intent i = new Intent(SplashActivity.this, QuotesActivity.class);
 			startActivity(i);
 			overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-			
+
 			onDestroy();
 			finish();
 		}
@@ -104,9 +99,9 @@ public class SplashActivity extends Activity {
 			//Log.i("Load", "file not found");
 		}
 
-			Void[] args = {};
-			new QuoteUpdateCreator().execute(args);
-		}
+		Void[] args = {};
+		new QuoteUpdateCreator().execute(args);
+	}
 
 	void showToastAndDie()
 	{

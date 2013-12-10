@@ -23,17 +23,17 @@ import android.widget.TextView;
 
 public class QuoteDetailsFragment extends Fragment {
 	View view;
-	
+
 	TextView tick_view;
 	TextView quantity_view;
 	TextView value_view;
 	LinearLayout remove_1_button;
 	LinearLayout add_1_button;
 	GraphView graph = null;
-	
+
 	Quote quote = null;
-	
-	
+
+
 	class QuoteUpdater extends AsyncTask<Void, Void, Void>
 	{
 
@@ -43,7 +43,6 @@ public class QuoteDetailsFragment extends Fragment {
 				try {
 					quote.update();
 				} catch (NoInternetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -52,10 +51,9 @@ public class QuoteDetailsFragment extends Fragment {
 		@Override
 		protected void onPostExecute(Void result) {
 			addGraph();
-	     }
+		}
 	}
-	
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,44 +84,44 @@ public class QuoteDetailsFragment extends Fragment {
 		setViews();
 		return view;
 	}
-	
+
 	public void setViews() {
 		quantity_view = (TextView) view.findViewById(R.id.shares);
 		value_view = (TextView) view.findViewById(R.id.personalworth);
-		
+
 		add_1_button = (LinearLayout) view.findViewById(R.id.increaseshares);
 		add_1_button.setOnClickListener(on_click_listener);
 		remove_1_button = (LinearLayout) view.findViewById(R.id.decreaseshares);
 		remove_1_button.setOnClickListener(on_click_listener);;
-		
+
 		if(!quote.isUpdated)
 		{
 			view.setBackgroundColor(ColorFactory.serve);
-			
+
 			new QuoteUpdater().execute(new Void[1]);
 		}
 		else
 		{
 			addGraph();
 		}
-		
-		
+
+
 	}
-	
+
 	public void setDetails(String tick, int quantity, double value) {
-		
+
 		quantity_view.setText(String.valueOf(quantity));
 		String val = String.valueOf(value);
 		val = Utils.sanitize(val);
 		value_view.setText(val);
-		
+
 		if (graph != null)
 			graph.changeQuote(quote);
 		BigDecimal bd = new BigDecimal(quote.getLast().close * quote.quantity);
 		bd.setScale(2, BigDecimal.ROUND_FLOOR);
 		value_view.setText(Utils.sanitize("$" + bd.doubleValue()));
 		view.setBackgroundColor(quote.color);
-		
+
 		double percent =  quote.getPercentage();
 		String percentage_string = String.valueOf(percent);
 		int dotPosition = percentage_string.indexOf(".");
@@ -149,17 +147,17 @@ public class QuoteDetailsFragment extends Fragment {
 		((LinearLayout) view.findViewById(R.id.increaseshares)).setBackgroundColor(quote.color);
 
 		((LinearLayout) view.findViewById(R.id.decreaseshares)).setBackgroundColor(quote.color);
-		
+
 	}
-	
+
 	public void setDetails(Quote quote) {
 
 		Log.i("HELLO FRAGMENT", "DETAIL fragment details for quote " + quote.tick + " " + this.hashCode());
 		this.quote = quote;
 		if (quote != null)
-		setDetails(quote.tick, quote.quantity, quote.value);
+			setDetails(quote.tick, quote.quantity, quote.value);
 	}
-	
+
 	OnClickListener on_click_listener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -177,8 +175,8 @@ public class QuoteDetailsFragment extends Fragment {
 			quote.changeQuantity(change);
 			quantity_view.setText(String.valueOf(quote.quantity));
 			value_view.setText("$" + quote.getLast().close * quote.quantity);
-			
+
 		}
 	}; 
-	
+
 }

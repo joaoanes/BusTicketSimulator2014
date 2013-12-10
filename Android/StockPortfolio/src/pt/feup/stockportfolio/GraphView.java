@@ -7,15 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -193,7 +190,7 @@ public class GraphView extends View
 			 */
 			String worth = String.valueOf(entry.close);
 			int dot = worth.indexOf(".");
-			
+
 			worth = worth.substring(0, (dot + 3) >= worth.length() ? (dot + 2) : (dot + 3));
 			bufferedGraphCanvas.drawText(
 					'$' + worth,
@@ -274,7 +271,7 @@ public class GraphView extends View
 			break;
 
 		case MotionEvent.ACTION_UP:
-			
+
 
 			lastPosX = -1;
 			if (Math.abs(diffX) > 5)

@@ -6,5 +6,4 @@ public class QuoteAdd extends Quote {
 		super("add", 0);
 		// TODO Auto-generated constructor stub
 	}
-
 }

@@ -75,11 +75,11 @@ public class HttpHelper {
 			String[] contents = csv.split(",");
 			try
 			{
-			this.tick = contents[0].replace("\"", "");
-			this.value = (contents[1] == "N/A" ? 0 : Double.parseDouble(contents[1]));
-			this.date = contents[2].replace("\"", "");
-			this.time = contents[3].replace("\"", "");
-			this.exchanged_shares = Integer.parseInt(contents[4]);
+				this.tick = contents[0].replace("\"", "");
+				this.value = (contents[1] == "N/A" ? 0 : Double.parseDouble(contents[1]));
+				this.date = contents[2].replace("\"", "");
+				this.time = contents[3].replace("\"", "");
+				this.exchanged_shares = Integer.parseInt(contents[4]);
 			}
 			catch (ArrayIndexOutOfBoundsException e)
 			{
@@ -124,7 +124,7 @@ public class HttpHelper {
 		}
 	}
 
-	
+
 
 	public HttpHelper() {
 		client = new DefaultHttpClient();
@@ -141,44 +141,44 @@ public class HttpHelper {
 	}
 
 	public HttpResult execute(final HttpUriRequest request) throws IOException {
-				HttpResponse response = null;
-				try {
-					response = client.execute(request);
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				StatusLine statusLine = response.getStatusLine();
-				int status_code = statusLine.getStatusCode();
+		HttpResponse response = null;
+		try {
+			response = client.execute(request);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		StatusLine statusLine = response.getStatusLine();
+		int status_code = statusLine.getStatusCode();
 
-				switch(status_code) {
-				case HttpStatus.SC_OK:
-				case HttpStatus.SC_UNAUTHORIZED:
-				case HttpStatus.SC_FORBIDDEN:
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					try {
-						response.getEntity().writeTo(out);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					try {
-						out.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					String responseString = out.toString();
-
-					return new HttpResult(status_code, responseString);
-				default:
-					return new HttpResult(status_code);
-				}
-
+		switch(status_code) {
+		case HttpStatus.SC_OK:
+		case HttpStatus.SC_UNAUTHORIZED:
+		case HttpStatus.SC_FORBIDDEN:
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+				response.getEntity().writeTo(out);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			try {
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String responseString = out.toString();
+
+			return new HttpResult(status_code, responseString);
+		default:
+			return new HttpResult(status_code);
+		}
+
+	}
 
 	public HttpResult executeGet(String domain, int port, String path, List<NameValuePair> args) {
 		try {
@@ -252,7 +252,7 @@ public class HttpHelper {
 
 		return quotes;
 	}
-	
+
 	public QuoteResult getTickValue(String tick) throws NoInternetException {
 		List<NameValuePair> params = new ArrayList<NameValuePair>(2);
 		params.add(new BasicNameValuePair("f", "sl1d1t1v"));
@@ -294,16 +294,16 @@ public class HttpHelper {
 		List<NameValuePair> params = new ArrayList<NameValuePair>(8);
 		params.add(new BasicNameValuePair("f", "snl1d1t1v"));
 		params.add(new BasicNameValuePair("s", "" + tick));
-	
+
 		HttpResult result = executeGet("finance.yahoo.com", "/d/quotes", params);
 
 		if (result.getResult() == null)
 			throw new NoInternetException();
-		
+
 		String[] historic_csv = result.getResult().split("[\\,]+");
 		return historic_csv[1].substring(1, historic_csv[1].length()-2);
 	}
-	
+
 	// return for the last 30 days
 	public ArrayList<HistoricResult> getHistoric(String tick) throws NoInternetException {
 		Calendar today_cal = Calendar.getInstance();
